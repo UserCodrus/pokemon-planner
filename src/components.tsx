@@ -18,21 +18,29 @@ export function PartyMember(props: {id: number, form?: number}): ReactElement
 	const pokemon = Pokemon[props.id];
 	const form = pokemon.forms[props.form ? props.form : 0];
 
-	const image_url = Data.pokemonArtURL(pokemon.id);
-
-	// Create images for the type displays
+	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	const images: ReactElement[] = [];
-	for (const type of form.types)
+	let art: ReactElement;
+	if (props.id > 0)
 	{
-		const src = Data.typeSpriteURL(type);
-		images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={type} />)
+		for (const type of form.types)
+		{
+			const src = Data.typeSpriteURL(type);
+			images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={type} />)
+		}
+
+		art = <Image src={Data.pokemonArtURL(pokemon.id)} width={128} height={128} alt={pokemon.name} />;
+	}
+	else
+	{
+		art = <div className="inline-block min-w-[128px] min-h-[128px]"></div>
 	}
 
 	return (
 		<div className="bg-panel p-4 rounded-lg flex-col inline-flex items-center">
-			<div className="text-center">{form.name}</div>
-			<Image src={image_url} width={128} height={128} alt={pokemon.name} />
-			<div className="inline-flex flex-col min-h-[40px] justify-center">
+			<div className="text-center">{props.id > 0 ? form.name : "Empty"}</div>
+			{art}
+			<div className="inline-flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{images}
 			</div>
 		</div>
