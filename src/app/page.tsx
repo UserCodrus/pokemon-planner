@@ -15,8 +15,10 @@ export default function Home() {
 
 	return (
 		<div className="grid items-center justify-items-center min-h-screen min-w-full gradient text-foreground font-[family-name:var(--font-geist-sans)]">
-			<Containers.PartyDisplay />
-			<Containers.PokedexDisplay pokedex="hoenn" />
+			<div className="flex flex-col w-4/5 py-8 space-y-8 items-center">
+				<Containers.PartyDisplay />
+				<Containers.PokedexDisplay pokedex="hoenn" />
+			</div>
 		</div>
 	);
 }
