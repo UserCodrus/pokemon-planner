@@ -38,8 +38,8 @@ export function PartyMember(props: {id: number, form?: number}): ReactElement
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
 	return (
-		<div className="bg-panel p-4 rounded-lg flex-col inline-flex items-center">
-			<div className="text-center">{props.id > 0 ? form.name : "Empty"}</div>
+		<div className="bg-panel p-4 rounded-lg flex-col inline-flex items-center align-bottom">
+			<div className="text-center inline-flex min-h-6">{props.id > 0 ? form.name : ""}</div>
 			{art}
 			<div className="inline-flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}

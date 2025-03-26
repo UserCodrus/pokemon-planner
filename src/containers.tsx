@@ -19,7 +19,7 @@ export function PartyDisplay(): ReactElement
 	}
 
 	return (
-		<div className="flex-row space-x-2 justify-stretch">
+		<div className="flex-row space-x-2">
 			{components}
 		</div>
 	);
