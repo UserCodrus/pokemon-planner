@@ -16,6 +16,7 @@ export default function Home() {
 	return (
 		<div className="grid items-center justify-items-center min-h-screen min-w-full gradient text-foreground font-[family-name:var(--font-geist-sans)]">
 			<Containers.PartyDisplay />
+			<Containers.PokedexDisplay pokedex="hoenn" />
 		</div>
 	);
 }

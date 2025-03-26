@@ -3,7 +3,7 @@ const image_ext = ".png";
 const type_sprite_location = "/images/types/";
 const type_icon_location = "/images/types/icons/";
 const pokemon_art_location = "/images/pokemon/art/";
-const pokemon_sprite_location = "/images/pokemon/sprite/";
+const pokemon_sprite_location = "/images/pokemon/sprites/";
 
 // Data type for pokemon data
 export type Pokemon = {
@@ -12,22 +12,25 @@ export type Pokemon = {
 	type: string[]
 }
 
+// A 1x1px transparent gif to use as a placeholder
+export const default_image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
 /**
  * Get the URL for a pokemon's artwork image
  * @param id The id of the pokemon
  */
-export function pokemonArtURL(id: number)
+export function pokemonArtURL(filename: string)
 {
-	return pokemon_art_location + id.toString() + image_ext;
+	return pokemon_art_location + filename;
 }
 
 /**
  * Get the URL for a pokemon's sprite image
  * @param id The id of the pokemon
  */
-export function pokemonSpriteURL(id: number)
+export function pokemonSpriteURL(filename: string)
 {
-	return pokemon_sprite_location + id.toString() + image_ext;
+	return pokemon_sprite_location + filename;
 }
 
 /**
