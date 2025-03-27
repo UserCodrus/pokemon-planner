@@ -57,7 +57,7 @@ export function PokedexDisplay(props: {pokedex: string, onSelect: Components.Sel
 	}
 
 	return (
-		<div className="flex-row space-x-2 space-y-2">
+		<div className="flex-row text-center">
 			{components}
 		</div>
 	);
