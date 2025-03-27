@@ -29,10 +29,21 @@ body {
 	.gradient {
 		background: linear-gradient(#7ABFFF, #0A5FFF);
 	}
+
+	.panel {
+		background-color: var(--color-panel);
+		border-radius: 0.5rem;
+		user-select: none;
+	}
+	.panel:hover {
+		background-color: var(--color-highlight);
+		cursor: pointer;
+	}
 }
 
 @theme {
 	--color-gradient: linear-gradient(#7ABFFF, #0A5FFF);
 	--color-foreground: #F2F2F2;
 	--color-panel: rgb(0 0 0 / 50%);
+	--color-highlight: rgb(25 25 25 / 50%);
 }

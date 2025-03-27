@@ -16,7 +16,7 @@ export type SelectionCallback = (id: number, form?: string) => void;
  */
 export function PartyMember(props: {id: number, form?: string, onClick: SelectionCallback}): ReactElement
 {
-	const size = 128;
+	const size = 200;
 
 	const pokemon = Pokemon[props.id];
 
@@ -53,7 +53,7 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
 	return (
-		<div className="bg-panel p-4 rounded-lg flex-col inline-flex items-center align-bottom" onClick={() => {props.onClick(props.id, props.form)}}>
+		<div className="panel p-4 flex-col inline-flex items-center align-bottom" onClick={() => {props.onClick(props.id, props.form)}}>
 			<div className="text-center inline-flex min-h-6">{props.id > 0 ? form.name : ""}</div>
 			{art}
 			<div className="inline-flex flex-col min-h-[40px] min-w-[100px] justify-center">
@@ -70,7 +70,7 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
  */
 export function PokemonSelector(props: {id: number, form?: string, onClick: SelectionCallback}): ReactElement
 {
-	const size = 64;
+	const size = 96;
 
 	const pokemon = Pokemon[props.id];
 
@@ -89,7 +89,7 @@ export function PokemonSelector(props: {id: number, form?: string, onClick: Sele
 	}
 
 	return (
-		<div className="bg-panel p-1 rounded-lg inline-flex" onClick={() => {props.onClick(props.id, props.form)}}>
+		<div className="panel p-1 inline-flex" onClick={() => {props.onClick(props.id, props.form)}}>
 			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
 		</div>
 	);
