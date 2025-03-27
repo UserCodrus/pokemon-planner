@@ -1,7 +1,6 @@
 import Image from "next/image";
 
-import * as Components from "../components";
-import * as Containers from "../containers";
+import * as Core from "../core";
 
 export default function Home() {
 	const mon = {
@@ -15,10 +14,7 @@ export default function Home() {
 
 	return (
 		<div className="grid items-center justify-items-center min-h-screen min-w-full gradient text-foreground font-[family-name:var(--font-geist-sans)]">
-			<div className="flex flex-col w-4/5 py-8 space-y-8 items-center">
-				<Containers.PartyDisplay />
-				<Containers.PokedexDisplay pokedex="hoenn" />
-			</div>
+			<Core.App />
 		</div>
 	);
 }
