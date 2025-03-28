@@ -24,7 +24,7 @@ export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Compo
 	}
 
 	return (
-		<div className="flex-row space-x-2">
+		<div className="flex flex-row space-x-2">
 			{components}
 		</div>
 	);
@@ -57,7 +57,7 @@ export function PokedexDisplay(props: {pokedex: string, onSelect: Components.Sel
 	}
 
 	return (
-		<div className="flex-row text-center">
+		<div className="flex flex-row flex-wrap justify-center">
 			{components}
 		</div>
 	);
