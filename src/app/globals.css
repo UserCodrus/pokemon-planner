@@ -10,6 +10,11 @@
 	--color-foreground: var(--foreground);
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
+
+	--color-gradient: linear-gradient(#7ABFFF, #0A5FFF);
+	--color-foreground: #F2F2F2;
+	--color-panel: rgb(0 0 0 / 50%);
+	--color-highlight: rgb(25 25 25 / 50%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,13 +51,6 @@ body {
 	.anim-fade-in {
 		animation: animation-fade-in 0.2s linear;
 	}
-}
-
-@theme {
-	--color-gradient: linear-gradient(#7ABFFF, #0A5FFF);
-	--color-foreground: #F2F2F2;
-	--color-panel: rgb(0 0 0 / 50%);
-	--color-highlight: rgb(25 25 25 / 50%);
 }
 
 @keyframes animation-pulse {
