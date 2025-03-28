@@ -45,6 +45,14 @@ body {
 		cursor: pointer;
 	}
 
+	.fade {
+		transition: opacity 0.2s ease-in-out;
+		opacity: 1;
+	}
+	.fade.hide {
+		opacity: 0;
+	}
+
 	.anim-pulse {
 		animation: animation-pulse 0.3s linear;
 	}

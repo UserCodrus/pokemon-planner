@@ -88,9 +88,11 @@ export function PokemonSelector(props: {id: number, form?: string, selected?: bo
 		}
 	}
 
+	const hidden = props.selected ? "" : " hide";
+
 	return (
 		<div className="panel p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
-			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className="left-1 top-1 absolute anim-fade-in" hidden={!props.selected} />
+			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
 		</div>
 	);
