@@ -39,6 +39,13 @@ body {
 		background-color: var(--color-highlight);
 		cursor: pointer;
 	}
+
+	.anim-pulse {
+		animation: animation-pulse 0.3s linear;
+	}
+	.anim-fade-in {
+		animation: animation-fade-in 0.2s linear;
+	}
 }
 
 @theme {
@@ -46,4 +53,21 @@ body {
 	--color-foreground: #F2F2F2;
 	--color-panel: rgb(0 0 0 / 50%);
 	--color-highlight: rgb(25 25 25 / 50%);
+}
+
+@keyframes animation-pulse {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.05); }
+	100% { transform: scale(1); }
+}
+
+@keyframes animation-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes animation-spin {
+	0% { transform: rotate3d(0, 1, 0, 90deg); }
+	70% { transform: rotate3d(0, 1, 0, -20deg); }
+	100% { transform: rotate3d(0, 1, 0, 0deg); }
 }

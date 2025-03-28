@@ -53,10 +53,10 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
 	return (
-		<div className="panel p-4 flex flex-col items-center align-bottom" onClick={() => {props.onClick(props.id, props.form)}}>
-			<div className="text-center inline-flex min-h-6">{props.id > 0 ? form.name : ""}</div>
+		<div className="panel p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.id, props.form)}}>
+			<div className="text-center min-h-6">{props.id > 0 ? form.name : ""}</div>
 			{art}
-			<div className="inline-flex flex-col min-h-[40px] min-w-[100px] justify-center">
+			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
 			</div>
 		</div>
@@ -89,8 +89,8 @@ export function PokemonSelector(props: {id: number, form?: string, selected?: bo
 	}
 
 	return (
-		<div className="panel p-1 m-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
-			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className="left-1 top-1 absolute" hidden={!props.selected} />
+		<div className="panel p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
+			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className="left-1 top-1 absolute anim-fade-in" hidden={!props.selected} />
 			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
 		</div>
 	);
