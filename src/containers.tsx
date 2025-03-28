@@ -4,6 +4,7 @@ import { ReactElement } from "react";
 
 import * as Components from "./components";
 import Pokedex from "../data/pokedex.json";
+import Pokemon from "../data/pokemon.json";
 
 const party_size = 6;
 
@@ -33,7 +34,7 @@ export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Compo
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {pokedex: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {pokedex: string, pokemon: SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Find the pokedex with the id matching the provided prop
 	let pokedex: typeof Pokedex[0] | undefined;
@@ -49,11 +50,23 @@ export function PokedexDisplay(props: {pokedex: string, onSelect: Components.Sel
 	if (!pokedex)
 		return <div>{"Unknown pokedex id " + props.pokedex}</div>
 
-	// Create a set of selctor components for each pokemon in the pokedex
+	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
 	for (let i=0; i < pokedex.entries.length; ++i)
 	{
-		components.push(<Components.PokemonSelector id={pokedex.entries[i]} onClick={props.onSelect} key={i}/>)
+		// Determine if the pokemon has been selected
+		let selected = false;
+		for (const selection of props.pokemon)
+		{
+			const pokemon = Pokemon[pokedex.entries[i]];
+			if (selection.id === pokemon.id)
+			{
+				selected = true;
+				break;
+			}
+		}
+
+		components.push(<Components.PokemonSelector id={pokedex.entries[i]} selected={selected} onClick={props.onSelect} key={i}/>)
 	}
 
 	return (

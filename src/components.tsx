@@ -68,7 +68,7 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
  * @param props.id The id of the pokemon
  * @param props.form The pokemon's form id
  */
-export function PokemonSelector(props: {id: number, form?: string, onClick: SelectionCallback}): ReactElement
+export function PokemonSelector(props: {id: number, form?: string, selected?: boolean, onClick: SelectionCallback}): ReactElement
 {
 	const size = 96;
 
@@ -89,7 +89,8 @@ export function PokemonSelector(props: {id: number, form?: string, onClick: Sele
 	}
 
 	return (
-		<div className="panel p-1 m-1 min-w-[96px] min-h-[96px]" onClick={() => {props.onClick(props.id, props.form)}}>
+		<div className="panel p-1 m-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
+			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className="left-1 top-1 absolute" hidden={!props.selected} />
 			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
 		</div>
 	);

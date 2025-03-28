@@ -38,7 +38,7 @@ export function App(): ReactElement
 	return (
 		<div className="flex flex-col w-4/5 py-8 space-y-8 items-center">
 			<Containers.PartyDisplay pokemon={selectedPokemon} onSelect={selectPokemon} />
-			<Containers.PokedexDisplay pokedex="hoenn" onSelect={selectPokemon} />
+			<Containers.PokedexDisplay pokedex="hoenn" pokemon={selectedPokemon} onSelect={selectPokemon} />
 		</div>
 	);
 }

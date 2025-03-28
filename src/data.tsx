@@ -4,6 +4,7 @@ const type_sprite_location = "/images/types/";
 const type_icon_location = "/images/types/icons/";
 const pokemon_art_location = "/images/pokemon/art/";
 const pokemon_sprite_location = "/images/pokemon/sprites/";
+const misc_location = "/images/";
 
 // Data type for pokemon data
 export type Pokemon = {
@@ -49,4 +50,13 @@ export function typeSpriteURL(type: string)
 export function typeIconURL(type: string)
 {
 	return type_icon_location + type + image_ext;
+}
+
+/**
+ * Get the URL for an image
+ * @param type The name of the image file
+ */
+export function imageURL(filename: string)
+{
+	return misc_location + filename;
 }
