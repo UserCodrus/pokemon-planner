@@ -16,6 +16,28 @@ export type Pokemon = {
 // A 1x1px transparent gif to use as a placeholder
 export const default_image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
+// A full list of type ids for pokemon types
+export const types = [
+	"normal",
+	"fighting",
+	"flying",
+	"poison",
+	"ground",
+	"rock",
+	"bug",
+	"ghost",
+	"steel",
+	"fire",
+	"water",
+	"grass",
+	"electric",
+	"psychic",
+	"ice",
+	"dragon",
+	"dark",
+	"fairy"
+];
+
 /**
  * Get the URL for a pokemon's artwork image
  * @param id The id of the pokemon

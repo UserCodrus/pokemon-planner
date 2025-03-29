@@ -38,11 +38,17 @@ body {
 	.panel {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
+	}
+	.panel.clickable {
 		user-select: none;
 	}
-	.panel:hover {
+	.panel.clickable:hover {
 		background-color: var(--color-highlight);
 		cursor: pointer;
+	}
+
+	.inactive {
+		filter: grayscale(100%) contrast(30%);
 	}
 
 	.fade {

@@ -3,6 +3,7 @@
 import { ReactElement } from "react";
 
 import * as Components from "./components";
+import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
 import Pokemon from "../data/pokemon.json";
 
@@ -34,7 +35,7 @@ export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Compo
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {pokedex: string, pokemon: SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {pokedex: string, pokemon: SelectedPokemon[], types: string[], onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Find the pokedex with the id matching the provided prop
 	let pokedex: typeof Pokedex[0] | undefined;
@@ -54,11 +55,29 @@ export function PokedexDisplay(props: {pokedex: string, pokemon: SelectedPokemon
 	const components: ReactElement[] = [];
 	for (let i=0; i < pokedex.entries.length; ++i)
 	{
+		const pokemon = Pokemon[pokedex.entries[i]];
+
+		// Determine if the pokemon will be visible with the selected filters
+		let visible = false;
+		for (const filter_type of props.types)
+		{
+			for (const pokemon_type of pokemon.forms[0].types)
+			{
+				if (pokemon_type === filter_type)
+				{
+					visible = true;
+					break;
+				}
+			}
+		}
+
+		if (!visible)
+			continue;
+
 		// Determine if the pokemon has been selected
 		let selected = false;
 		for (const selection of props.pokemon)
 		{
-			const pokemon = Pokemon[pokedex.entries[i]];
 			if (selection.id === pokemon.id)
 			{
 				selected = true;
@@ -72,6 +91,36 @@ export function PokedexDisplay(props: {pokedex: string, pokemon: SelectedPokemon
 	return (
 		<div className="flex flex-row flex-wrap justify-center gap-2">
 			{components}
+		</div>
+	);
+}
+
+/**
+ * A component containing filters toggles for selectable pokemon
+ */
+export function FilterBar(props: {types: string[], onClickType: Components.TypeFilterCallback}): ReactElement
+{
+	// Create a full set of filter buttons
+	const type_buttons: ReactElement[] = [];
+	for (let i=0; i<Data.types.length; ++i)
+	{
+		// Check to see if the given type is in the filter whitelist
+		let enabled = false;
+		for (const type of props.types)
+		{
+			if (type === Data.types[i])
+			{
+				enabled = true;
+				break;
+			}
+		}
+
+		type_buttons.push(<Components.TypeFilterButton type={Data.types[i]} active={enabled} onClick={props.onClickType} key={i} />)
+	}
+
+	return (
+		<div className="panel p-2 flex flex-row flex-grow gap-1">
+			{type_buttons}
 		</div>
 	);
 }

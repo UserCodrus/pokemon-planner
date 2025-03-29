@@ -8,6 +8,7 @@ import Pokedex from "../data/pokedex.json";
 import Pokemon from "../data/pokemon.json";
 
 export type SelectionCallback = (id: number, form?: string) => void;
+export type TypeFilterCallback = (type: string) => void;
 
 /**
  * A component that displays a pokemon the user has selected for their party
@@ -53,7 +54,7 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
 	return (
-		<div className="panel p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.id, props.form)}}>
+		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.id, props.form)}}>
 			<div className="text-center min-h-6">{props.id > 0 ? form.name : ""}</div>
 			{art}
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
@@ -91,9 +92,30 @@ export function PokemonSelector(props: {id: number, form?: string, selected?: bo
 	const hidden = props.selected ? "" : " hide";
 
 	return (
-		<div className="panel p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
+		<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
 			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
 		</div>
+	);
+}
+
+/**
+ * A button that enables or disables filtering of selectable pokemon by a given type
+ * @param props.type The id of the type the button will control
+ * @param props.onClick The function called when the filter button is clicked
+ */
+export function TypeFilterButton(props: {type: string, active: boolean, onClick: TypeFilterCallback}): ReactElement
+{
+	const size = 32;
+	const filter_style = props.active ? "" : " inactive";
+
+	return (
+		<Image
+			src={Data.typeIconURL(props.type)}
+			width={size} height={size}
+			alt={props.type}
+			onClick={()=>props.onClick(props.type)}
+			className={"cursor-pointer" + filter_style}
+		/>
 	);
 }
