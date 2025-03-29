@@ -9,6 +9,7 @@ import Pokemon from "../data/pokemon.json";
 
 export type SelectionCallback = (id: number, form?: string) => void;
 export type TypeFilterCallback = (type: string) => void;
+export type NameFilterCallback = (text: string) => void;
 
 /**
  * A component that displays a pokemon the user has selected for their party
@@ -118,4 +119,19 @@ export function TypeFilterButton(props: {type: string, active: boolean, onClick:
 			className={"cursor-pointer" + filter_style}
 		/>
 	);
+}
+
+/**
+ * A text input that controls filtering selecable pokemon based on the input text
+ */
+export function NameFilterBox(props: {text: string, onChange: NameFilterCallback}): ReactElement
+{
+	return (
+		<input
+			type="text" value={props.text}
+			placeholder="Type a name to filter"
+			onChange={(event)=>props.onChange(event.target.value)}
+			className="bg-white text-black px-2"
+		/>
+	)
 }

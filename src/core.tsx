@@ -12,6 +12,7 @@ export function App(): ReactElement
 {
 	const [selectedPokemon, setSelectedPokemon] = useState<Containers.SelectedPokemon[]>([]);
 	const [typeFilter, setTypeFilter] = useState<string[]>(Data.types.slice());
+	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Select or deselect a pokemon for the current party
 	function selectPokemon(id: number, form?: string)
@@ -72,11 +73,17 @@ export function App(): ReactElement
 		setTypeFilter(filter);
 	}
 
+	// Set the name filter for selectable pokemon
+	function changeNameFilter(filter: string)
+	{
+		setNameFilter(filter);
+	}
+
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
 			<Containers.PartyDisplay pokemon={selectedPokemon} onSelect={selectPokemon} />
-			<Containers.FilterBar types={typeFilter} onClickType={toggleTypeFilter}/>
-			<Containers.PokedexDisplay pokedex="hoenn" pokemon={selectedPokemon} types={typeFilter} onSelect={selectPokemon} />
+			<Containers.FilterBar types={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={setNameFilter} />
+			<Containers.PokedexDisplay pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 		</div>
 	);
 }
