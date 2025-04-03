@@ -2,29 +2,16 @@
 
 import { ReactElement, useMemo, useState } from "react";
 
+import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-
-import Pokemon from "../data/pokemon.json";
-import Types from "../data/types.json";
-
-type TypeAdvantage = {
-	offense: {
-		advantage: number,
-		disadvantage: number
-	},
-	defense: {
-		advantage: number,
-		disadvantage: number
-	}
-}
 
 /**
  * The main component for the app
  */
 export function App(): ReactElement
 {
-	const [selectedPokemon, setSelectedPokemon] = useState<Containers.SelectedPokemon[]>([]);
+	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.types.length).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 
@@ -84,9 +71,60 @@ export function App(): ReactElement
 		setNameFilter(filter);
 	}
 
+	// Calculate the type advantages and disadvantages of the team
+	const [coverage, advantages, weaknesses] = useMemo(() => {
+		const offense_advantages: Components.SelectedPokemon[][] = [];
+		const defense_advantages: Components.SelectedPokemon[][] = [];
+		const defense_disadvantages: Components.SelectedPokemon[][] = [];
+
+		for (let i = 0; i < Data.getNumTypes(); ++i)
+		{
+			offense_advantages.push([]);
+			defense_advantages.push([]);
+			defense_disadvantages.push([]);
+
+			for (const pokemon_selection of selectedPokemon)
+			{
+				const pokemon = Data.getPokemon(pokemon_selection.id, pokemon_selection.form);
+
+				// Calculate the defensive damage multiplier and check for offensive advantages
+				let stab_advantage = false;
+				let defense_multiplier = 1;
+				for (const type of pokemon.type)
+				{
+					defense_multiplier *= Data.getTypeAdvantage(i, type);
+
+					if (Data.getTypeAdvantage(type, i) > 1)
+						stab_advantage = true;
+				}
+
+				// Push pokemon onto the arrays if they have advantages or disadvantages
+				if (defense_multiplier > 1)
+				{
+					defense_disadvantages[defense_disadvantages.length-1].push(pokemon_selection);
+				}
+				else if (defense_multiplier < 1)
+				{
+					defense_advantages[defense_advantages.length-1].push(pokemon_selection);
+				}
+
+				if (stab_advantage)
+				{
+					offense_advantages[offense_advantages.length-1].push(pokemon_selection);
+				}
+			}
+		}
+		
+		console.log(offense_advantages.length);
+		console.log(defense_advantages.length);
+
+		return [offense_advantages,	defense_advantages, defense_disadvantages];
+	}, [selectedPokemon]);
+
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
 			<Containers.PartyDisplay pokemon={selectedPokemon} onSelect={selectPokemon} />
+			<Containers.PartyAnalysis coverage={coverage} advantages={advantages} weaknesses={weaknesses} />
 			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
 			<Containers.PokedexDisplay pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 		</div>

@@ -121,23 +121,22 @@ export function getPokemon(id: number, form?: string): PokemonData
 	}
 }
 
-/**
- * Retrieve data about a pokemon type
- * @param id The id number of the type
- * @returns A TypeData object containing information about the type
- */
-export function getType(id: number): TypeData
+export function getNumTypes(): number
+{
+	return Types.length;
+}
+
+export function getTypeName(id: number): string
 {
 	if (id < Types.length)
 	{
-		return {
-			name: Types[id].name,
-			damage: Types[id].damage[0].multiplier
-		};
+		return Types[id].name;
 	}
 
-	return {
-		name: Types[0].name,
-		damage: Types[0].damage[0].multiplier
-	};
+	return "unknown";
+}
+
+export function getTypeAdvantage(offensive_type: number, defensive_type: number): number
+{
+	return Types[offensive_type].damage[Types[offensive_type].damage.length-1].multiplier[defensive_type];
 }

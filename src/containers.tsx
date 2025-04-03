@@ -9,20 +9,15 @@ import Pokemon from "../data/pokemon.json";
 
 const party_size = 6;
 
-export type SelectedPokemon = {
-	id: number,
-	form?: string
-};
-
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
+export function PartyDisplay(props: {pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember id={props.pokemon[i].id} form={props.pokemon[i].form} key={i} onClick={props.onSelect}/>)
+		components.push(<Components.PartyMember pokemon={props.pokemon[i]} key={i} onClick={props.onSelect}/>)
 	}
 
 	return (
@@ -35,7 +30,7 @@ export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Compo
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {pokedex: string, selectedPokemon: SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Find the pokedex with the id matching the provided prop
 	let pokedex: typeof Pokedex[0] | undefined;
@@ -116,6 +111,25 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 		<div className="panel p-2 flex flex-row flex-grow gap-1">
 			<div className="flex flex-row gap-1">{type_buttons}</div>
 			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
+		</div>
+	);
+}
+
+/**
+ * A component that displays the party's advantages and disadvantages
+ */
+export function PartyAnalysis(props: {coverage: Components.SelectedPokemon[][], advantages: Components.SelectedPokemon[][], weaknesses: Components.SelectedPokemon[][]}): ReactElement
+{
+	// Create a set of coverage components for each type available
+	const components: ReactElement[] = [];
+	for (let i=0; i<Data.getNumTypes(); ++i)
+	{
+		components.push(<Components.Coverage type={i} coverage={props.coverage[i]} advantages={props.advantages[i]} weaknesses={props.weaknesses[i]} key={i} />)
+	}
+
+	return (
+		<div className="flex flex-row flex-wrap justify-center gap-2">
+			{components}
 		</div>
 	);
 }
