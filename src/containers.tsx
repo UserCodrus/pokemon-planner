@@ -35,7 +35,7 @@ export function PartyDisplay(props: {pokemon: SelectedPokemon[], onSelect: Compo
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {pokedex: string, selectedPokemon: SelectedPokemon[], typeFilter: string[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {pokedex: string, selectedPokemon: SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Find the pokedex with the id matching the provided prop
 	let pokedex: typeof Pokedex[0] | undefined;
@@ -59,15 +59,12 @@ export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Selecte
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
-		for (const filter_type of props.typeFilter)
+		for (const pokemon_type of pokemon.forms[0].types)
 		{
-			for (const pokemon_type of pokemon.forms[0].types)
+			if (props.typeFilter[pokemon_type])
 			{
-				if (pokemon_type === filter_type)
-				{
-					visible = true;
-					break;
-				}
+				visible = true;
+				break;
 			}
 		}
 
@@ -106,24 +103,13 @@ export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Selecte
 /**
  * A component containing filters toggles for selectable pokemon
  */
-export function FilterBar(props: {types: string[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
+export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
 {
 	// Create a full set of filter buttons
 	const type_buttons: ReactElement[] = [];
 	for (let i=0; i<Data.types.length; ++i)
 	{
-		// Check to see if the given type is in the filter whitelist
-		let enabled = false;
-		for (const type of props.types)
-		{
-			if (type === Data.types[i])
-			{
-				enabled = true;
-				break;
-			}
-		}
-
-		type_buttons.push(<Components.TypeFilterButton type={Data.types[i]} active={enabled} onClick={props.onClickType} key={i} />)
+		type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i} />)
 	}
 
 	return (

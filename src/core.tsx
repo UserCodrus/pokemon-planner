@@ -1,9 +1,23 @@
 'use client';
 
-import { ReactElement, useState } from "react";
+import { ReactElement, useMemo, useState } from "react";
 
 import * as Containers from "./containers";
 import * as Data from "./data";
+
+import Pokemon from "../data/pokemon.json";
+import Types from "../data/types.json";
+
+type TypeAdvantage = {
+	offense: {
+		advantage: number,
+		disadvantage: number
+	},
+	defense: {
+		advantage: number,
+		disadvantage: number
+	}
+}
 
 /**
  * The main component for the app
@@ -11,7 +25,7 @@ import * as Data from "./data";
 export function App(): ReactElement
 {
 	const [selectedPokemon, setSelectedPokemon] = useState<Containers.SelectedPokemon[]>([]);
-	const [typeFilter, setTypeFilter] = useState<string[]>(Data.types.slice());
+	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.types.length).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Select or deselect a pokemon for the current party
@@ -39,37 +53,28 @@ export function App(): ReactElement
 	}
 
 	// Activate or deactivate a type filter option
-	function toggleTypeFilter(type: string)
+	function toggleTypeFilter(type: number)
 	{
 		// Toggle all the types on or off if all is specified
-		if (type === "all")
+		if (type === -1)
 		{
-			if (typeFilter.length < Data.types.length)
+			// If any types are disabled, enable everything
+			for (const filter of typeFilter)
 			{
-				setTypeFilter(Data.types.slice());
-				return;
+				if (!filter)
+				{
+					setTypeFilter(Array(Data.types.length).fill(true));
+				}
 			}
-			else
-			{
-				setTypeFilter([]);
-				return;
-			}
+
+			// If everything is enabled, disable everything
+			setTypeFilter(Array(Data.types.length).fill(false));
+			return;
 		}
 
-		// Check to see if the type is in the whitelist and remove it
+		// Toggle the state of the specified type filter
 		const filter = typeFilter.slice();
-		for (let i=0; i<filter.length; ++i)
-		{
-			if (filter[i] === type)
-			{
-				filter.splice(i, 1);
-				setTypeFilter(filter);
-				return;
-			}
-		}
-
-		// Add the type to the filter whitelist
-		filter.push(type);
+		filter[type] = !filter[type];
 		setTypeFilter(filter);
 	}
 
@@ -82,7 +87,7 @@ export function App(): ReactElement
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
 			<Containers.PartyDisplay pokemon={selectedPokemon} onSelect={selectPokemon} />
-			<Containers.FilterBar types={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={setNameFilter} />
+			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
 			<Containers.PokedexDisplay pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 		</div>
 	);

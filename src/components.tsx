@@ -8,7 +8,7 @@ import Pokedex from "../data/pokedex.json";
 import Pokemon from "../data/pokemon.json";
 
 export type SelectionCallback = (id: number, form?: string) => void;
-export type TypeFilterCallback = (type: string) => void;
+export type TypeFilterCallback = (type: number) => void;
 export type NameFilterCallback = (text: string) => void;
 
 /**
@@ -45,7 +45,7 @@ export function PartyMember(props: {id: number, form?: string, onClick: Selectio
 		for (let i=0; i < form.types.length; ++i)
 		{
 			const src = Data.typeSpriteURL(form.types[i]);
-			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={form.types[i]} key={i}/>)
+			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getType(form.types[i]).name} key={i}/>)
 		}
 
 		art_src = Data.pokemonArtURL(form.art);
@@ -105,7 +105,7 @@ export function PokemonSelector(props: {id: number, form?: string, selected?: bo
  * @param props.type The id of the type the button will control
  * @param props.onClick The function called when the filter button is clicked
  */
-export function TypeFilterButton(props: {type: string, active: boolean, onClick: TypeFilterCallback}): ReactElement
+export function TypeFilterButton(props: {type: number, active: boolean, onClick: TypeFilterCallback}): ReactElement
 {
 	const size = 32;
 	const filter_style = props.active ? "" : " inactive";
@@ -114,7 +114,7 @@ export function TypeFilterButton(props: {type: string, active: boolean, onClick:
 		<Image
 			src={Data.typeIconURL(props.type)}
 			width={size} height={size}
-			alt={props.type}
+			alt={Data.getType(props.type).name}
 			onClick={()=>props.onClick(props.type)}
 			className={"cursor-pointer" + filter_style}
 		/>
