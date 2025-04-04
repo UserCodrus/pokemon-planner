@@ -208,24 +208,24 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 	{
 		if (i < props.coverage.length)
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.coverage} source={props.coverage[i]} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.coverage} source={props.coverage[i]} key={i} />);
 		}
 		else
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.neutral} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 
 		if (i < props.advantages.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.advantages[i]} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.advantages[i]} key={i} />);
 		}
 		else if (i < props.advantages.length + props.weaknesses.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.weaknesses[i-props.advantages.length]} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.weaknesses[i-props.advantages.length]} key={i} />);
 		}
 		else
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 	}
 
