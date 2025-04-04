@@ -25,16 +25,17 @@
 }
 
 body {
-	background: var(--background);
+	background: linear-gradient(#7ABFFF, #0A5FFF);
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer components {
-	.gradient {
-		background: linear-gradient(#7ABFFF, #0A5FFF);
-	}
+footer {
+	color: var(--foreground);
+	text-align: center;
+}
 
+@layer components {
 	.panel {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;

@@ -22,6 +22,10 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				{children}
+				<footer>
+					<p>Pokémon and its associated properties ©1995 - 2025 Nintendo/Creatures Inc./GAME FREAK inc.</p>
+					<p>Solar icon set created by <a href="https://www.figma.com/@480design">480 Design</a>. Used with permission under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></p>
+				</footer>
 			</body>
 		</html>
 	);
