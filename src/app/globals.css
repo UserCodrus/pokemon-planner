@@ -13,8 +13,12 @@
 
 	--color-gradient: linear-gradient(#7ABFFF, #0A5FFF);
 	--color-foreground: #F2F2F2;
+
 	--color-panel: rgb(0 0 0 / 50%);
 	--color-highlight: rgb(25 25 25 / 50%);
+
+	--color-advantage: #fb406a;
+	--color-disadvantage: #007efe;
 }
 
 @media (prefers-color-scheme: dark) {

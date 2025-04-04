@@ -128,7 +128,7 @@ export function PartyAnalysis(props: {coverage: Components.SelectedPokemon[][], 
 	}
 
 	return (
-		<div className="flex flex-row flex-wrap justify-center gap-2">
+		<div className="panel p-4 flex flex-row flex-wrap justify-center gap-2">
 			{components}
 		</div>
 	);

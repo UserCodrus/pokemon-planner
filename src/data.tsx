@@ -9,6 +9,8 @@ const pokemon_art_location = "/images/pokemon/art/";
 const pokemon_sprite_location = "/images/pokemon/sprites/";
 const misc_location = "/images/";
 
+export const party_size = 6;
+
 // Data type for pokemon data
 export type PokemonData = {
 	id: number,
