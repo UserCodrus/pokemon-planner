@@ -11,12 +11,12 @@ const party_size = 6;
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
+export function PartyDisplay(props: {generation: number, pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember pokemon={props.pokemon[i]} key={i} onClick={props.onSelect}/>)
+		components.push(<Components.PartyMember generation={props.generation} pokemon={props.pokemon[i]} key={i} onClick={props.onSelect}/>)
 	}
 
 	return (
@@ -29,7 +29,7 @@ export function PartyDisplay(props: {pokemon: Components.SelectedPokemon[], onSe
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {generation: number, pokedex: string, selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Find the pokedex with the id matching the provided prop
 	let pokedex: typeof Pokedex[0] | undefined;
@@ -49,11 +49,11 @@ export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Compone
 	const components: ReactElement[] = [];
 	for (let i=0; i < pokedex.entries.length; ++i)
 	{
-		const pokemon = Data.getPokemon(pokedex.entries[i]);
+		const pokemon = Data.getPokemon(props.generation, pokedex.entries[i]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
-		for (const pokemon_type of pokemon.type)
+		for (const pokemon_type of pokemon.types)
 		{
 			if (props.typeFilter[pokemon_type])
 			{
@@ -84,7 +84,7 @@ export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Compone
 			}
 		}
 
-		components.push(<Components.PokemonSelector id={pokedex.entries[i]} selected={selected} onClick={props.onSelect} key={i}/>)
+		components.push(<Components.PokemonSelector generation={props.generation} id={pokedex.entries[i]} selected={selected} onClick={props.onSelect} key={i}/>)
 	}
 
 	return (

@@ -36,11 +36,11 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {pokemon: SelectedPokemon, onClick: SelectionCallback}): ReactElement
+export function PartyMember(props: {generation: number, pokemon: SelectedPokemon, onClick: SelectionCallback}): ReactElement
 {
 	const size = 200;
 
-	const pokemon = Data.getPokemon(props.pokemon.id, props.pokemon.form);
+	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	const type_images: ReactElement[] = [];
@@ -48,10 +48,10 @@ export function PartyMember(props: {pokemon: SelectedPokemon, onClick: Selection
 	let art_src = Data.default_image;
 	if (props.pokemon.id > 0)
 	{
-		for (let i=0; i < pokemon.type.length; ++i)
+		for (let i=0; i < pokemon.types.length; ++i)
 		{
-			const src = Data.typeSpriteURL(pokemon.type[i]);
-			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(pokemon.type[i])} key={i}/>)
+			const src = Data.typeSpriteURL(pokemon.types[i]);
+			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
 		}
 
 		art_src = pokemon.art;
@@ -76,11 +76,11 @@ export function PartyMember(props: {pokemon: SelectedPokemon, onClick: Selection
  * @param props.id The id of the pokemon
  * @param props.form The pokemon's form id
  */
-export function PokemonSelector(props: {id: number, form?: string, selected?: boolean, onClick: SelectionCallback}): ReactElement
+export function PokemonSelector(props: {generation: number, id: number, form?: string, selected?: boolean, onClick: SelectionCallback}): ReactElement
 {
 	const size = 96;
 
-	const pokemon = Data.getPokemon(props.id, props.form);
+	const pokemon = Data.getPokemon(props.generation, props.id, props.form);
 	const hidden = props.selected ? "" : " hide";
 
 	return (
@@ -204,5 +204,12 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 			<div className="flex flex-row">{top_components}</div>
 			<div className="flex flex-row">{bottom_components}</div>
 		</div>
+	);
+}
+
+export function TESTGenSelector(props: {gen: number, callback: Function}): ReactElement
+{
+	return (
+		<div className="panel p-1" onClick={()=>props.callback(props.gen)}>Gen {props.gen}</div>
 	);
 }

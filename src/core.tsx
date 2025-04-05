@@ -11,6 +11,7 @@ import * as Data from "./data";
  */
 export function App(): ReactElement
 {
+	const [generation, setGeneration] = useState<number>(9);
 	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.types.length).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
@@ -85,12 +86,12 @@ export function App(): ReactElement
 
 			for (const pokemon_selection of selectedPokemon)
 			{
-				const pokemon = Data.getPokemon(pokemon_selection.id, pokemon_selection.form);
+				const pokemon = Data.getPokemon(generation, pokemon_selection.id, pokemon_selection.form);
 
 				// Calculate the defensive damage multiplier and check for offensive advantages
 				let stab_advantage = false;
 				let defense_multiplier = 1;
-				for (const type of pokemon.type)
+				for (const type of pokemon.types)
 				{
 					defense_multiplier *= Data.getTypeAdvantage(i, type);
 
@@ -121,12 +122,20 @@ export function App(): ReactElement
 		return [offense_advantages,	defense_advantages, defense_disadvantages];
 	}, [selectedPokemon]);
 
+	// Create a set of test buttons for changing generation
+	const test_buttons: ReactElement[] = [];
+	for (let i = 0; i < 9; ++i)
+	{
+		test_buttons.push(<Components.TESTGenSelector gen={i+1} callback={(gen: number)=>setGeneration(gen)} key={i} />);
+	}
+
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay pokemon={selectedPokemon} onSelect={selectPokemon} />
+			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} />
 			<Containers.PartyAnalysis coverage={coverage} advantages={advantages} weaknesses={weaknesses} />
 			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<Containers.PokedexDisplay generation={generation} pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<div className="flex flex-row gap-1">{test_buttons}</div>
 		</div>
 	);
 }

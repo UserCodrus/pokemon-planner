@@ -15,7 +15,7 @@ export const party_size = 6;
 export type PokemonData = {
 	id: number,
 	name: string,
-	type: number[],
+	types: number[],
 
 	sprite: string,
 	art: string
@@ -83,7 +83,7 @@ export function imageURL(filename: string)
  * @param id The pokemon's national dex id
  * @param form The name of the pokemon's form
  */
-export function getPokemon(id: number, form?: string): PokemonData
+export function getPokemon(generation: number, id: number, form?: string): PokemonData
 {
 	const pokemon = Pokemon[id];
 	
@@ -101,10 +101,24 @@ export function getPokemon(id: number, form?: string): PokemonData
 		}
 	}
 
+	// Determine which types the pokemon should use based on the currently selected generation
+	let current_type = {
+		generation: 0,
+		types: [0]
+	};
+	for (let i = 0; i < selected_form.types.length; ++i)
+	{
+		if (selected_form.types[i].generation >= generation)
+		{
+			current_type = selected_form.types[i];
+			break;
+		}
+	}
+
 	return {
 		id: id,
 		name: selected_form.name,
-		type: selected_form.types as number[],
+		types: current_type.types,
 		sprite: pokemon_sprite_location + selected_form.sprite,
 		art: pokemon_art_location + selected_form.art
 	}
