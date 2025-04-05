@@ -140,7 +140,16 @@ export function getTypeName(type: number): string
  * @param offensive_type The numeric ID of the type of the attack
  * @param defensive_type The numeric ID of the type of the defending pokemon
  */
-export function getTypeAdvantage(offensive_type: number, defensive_type: number): number
+export function getTypeAdvantage(generation: number, offensive_type: number, defensive_type: number): number
 {
-	return Types[offensive_type].damage[Types[offensive_type].damage.length-1].multiplier[defensive_type];
+	let damage_multipliers: number[] = [];
+	for (const damage_set of Types[offensive_type].damage)
+	{
+		if (damage_set.generation >= generation)
+		{
+			damage_multipliers = damage_set.multiplier;
+			break;
+		}
+	}
+	return damage_multipliers[defensive_type];
 }

@@ -93,9 +93,9 @@ export function App(): ReactElement
 				let defense_multiplier = 1;
 				for (const type of pokemon.types)
 				{
-					defense_multiplier *= Data.getTypeAdvantage(i, type);
+					defense_multiplier *= Data.getTypeAdvantage(generation, i, type);
 
-					if (Data.getTypeAdvantage(type, i) > 1)
+					if (Data.getTypeAdvantage(generation, type, i) > 1)
 						stab_advantage = true;
 				}
 
@@ -120,7 +120,7 @@ export function App(): ReactElement
 		console.log(defense_advantages.length);
 
 		return [offense_advantages,	defense_advantages, defense_disadvantages];
-	}, [selectedPokemon]);
+	}, [selectedPokemon, generation]);
 
 	// Create a set of test buttons for changing generation
 	const test_buttons: ReactElement[] = [];
