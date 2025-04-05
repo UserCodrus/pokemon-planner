@@ -15,7 +15,10 @@ export const party_size = 6;
 export type PokemonData = {
 	id: number,
 	name: string,
-	type: number[]
+	type: number[],
+
+	sprite: string,
+	art: string
 }
 
 export type TypeData = {
@@ -47,24 +50,6 @@ export const types = [
 	"dark",
 	"fairy"
 ];
-
-/**
- * Get the URL for a pokemon's artwork image
- * @param id The id of the pokemon
- */
-export function pokemonArtURL(filename: string)
-{
-	return pokemon_art_location + filename;
-}
-
-/**
- * Get the URL for a pokemon's sprite image
- * @param id The id of the pokemon
- */
-export function pokemonSpriteURL(filename: string)
-{
-	return pokemon_sprite_location + filename;
-}
 
 /**
  * Get the URL for a type sprite
@@ -119,7 +104,9 @@ export function getPokemon(id: number, form?: string): PokemonData
 	return {
 		id: id,
 		name: selected_form.name,
-		type: selected_form.types as number[]
+		type: selected_form.types as number[],
+		sprite: pokemon_sprite_location + selected_form.sprite,
+		art: pokemon_art_location + selected_form.art
 	}
 }
 

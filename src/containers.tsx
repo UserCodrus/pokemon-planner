@@ -5,7 +5,6 @@ import { ReactElement } from "react";
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
-import Pokemon from "../data/pokemon.json";
 
 const party_size = 6;
 
@@ -50,11 +49,11 @@ export function PokedexDisplay(props: {pokedex: string, selectedPokemon: Compone
 	const components: ReactElement[] = [];
 	for (let i=0; i < pokedex.entries.length; ++i)
 	{
-		const pokemon = Pokemon[pokedex.entries[i]];
+		const pokemon = Data.getPokemon(pokedex.entries[i]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
-		for (const pokemon_type of pokemon.forms[0].types)
+		for (const pokemon_type of pokemon.type)
 		{
 			if (props.typeFilter[pokemon_type])
 			{

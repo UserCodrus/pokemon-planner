@@ -4,8 +4,6 @@ import { ReactElement } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
-import Pokedex from "../data/pokedex.json";
-import Pokemon from "../data/pokemon.json";
 
 export type SelectionCallback = (id: number, form?: string) => void;
 export type TypeFilterCallback = (type: number) => void;
@@ -42,21 +40,7 @@ export function PartyMember(props: {pokemon: SelectedPokemon, onClick: Selection
 {
 	const size = 200;
 
-	const pokemon = Pokemon[props.pokemon.id];
-
-	// Search for a form that matches the provided form id
-	let form = pokemon.forms[0];
-	if (props.pokemon.form)
-	{
-		for (const pokemon_form of pokemon.forms)
-		{
-			if (pokemon_form.name === props.pokemon.form)
-			{
-				form = pokemon_form;
-				break;
-			}
-		}
-	}
+	const pokemon = Data.getPokemon(props.pokemon.id, props.pokemon.form);
 
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	const type_images: ReactElement[] = [];
@@ -64,21 +48,21 @@ export function PartyMember(props: {pokemon: SelectedPokemon, onClick: Selection
 	let art_src = Data.default_image;
 	if (props.pokemon.id > 0)
 	{
-		for (let i=0; i < form.types.length; ++i)
+		for (let i=0; i < pokemon.type.length; ++i)
 		{
-			const src = Data.typeSpriteURL(form.types[i]);
-			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(form.types[i])} key={i}/>)
+			const src = Data.typeSpriteURL(pokemon.type[i]);
+			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(pokemon.type[i])} key={i}/>)
 		}
 
-		art_src = Data.pokemonArtURL(form.art);
-		art_alt = form.name;
+		art_src = pokemon.art;
+		art_alt = pokemon.name;
 	}
 
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
 	return (
 		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.pokemon.id, props.pokemon.form)}}>
-			<div className="text-center min-h-6">{props.pokemon.id > 0 ? form.name : ""}</div>
+			<div className="text-center min-h-6">{props.pokemon.id > 0 ? pokemon.name : ""}</div>
 			{art}
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
@@ -96,28 +80,13 @@ export function PokemonSelector(props: {id: number, form?: string, selected?: bo
 {
 	const size = 96;
 
-	const pokemon = Pokemon[props.id];
-
-	// Search for a form that matches the provided form id
-	let form = pokemon.forms[0];
-	if (props.form)
-	{
-		for (const pokemon_form of pokemon.forms)
-		{
-			if (pokemon_form.name === props.form)
-			{
-				form = pokemon_form;
-				break;
-			}
-		}
-	}
-
+	const pokemon = Data.getPokemon(props.id, props.form);
 	const hidden = props.selected ? "" : " hide";
 
 	return (
 		<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
 			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
-			<Image src={Data.pokemonSpriteURL(form.sprite)} width={size} height={size} alt={form.name} />
+			<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 		</div>
 	);
 }
