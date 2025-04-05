@@ -29,31 +29,9 @@ export type TypeData = {
 // A 1x1px transparent gif to use as a placeholder
 export const default_image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-// A full list of type ids for pokemon types
-export const types = [
-	"normal",
-	"fighting",
-	"flying",
-	"poison",
-	"ground",
-	"rock",
-	"bug",
-	"ghost",
-	"steel",
-	"fire",
-	"water",
-	"grass",
-	"electric",
-	"psychic",
-	"ice",
-	"dragon",
-	"dark",
-	"fairy"
-];
-
 /**
  * Get the URL for a type sprite
- * @param type The name of the type
+ * @param type The numeric ID of the type
  */
 export function typeSpriteURL(type: number)
 {
@@ -62,7 +40,7 @@ export function typeSpriteURL(type: number)
 
 /**
  * Get the URL for a type icon
- * @param type The name of the type
+ * @param type The numeric ID of the type
  */
 export function typeIconURL(type: number)
 {
@@ -71,7 +49,7 @@ export function typeIconURL(type: number)
 
 /**
  * Get the URL for an image
- * @param type The name of the image file
+ * @param filename The name of the image file
  */
 export function imageURL(filename: string)
 {
@@ -80,6 +58,7 @@ export function imageURL(filename: string)
 
 /**
  * Retrieve data for a given pokemon
+ * @param generation The current generation the app is using
  * @param id The pokemon's national dex id
  * @param form The name of the pokemon's form
  */
@@ -124,21 +103,43 @@ export function getPokemon(generation: number, id: number, form?: string): Pokem
 	}
 }
 
+/** 
+ * Get the number of types the app supports
+ */
 export function getNumTypes(): number
 {
 	return Types.length;
 }
 
-export function getTypeName(id: number): string
+/**
+ * Determine if a given type exists in a particular generation
+ * @param generation The current generation being used
+ * @param type The numeric ID of the type in question
+ */
+export function validType(generation: number, type: number): boolean
 {
-	if (id < Types.length)
+	return Types[type].generation <= generation;
+}
+
+/**
+ * Get the name of a type
+ * @param type The numberic ID of the type
+ */
+export function getTypeName(type: number): string
+{
+	if (type < Types.length)
 	{
-		return Types[id].name;
+		return Types[type].name;
 	}
 
 	return "unknown";
 }
 
+/** 
+ * Determine if a particular type has an advantage against a different type
+ * @param offensive_type The numeric ID of the type of the attack
+ * @param defensive_type The numeric ID of the type of the defending pokemon
+ */
 export function getTypeAdvantage(offensive_type: number, defensive_type: number): number
 {
 	return Types[offensive_type].damage[Types[offensive_type].damage.length-1].multiplier[defensive_type];

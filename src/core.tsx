@@ -13,7 +13,7 @@ export function App(): ReactElement
 {
 	const [generation, setGeneration] = useState<number>(9);
 	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
-	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.types.length).fill(true));
+	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Select or deselect a pokemon for the current party
@@ -51,12 +51,12 @@ export function App(): ReactElement
 			{
 				if (!filter)
 				{
-					setTypeFilter(Array(Data.types.length).fill(true));
+					setTypeFilter(Array(Data.getNumTypes()).fill(true));
 				}
 			}
 
 			// If everything is enabled, disable everything
-			setTypeFilter(Array(Data.types.length).fill(false));
+			setTypeFilter(Array(Data.getNumTypes()).fill(false));
 			return;
 		}
 
@@ -132,8 +132,8 @@ export function App(): ReactElement
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
 			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} />
-			<Containers.PartyAnalysis coverage={coverage} advantages={advantages} weaknesses={weaknesses} />
-			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
+			<Containers.PartyAnalysis generation={generation} coverage={coverage} advantages={advantages} weaknesses={weaknesses} />
+			<Containers.FilterBar generation={generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
 			<Containers.PokedexDisplay generation={generation} pokedex="hoenn" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 			<div className="flex flex-row gap-1">{test_buttons}</div>
 		</div>

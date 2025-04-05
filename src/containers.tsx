@@ -97,13 +97,14 @@ export function PokedexDisplay(props: {generation: number, pokedex: string, sele
 /**
  * A component containing filters toggles for selectable pokemon
  */
-export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
+export function FilterBar(props: {generation: number, typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
 {
 	// Create a full set of filter buttons
 	const type_buttons: ReactElement[] = [];
-	for (let i=0; i<Data.types.length; ++i)
+	for (let i=0; i<Data.getNumTypes(); ++i)
 	{
-		type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i} />)
+		if (Data.validType(props.generation, i))
+			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i} />)
 	}
 
 	return (
@@ -117,13 +118,14 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 /**
  * A component that displays the party's advantages and disadvantages
  */
-export function PartyAnalysis(props: {coverage: Components.SelectedPokemon[][], advantages: Components.SelectedPokemon[][], weaknesses: Components.SelectedPokemon[][]}): ReactElement
+export function PartyAnalysis(props: {generation: number, coverage: Components.SelectedPokemon[][], advantages: Components.SelectedPokemon[][], weaknesses: Components.SelectedPokemon[][]}): ReactElement
 {
 	// Create a set of coverage components for each type available
 	const components: ReactElement[] = [];
 	for (let i=0; i<Data.getNumTypes(); ++i)
 	{
-		components.push(<Components.Coverage type={i} coverage={props.coverage[i]} advantages={props.advantages[i]} weaknesses={props.weaknesses[i]} key={i} />)
+		if (Data.validType(props.generation, i))
+			components.push(<Components.Coverage type={i} coverage={props.coverage[i]} advantages={props.advantages[i]} weaknesses={props.weaknesses[i]} key={i} />)
 	}
 
 	return (
