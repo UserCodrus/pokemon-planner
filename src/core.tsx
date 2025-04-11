@@ -43,25 +43,55 @@ export function App(): ReactElement
 	// Change a selected pokemon's active ability
 	function swapAbility(selected_pokemon: Components.SelectedPokemon)
 	{
-		const pokemon = selectedPokemon.slice();
-		for (const team_pokemon of pokemon)
+		const party_pokemon = selectedPokemon.slice();
+		for (const pokemon of party_pokemon)
 		{
-			if (team_pokemon === selected_pokemon)
+			if (pokemon === selected_pokemon)
 			{
 				// Cycle between ability slots, skipping slots with no ability
-				const abilities = Data.getPokemonAbilities(generation, team_pokemon.id, team_pokemon.form);
+				const abilities = Data.getPokemonAbilities(generation, pokemon.id, pokemon.form);
 				const ability_slots = generation > 4 ? 2 : 1;
 				do
 				{
-					team_pokemon.ability++;
-					if (team_pokemon.ability > ability_slots)
-						team_pokemon.ability = 0;
-				} while (!abilities[team_pokemon.ability])
+					pokemon.ability++;
+					if (pokemon.ability > ability_slots)
+						pokemon.ability = 0;
+				} while (!abilities[pokemon.ability]);
 
-				setSelectedPokemon(pokemon);
+				setSelectedPokemon(party_pokemon);
 				return;
 			}
 		}
+	}
+
+	// Change the currently active generation
+	function swapGeneration(new_generation: number)
+	{
+		// Make sure none of the party pokemon have invalid abilites
+		const party_pokemon = selectedPokemon.slice();
+		const ability_slots = new_generation > 4 ? 2 : 1;
+		let update = false;
+
+		for (const pokemon of party_pokemon)
+		{
+			const abilities = Data.getPokemonAbilities(new_generation, pokemon.id, pokemon.form);
+			if (!abilities[pokemon.ability] || pokemon.ability > ability_slots)
+			{
+				// Cycle between ability slots, skipping slots with no ability
+				do
+				{
+					pokemon.ability++;
+					if (pokemon.ability > ability_slots)
+						pokemon.ability = 0;
+				} while (!abilities[pokemon.ability]);
+				update = true;
+			}
+		}
+
+		if (update)
+			setSelectedPokemon(party_pokemon);
+
+		setGeneration(new_generation);
 	}
 
 	// Activate or deactivate a type filter option
@@ -100,7 +130,7 @@ export function App(): ReactElement
 	const test_buttons: ReactElement[] = [];
 	for (let i = 0; i < 9; ++i)
 	{
-		test_buttons.push(<Components.TESTGenSelector gen={i+1} callback={(gen: number)=>setGeneration(gen)} key={i} />);
+		test_buttons.push(<Components.TESTGenSelector gen={i+1} callback={(gen: number)=>swapGeneration(gen)} key={i} />);
 	}
 
 	return (
@@ -108,7 +138,7 @@ export function App(): ReactElement
 			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
 			<Containers.PartyAnalysis generation={generation} selectedPokemon={selectedPokemon} />
 			<Containers.FilterBar generation={generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay generation={generation} pokedex="original-sinnoh" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<Containers.PokedexDisplay generation={generation} pokedex="kanto" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 			<div className="flex flex-row gap-1">{test_buttons}</div>
 		</div>
 	);
