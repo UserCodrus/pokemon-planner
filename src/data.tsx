@@ -1,5 +1,6 @@
 import Pokemon from "../data/pokemon.json";
 import Types from "../data/types.json";
+import Abilities from "../data/ability.json";
 
 // String representations of image folders
 const image_ext = ".png";
@@ -10,6 +11,15 @@ const pokemon_sprite_location = "/images/pokemon/sprites/";
 const misc_location = "/images/";
 
 export const party_size = 6;
+
+export type AbilityData = {
+	name: string,
+	defense?: {
+		types: number[],
+		multiplier: number,
+		generation?: number
+	}
+}
 
 // Data type for pokemon data
 export type PokemonData = {
@@ -103,6 +113,49 @@ export function getPokemon(generation: number, id: number, form?: string): Pokem
 	}
 }
 
+/**
+ * Get ability data for a pokemon in a given generation
+ */
+export function getPokemonAbilities(generation: number, id: number, form?: string): number[]
+{
+	const pokemon = Pokemon[id];
+	
+	// Determine which form the pokemon should use
+	let selected_form = pokemon.forms[0];
+	if (form)
+	{
+		for (const pokemon_form of pokemon.forms)
+		{
+			if (pokemon_form.form === form)
+			{
+				selected_form = pokemon_form;
+				break;
+			}
+		}
+	}
+
+	// Reconstruct the pokemon's abilities for the current generation by inserting data for legacy abilities
+	const abilities = selected_form.abilities.slice();
+	if (selected_form.past_abilities)
+	{
+		for (const legacy_ability of selected_form.past_abilities)
+		{
+			if (generation <= legacy_ability.generation)
+				abilities[legacy_ability.slot] = legacy_ability.ability;
+		}
+	}
+
+	return abilities;
+}
+
+/**
+ * Get ability data from the json file
+ */
+export function getAbility(ability: number): AbilityData
+{
+	return Abilities[ability];
+}
+
 /** 
  * Get the number of types the app supports
  */
@@ -140,7 +193,7 @@ export function getTypeName(type: number): string
  * @param offensive_type The numeric ID of the type of the attack
  * @param defensive_type The numeric ID of the type of the defending pokemon
  */
-export function getTypeAdvantage(generation: number, offensive_type: number, defensive_type: number): number
+export function getTypeAdvantage(generation: number, offensive_type: number, defensive_types: number[]): number
 {
 	let damage_multipliers: number[] = [];
 	for (const damage_set of Types[offensive_type].damage)
@@ -151,5 +204,11 @@ export function getTypeAdvantage(generation: number, offensive_type: number, def
 			break;
 		}
 	}
-	return damage_multipliers[defensive_type];
+
+	let final_multiplier = 1;
+	for (const type of defensive_types)
+	{
+		final_multiplier *= damage_multipliers[type];
+	}
+	return final_multiplier;
 }

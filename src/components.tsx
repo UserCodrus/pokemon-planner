@@ -11,7 +11,8 @@ export type NameFilterCallback = (text: string) => void;
 
 export type SelectedPokemon = {
 	id: number,
-	form?: string
+	form?: string,
+	ability: number
 };
 
 export type TypeAdvantage = {
@@ -42,6 +43,9 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 
+	const ability_set = Data.getPokemonAbilities(props.generation, props.pokemon.id, props.pokemon.form);
+	const ability = Data.getAbility(ability_set[props.pokemon.ability]);
+
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	const type_images: ReactElement[] = [];
 	let art_alt = "Empty";
@@ -64,6 +68,7 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.pokemon.id, props.pokemon.form)}}>
 			<div className="text-center min-h-6">{props.pokemon.id > 0 ? pokemon.name : ""}</div>
 			{art}
+			<div>{ability.name}</div>
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
 			</div>
