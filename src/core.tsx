@@ -40,6 +40,29 @@ export function App(): ReactElement
 		}
 	}
 
+	// Change a selected pokemon's active ability
+	function swapAbility(selected_pokemon: Components.SelectedPokemon)
+	{
+		const pokemon = selectedPokemon.slice();
+		for (const team_pokemon of pokemon)
+		{
+			if (team_pokemon === selected_pokemon)
+			{
+				// Cycle between ability slots, skipping slots with no ability
+				const abilities = Data.getPokemonAbilities(generation, team_pokemon.id, team_pokemon.form);
+				do
+				{
+					team_pokemon.ability++;
+					if (team_pokemon.ability > 2)
+						team_pokemon.ability = 0;
+				} while (!abilities[team_pokemon.ability])
+
+				setSelectedPokemon(pokemon);
+				return;
+			}
+		}
+	}
+
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number)
 	{
@@ -81,7 +104,7 @@ export function App(): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} />
+			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
 			<Containers.PartyAnalysis generation={generation} selectedPokemon={selectedPokemon} />
 			<Containers.FilterBar generation={generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
 			<Containers.PokedexDisplay generation={generation} pokedex="original-sinnoh" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />

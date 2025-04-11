@@ -11,12 +11,12 @@ const party_size = 6;
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {generation: number, pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback}): ReactElement
+export function PartyDisplay(props: {generation: number, pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback, onSwitchAbility: Components.AbilityCallback}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember generation={props.generation} pokemon={props.pokemon[i]} key={i} onClick={props.onSelect}/>)
+		components.push(<Components.PartyMember generation={props.generation} pokemon={props.pokemon[i]} key={i} cancelCallback={props.onSelect} abilityCallback={props.onSwitchAbility}/>)
 	}
 
 	return (

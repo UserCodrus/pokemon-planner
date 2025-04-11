@@ -1,11 +1,12 @@
 'use client';
 
-import { ReactElement } from "react";
+import { MouseEvent, MouseEventHandler, ReactElement } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
 
 export type SelectionCallback = (id: number, form?: string) => void;
+export type AbilityCallback = (selectedPokemon: SelectedPokemon) => void;
 export type TypeFilterCallback = (type: number) => void;
 export type NameFilterCallback = (text: string) => void;
 
@@ -37,7 +38,7 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon: SelectedPokemon, onClick: SelectionCallback}): ReactElement
+export function PartyMember(props: {generation: number, pokemon: SelectedPokemon, abilityCallback: AbilityCallback ,cancelCallback: SelectionCallback}): ReactElement
 {
 	const size = 200;
 
@@ -64,11 +65,22 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 
 	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
 
+	// Handle mouse clicks
+	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
+	{
+		props.abilityCallback(props.pokemon);
+	}
+	function handleRightClick(event: MouseEvent<HTMLDivElement>)
+	{
+		event.preventDefault();
+		props.cancelCallback(props.pokemon.id, props.pokemon.form);
+	}
+
 	return (
-		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={() => {props.onClick(props.pokemon.id, props.pokemon.form)}}>
+		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 			<div className="text-center min-h-6">{props.pokemon.id > 0 ? pokemon.name : ""}</div>
 			{art}
-			<div>{ability.name}</div>
+			<div>{ability.name + (props.pokemon.ability === 2 ? " [Hidden]" : "")}</div>
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
 			</div>
