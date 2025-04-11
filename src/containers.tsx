@@ -152,7 +152,7 @@ export function PartyAnalysis(props: {generation: number, selectedPokemon: Compo
 			let defense_multiplier = Data.getTypeAdvantage(props.generation, i, pokemon.types);
 
 			// Apply ability bonuses
-			if (ability.defense)
+			if (ability.defense && props.generation > 2)
 			{
 				for (const type of ability.defense.types)
 				{

@@ -50,10 +50,11 @@ export function App(): ReactElement
 			{
 				// Cycle between ability slots, skipping slots with no ability
 				const abilities = Data.getPokemonAbilities(generation, team_pokemon.id, team_pokemon.form);
+				const ability_slots = generation > 4 ? 2 : 1;
 				do
 				{
 					team_pokemon.ability++;
-					if (team_pokemon.ability > 2)
+					if (team_pokemon.ability > ability_slots)
 						team_pokemon.ability = 0;
 				} while (!abilities[team_pokemon.ability])
 

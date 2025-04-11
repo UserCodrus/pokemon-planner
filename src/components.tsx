@@ -63,7 +63,14 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 		art_alt = pokemon.name;
 	}
 
-	const art = <Image src={art_src} width={size} height={size} alt={art_alt} />;
+	// Set the text for the ability line
+	let ability_text = "";
+	if (props.generation > 2)
+	{
+		ability_text = ability.name;
+		if (props.pokemon.ability === 2)
+			ability_text += " [Hidden]";
+	}
 
 	// Handle mouse clicks
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
@@ -79,8 +86,8 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 	return (
 		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 			<div className="text-center min-h-6">{props.pokemon.id > 0 ? pokemon.name : ""}</div>
-			{art}
-			<div>{ability.name + (props.pokemon.ability === 2 ? " [Hidden]" : "")}</div>
+			<Image src={art_src} width={size} height={size} alt={art_alt} />
+			<div>{ability_text}</div>
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
 			</div>
