@@ -17,7 +17,7 @@ export function App(): ReactElement
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Select or deselect a pokemon for the current party
-	function selectPokemon(id: number, form?: string)
+	function selectPokemon(id: number, form?: number)
 	{
 		const pokemon = selectedPokemon.slice();
 

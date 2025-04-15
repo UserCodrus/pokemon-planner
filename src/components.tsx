@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 import * as Data from "./data";
 
-export type SelectionCallback = (id: number, form?: string) => void;
+export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: SelectedPokemon) => void;
 export type GameCallback = (game: Data.GameData) => void;
 export type TypeFilterCallback = (type: number) => void;
@@ -13,7 +13,7 @@ export type NameFilterCallback = (text: string) => void;
 
 export type SelectedPokemon = {
 	id: number,
-	form?: string,
+	form?: number,
 	ability: number
 };
 
@@ -101,7 +101,7 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
  * @param props.id The id of the pokemon
  * @param props.form The pokemon's form id
  */
-export function PokemonSelector(props: {generation: number, id: number, form?: string, selected?: boolean, onClick: SelectionCallback}): ReactElement
+export function PokemonSelector(props: {generation: number, id: number, form?: number, selected?: boolean, onClick: SelectionCallback}): ReactElement
 {
 	const size = 96;
 

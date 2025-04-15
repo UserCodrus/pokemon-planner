@@ -49,7 +49,7 @@ export function PokedexDisplay(props: {generation: number, pokedex: string, sele
 	const components: ReactElement[] = [];
 	for (let i=0; i < pokedex.entries.length; ++i)
 	{
-		const pokemon = Data.getPokemon(props.generation, pokedex.entries[i]);
+		const pokemon = Data.getPokemon(props.generation, pokedex.entries[i][0], pokedex.entries[i][1]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
@@ -77,14 +77,14 @@ export function PokedexDisplay(props: {generation: number, pokedex: string, sele
 		let selected = false;
 		for (const selection of props.selectedPokemon)
 		{
-			if (selection.id === pokemon.id)
+			if (selection.id === pokedex.entries[i][0] && selection.form === pokedex.entries[i][1])
 			{
 				selected = true;
 				break;
 			}
 		}
 
-		components.push(<Components.PokemonSelector generation={props.generation} id={pokedex.entries[i]} selected={selected} onClick={props.onSelect} key={i}/>)
+		components.push(<Components.PokemonSelector generation={props.generation} id={pokedex.entries[i][0]} form={pokedex.entries[i][1]} selected={selected} onClick={props.onSelect} key={i}/>);
 	}
 
 	return (

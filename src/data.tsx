@@ -177,23 +177,10 @@ export function imageURL(filename: string)
  * @param id The pokemon's national dex id
  * @param form The name of the pokemon's form
  */
-export function getPokemon(generation: number, id: number, form?: string): PokemonData
+export function getPokemon(generation: number, id: number, form?: number): PokemonData
 {
 	const pokemon = Pokemon[id];
-	
-	// Determine which form the pokemon should use
-	let selected_form = pokemon.forms[0];
-	if (form)
-	{
-		for (const pokemon_form of pokemon.forms)
-		{
-			if (pokemon_form.form === form)
-			{
-				selected_form = pokemon_form;
-				break;
-			}
-		}
-	}
+	const selected_form = form ? pokemon.forms[form] : pokemon.forms[0];
 
 	// Determine which types the pokemon should use based on the currently selected generation
 	let current_type = {
@@ -221,23 +208,10 @@ export function getPokemon(generation: number, id: number, form?: string): Pokem
 /**
  * Get ability data for a pokemon in a given generation
  */
-export function getPokemonAbilities(generation: number, id: number, form?: string): number[]
+export function getPokemonAbilities(generation: number, id: number, form?: number): number[]
 {
 	const pokemon = Pokemon[id];
-	
-	// Determine which form the pokemon should use
-	let selected_form = pokemon.forms[0];
-	if (form)
-	{
-		for (const pokemon_form of pokemon.forms)
-		{
-			if (pokemon_form.form === form)
-			{
-				selected_form = pokemon_form;
-				break;
-			}
-		}
-	}
+	const selected_form = form ? pokemon.forms[form] : pokemon.forms[0];
 
 	// Reconstruct the pokemon's abilities for the current generation by inserting data for legacy abilities
 	const abilities = selected_form.abilities.slice();
