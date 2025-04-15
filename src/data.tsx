@@ -36,6 +36,111 @@ export type TypeData = {
 	damage: number[]
 }
 
+export type GameData = {
+	pokedexes: string[],
+	generation: number,
+	games: string
+}
+
+// The master list of pokedexes and their generations used in each game
+export const game_list: GameData[] = [
+	{
+		pokedexes: ["national"],
+		generation: 9,
+		games: "National Pokédex"
+	},
+	{
+		pokedexes: ["kanto"],
+		generation: 1,
+		games: "Red, Blue, and Yellow"
+	},
+	{
+		pokedexes: ["original-johto"],
+		generation: 2,
+		games: "Gold, Silver, and Crystal"
+	},
+	{
+		pokedexes: ["hoenn"],
+		generation: 3,
+		games: "Ruby, Sapphire, and Emerald"
+	},
+	{
+		pokedexes: ["kanto"],
+		generation: 3,
+		games: "Fire Red and Leaf Green"
+	},
+	{
+		pokedexes: ["original-sinnoh"],
+		generation: 4,
+		games: "Diamond and Pearl"
+	},
+	{
+		pokedexes: ["extended-sinnoh"],
+		generation: 4,
+		games: "Platinum"
+	},
+	{
+		pokedexes: ["updated-johto"],
+		generation: 4,
+		games: "HeartGold and SoulSilver"
+	},
+	{
+		pokedexes: ["original-unova"],
+		generation: 5,
+		games: "Black and White"
+	},
+	{
+		pokedexes: ["updated-unova"],
+		generation: 5,
+		games: "Black 2 and White 2"
+	},
+	{
+		pokedexes: ["kalos-central", "kalos-coastal", "kalos-mountain"],
+		generation: 6,
+		games: "X and Y"
+	},
+	{
+		pokedexes: ["updated-hoenn"],
+		generation: 6,
+		games: "Omega Ruby and Alpha Sapphire"
+	},
+	{
+		pokedexes: ["original-alola"],
+		generation: 7,
+		games: "Sun and Moon"
+	},
+	{
+		pokedexes: ["updated-alola"],
+		generation: 7,
+		games: "Ultra Sun and Ultra Moon"
+	},
+	{
+		pokedexes: ["letsgo-kanto"],
+		generation: 7,
+		games: "Let's Go Pikachu and Let's Go Eevee"
+	},
+	{
+		pokedexes: ["galar", "isle-of-armor", "crown-tundra"],
+		generation: 8,
+		games: "Sword and Shield"
+	},
+	{
+		pokedexes: ["hisui"],
+		generation: 8,
+		games: "Legends Arceus"
+	},
+	{
+		pokedexes: ["extended-sinnoh"],
+		generation: 8,
+		games: "Brilliant Diamond and Shining Pearl"
+	},
+	{
+		pokedexes: ["paldea", "kitakami", "blueberry"],
+		generation: 9,
+		games: "Scarlet and Violet"
+	},
+]
+
 // A 1x1px transparent gif to use as a placeholder
 export const default_image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 

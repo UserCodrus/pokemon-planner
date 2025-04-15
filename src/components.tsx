@@ -7,6 +7,7 @@ import * as Data from "./data";
 
 export type SelectionCallback = (id: number, form?: string) => void;
 export type AbilityCallback = (selectedPokemon: SelectedPokemon) => void;
+export type GameCallback = (game: Data.GameData) => void;
 export type TypeFilterCallback = (type: number) => void;
 export type NameFilterCallback = (text: string) => void;
 
@@ -231,9 +232,12 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 	);
 }
 
-export function TESTGenSelector(props: {gen: number, callback: Function}): ReactElement
+/**
+ * A component used to select a set of pokemon from a given game
+ */
+export function PokedexSelector(props: {game: Data.GameData, selectionCallback: GameCallback}): ReactElement
 {
 	return (
-		<div className="panel p-1" onClick={()=>props.callback(props.gen)}>Gen {props.gen}</div>
+		<div className="panel p-1 px-2 select-none cursor-pointer" onClick={()=>props.selectionCallback(props.game)}>{props.game.games}</div>
 	);
 }

@@ -11,7 +11,7 @@ import * as Data from "./data";
  */
 export function App(): ReactElement
 {
-	const [generation, setGeneration] = useState<number>(9);
+	const [selectedGame, setSelectedGame] = useState<Data.GameData>(Data.game_list[18])
 	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
@@ -49,8 +49,8 @@ export function App(): ReactElement
 			if (pokemon === selected_pokemon)
 			{
 				// Cycle between ability slots, skipping slots with no ability
-				const abilities = Data.getPokemonAbilities(generation, pokemon.id, pokemon.form);
-				const ability_slots = generation > 4 ? 2 : 1;
+				const abilities = Data.getPokemonAbilities(selectedGame.generation, pokemon.id, pokemon.form);
+				const ability_slots = selectedGame.generation > 4 ? 2 : 1;
 				do
 				{
 					pokemon.ability++;
@@ -91,7 +91,7 @@ export function App(): ReactElement
 		if (update)
 			setSelectedPokemon(party_pokemon);
 
-		setGeneration(new_generation);
+		//setGeneration(new_generation);
 	}
 
 	// Activate or deactivate a type filter option
@@ -126,20 +126,24 @@ export function App(): ReactElement
 		setNameFilter(filter);
 	}
 
-	// Create a set of test buttons for changing generation
-	const test_buttons: ReactElement[] = [];
-	for (let i = 0; i < 9; ++i)
+	// Set the active game data
+	function selectGame(game: Data.GameData)
 	{
-		test_buttons.push(<Components.TESTGenSelector gen={i+1} callback={(gen: number)=>swapGeneration(gen)} key={i} />);
+		// Reset all the app settings when the selected game is changed
+		setSelectedPokemon([]);
+		setTypeFilter(Array(Data.getNumTypes()).fill(true));
+		setNameFilter("");
+
+		setSelectedGame(game);
 	}
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay generation={generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
-			<Containers.PartyAnalysis generation={generation} selectedPokemon={selectedPokemon} />
-			<Containers.FilterBar generation={generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay generation={generation} pokedex="kanto" selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
-			<div className="flex flex-row gap-1">{test_buttons}</div>
+			<Containers.PartyDisplay generation={selectedGame.generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
+			<Containers.PartyAnalysis generation={selectedGame.generation} selectedPokemon={selectedPokemon} />
+			<Containers.FilterBar generation={selectedGame.generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
+			<Containers.PokedexDisplay generation={selectedGame.generation} pokedex={selectedGame.pokedexes[0]} selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<Containers.GameSelector selectionCallback={selectGame} />
 		</div>
 	);
 }

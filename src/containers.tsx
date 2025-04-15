@@ -187,3 +187,22 @@ export function PartyAnalysis(props: {generation: number, selectedPokemon: Compo
 		</div>
 	);
 }
+
+/**
+ * A set of components to change the currently selected game
+ */
+export function GameSelector(props: {selectionCallback: Components.GameCallback}): ReactElement
+{
+	// Create a set of pokedex selector components
+	const components: ReactElement[] = [];
+	for (let i = 0; i < Data.game_list.length; ++i)
+	{
+		components.push(<Components.PokedexSelector game={Data.game_list[i]} selectionCallback={props.selectionCallback} key={i} />);
+	}
+
+	return (
+		<div className="flex flex-row flex-wrap gap-2 justify-evenly">
+			{components}
+		</div>
+	);
+}
