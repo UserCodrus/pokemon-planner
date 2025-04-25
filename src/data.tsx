@@ -37,6 +37,7 @@ export type TypeData = {
 }
 
 export type GameData = {
+	id: string,
 	pokedexes: string[],
 	generation: number,
 	games: string
@@ -45,96 +46,115 @@ export type GameData = {
 // The master list of pokedexes and their generations used in each game
 export const game_list: GameData[] = [
 	{
+		id: "nat",
 		pokedexes: ["national"],
 		generation: 9,
 		games: "National Pokédex"
 	},
 	{
+		id: "rby",
 		pokedexes: ["kanto"],
 		generation: 1,
 		games: "Red, Blue, and Yellow"
 	},
 	{
+		id: "gsc",
 		pokedexes: ["original-johto"],
 		generation: 2,
 		games: "Gold, Silver, and Crystal"
 	},
 	{
+		id: "rse",
 		pokedexes: ["hoenn"],
 		generation: 3,
 		games: "Ruby, Sapphire, and Emerald"
 	},
 	{
+		id: "frlg",
 		pokedexes: ["kanto"],
 		generation: 3,
 		games: "Fire Red and Leaf Green"
 	},
 	{
+		id: "dp",
 		pokedexes: ["original-sinnoh"],
 		generation: 4,
 		games: "Diamond and Pearl"
 	},
 	{
+		id: "pt",
 		pokedexes: ["extended-sinnoh"],
 		generation: 4,
 		games: "Platinum"
 	},
 	{
+		id: "hgss",
 		pokedexes: ["updated-johto"],
 		generation: 4,
 		games: "HeartGold and SoulSilver"
 	},
 	{
+		id: "bw",
 		pokedexes: ["original-unova"],
 		generation: 5,
 		games: "Black and White"
 	},
 	{
+		id: "b2w2",
 		pokedexes: ["updated-unova"],
 		generation: 5,
 		games: "Black 2 and White 2"
 	},
 	{
+		id: "xy",
 		pokedexes: ["kalos-central", "kalos-coastal", "kalos-mountain"],
 		generation: 6,
 		games: "X and Y"
 	},
 	{
+		id: "oras",
 		pokedexes: ["updated-hoenn"],
 		generation: 6,
 		games: "Omega Ruby and Alpha Sapphire"
 	},
 	{
+		id: "sm",
 		pokedexes: ["original-alola"],
 		generation: 7,
 		games: "Sun and Moon"
 	},
 	{
+		id: "usum",
 		pokedexes: ["updated-alola"],
 		generation: 7,
 		games: "Ultra Sun and Ultra Moon"
 	},
 	{
+		id: "lg",
 		pokedexes: ["letsgo-kanto"],
 		generation: 7,
 		games: "Let's Go Pikachu and Let's Go Eevee"
 	},
 	{
+		id: "ss",
 		pokedexes: ["galar", "isle-of-armor", "crown-tundra"],
 		generation: 8,
 		games: "Sword and Shield"
 	},
 	{
+		id: "ls",
 		pokedexes: ["hisui"],
 		generation: 8,
 		games: "Legends Arceus"
 	},
 	{
+		id: "bdsp",
 		pokedexes: ["extended-sinnoh"],
 		generation: 8,
 		games: "Brilliant Diamond and Shining Pearl"
 	},
 	{
+		id: "sv",
 		pokedexes: ["paldea", "kitakami", "blueberry"],
 		generation: 9,
 		games: "Scarlet and Violet"

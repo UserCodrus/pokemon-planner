@@ -142,7 +142,7 @@ export function App(): ReactElement
 			<Containers.PartyDisplay generation={selectedGame.generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
 			<Containers.PartyAnalysis generation={selectedGame.generation} selectedPokemon={selectedPokemon} />
 			<Containers.FilterBar generation={selectedGame.generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay generation={selectedGame.generation} pokedex={selectedGame.pokedexes[0]} selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<Containers.PokedexDisplay generation={selectedGame.generation} pokedexes={selectedGame.pokedexes} selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
 			<Containers.GameSelector selectionCallback={selectGame} />
 		</div>
 	);

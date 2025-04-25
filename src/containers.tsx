@@ -29,27 +29,13 @@ export function PartyDisplay(props: {generation: number, pokemon: Components.Sel
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-export function PokedexDisplay(props: {generation: number, pokedex: string, selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
-	// Find the pokedex with the id matching the provided prop
-	let pokedex: typeof Pokedex[0] | undefined;
-	for (const dex_data of Pokedex)
-	{
-		if (dex_data.id === props.pokedex)
-		{
-			pokedex = dex_data;
-			break;
-		}
-	}
-
-	if (!pokedex)
-		return <div>{"Unknown pokedex id " + props.pokedex}</div>
-
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
-	for (let i=0; i < pokedex.entries.length; ++i)
+	for (let i=0; i < props.pokedex.entries.length; ++i)
 	{
-		const pokemon = Data.getPokemon(props.generation, pokedex.entries[i][0], pokedex.entries[i][1]);
+		const pokemon = Data.getPokemon(props.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
@@ -77,18 +63,53 @@ export function PokedexDisplay(props: {generation: number, pokedex: string, sele
 		let selected = false;
 		for (const selection of props.selectedPokemon)
 		{
-			if (selection.id === pokedex.entries[i][0] && selection.form === pokedex.entries[i][1])
+			if (selection.id === props.pokedex.entries[i][0] && selection.form === props.pokedex.entries[i][1])
 			{
 				selected = true;
 				break;
 			}
 		}
 
-		components.push(<Components.PokemonSelector generation={props.generation} id={pokedex.entries[i][0]} form={pokedex.entries[i][1]} selected={selected} onClick={props.onSelect} key={i}/>);
+		components.push(<Components.PokemonSelector generation={props.generation} id={props.pokedex.entries[i][0]} form={props.pokedex.entries[i][1]} selected={selected} onClick={props.onSelect} key={i}/>);
 	}
 
 	return (
-		<div className="flex flex-row flex-wrap justify-center gap-2">
+		<div className="text-center">
+			<div className="panel text-lg p-2 mb-2 w-1/4 inline-block">{props.pokedex.name}</div>
+			<div className="flex flex-row flex-wrap justify-center gap-2">
+				{components}
+			</div>
+		</div>
+	);
+}
+
+/**
+ * A component that contains a set of pokedex displays
+ */
+export function PokedexDisplay(props: {generation: number, pokedexes: string[], selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+{
+	const components: ReactElement[] = [];
+	for (let i = 0; i < props.pokedexes.length; ++i)
+	{
+		// Find the pokedex with the id matching the provided prop
+		let pokedex_data: typeof Pokedex[0] | undefined;
+		for (const dex_data of Pokedex)
+		{
+			if (dex_data.id === props.pokedexes[i])
+			{
+				pokedex_data = dex_data;
+				break;
+			}
+		}
+
+		if (pokedex_data)
+		{
+			components.push(<PokedexGroup generation={props.generation} pokedex={pokedex_data} selectedPokemon={props.selectedPokemon} typeFilter={props.typeFilter} nameFilter={props.nameFilter} onSelect={props.onSelect} key={i} />)
+		}
+	}
+
+	return (
+		<div className="flex flex-col gap-2">
 			{components}
 		</div>
 	);
