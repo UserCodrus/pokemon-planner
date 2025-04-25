@@ -4,6 +4,7 @@ import { MouseEvent, MouseEventHandler, ReactElement } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
+import Link from "next/link";
 
 export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: SelectedPokemon) => void;
@@ -235,9 +236,14 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 /**
  * A component used to select a set of pokemon from a given game
  */
-export function PokedexSelector(props: {game: Data.GameData, selectionCallback: GameCallback}): ReactElement
+export function PokedexSelector(props: {game: Data.GameData}): ReactElement
 {
 	return (
-		<div className="panel p-1 px-2 select-none cursor-pointer" onClick={()=>props.selectionCallback(props.game)}>{props.game.games}</div>
+		<Link href={"/planner?game=" + props.game.id}>
+			<div className="panel p-1 px-2 select-none cursor-pointer text-center">
+				<div>Generation {props.game.generation}</div>
+				<div>{props.game.games}</div>
+			</div>
+		</Link>
 	);
 }
