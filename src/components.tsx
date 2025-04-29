@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent, MouseEventHandler, ReactElement } from "react";
+import { MouseEvent, MouseEventHandler, ReactElement, useState } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -98,21 +98,50 @@ export function PartyMember(props: {generation: number, pokemon: SelectedPokemon
 }
 
 /**
+ * A context menu that sits above a pokemon selector after right clicking
+ */
+export function PokemonSelectorPopup(props: {pokemon: number}): ReactElement
+{
+	return (
+		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon} target="_blank" rel="noopener noreferrer">
+			<div className="popup">
+				View on Pokémon Database
+			</div>
+		</Link>
+	)
+}
+
+/**
  * A component that is show a selectable pokemon
  * @param props.id The id of the pokemon
  * @param props.form The pokemon's form id
  */
 export function PokemonSelector(props: {generation: number, id: number, form?: number, selected?: boolean, onClick: SelectionCallback}): ReactElement
 {
+	const [contextMenu, setContextMenu] = useState<boolean>(false);
 	const size = 96;
 
 	const pokemon = Data.getPokemon(props.generation, props.id, props.form);
 	const hidden = props.selected ? "" : " hide";
 
+	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
+	{
+		setContextMenu(false);
+		props.onClick(props.id, props.form);
+	}
+	function handleRightClick(event: MouseEvent<HTMLDivElement>)
+	{
+		event.preventDefault();
+		setContextMenu(!contextMenu);
+	}
+
 	return (
-		<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={() => {props.onClick(props.id, props.form)}}>
-			<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
-			<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
+		<div className="relative" onMouseLeave={(e)=>setContextMenu(false)}>
+			<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
+				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
+			</div>
+			{contextMenu && <PokemonSelectorPopup pokemon={props.id} />}
 		</div>
 	);
 }

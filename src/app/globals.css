@@ -43,6 +43,7 @@ footer {
 	.panel {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
+		position: relative;
 	}
 	.panel.clickable {
 		user-select: none;
@@ -54,6 +55,19 @@ footer {
 
 	.inactive {
 		filter: grayscale(100%) contrast(30%);
+	}
+
+	.popup {
+		position: absolute;
+		z-index: 1;
+
+		bottom: 100%;
+		left: 0%;
+
+		background-color: var(--color-panel);
+		backdrop-filter: blur(10px);
+		border-radius: 0.5rem;
+		padding: 0.5rem;
 	}
 
 	.fade {
