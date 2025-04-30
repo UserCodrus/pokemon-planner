@@ -7,19 +7,41 @@ import * as Containers from "./containers";
 import * as Data from "./data";
 import { useSearchParams } from "next/navigation";
 
-export function Index(): ReactElement
+/**
+ * The core component of the app, responsible for routing between different views
+ */
+export function App(): ReactElement
 {
-	return (
-		<div>
-			<Containers.GameSelector />
-		</div>
-	);
+	// Get the current pokedex for the app using the url fragment
+	const location = useSearchParams();
+	let selectedGame: Data.GameData | undefined;
+	for (const game of Data.game_list)
+	{
+		if (game.id === location.get("game"))
+		{
+			selectedGame = game;
+			break;
+		}
+	}
+
+	if (selectedGame)
+	{
+		return (
+			<Planner />
+		);
+	}
+	else
+	{
+		return (
+			<Selector />
+		);
+	}
 }
 
 /**
- * The main component for the app
+ * The pokemon planner view
  */
-export function App(): ReactElement
+export function Planner(): ReactElement
 {
 	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
@@ -123,6 +145,51 @@ export function App(): ReactElement
 			<Containers.PartyAnalysis generation={selectedGame.generation} selectedPokemon={selectedPokemon} />
 			<Containers.FilterBar generation={selectedGame.generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
 			<Containers.PokedexDisplay generation={selectedGame.generation} pokedexes={selectedGame.pokedexes} selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+		</div>
+	);
+}
+
+/**
+ * The view that lets the player select a game to use
+ */
+export function Selector(): ReactElement
+{
+	// Create a set of pokedex selector components
+	const components: ReactElement[] = [];
+	for (let i = 0; i <= 9; ++i)
+	{
+		// Create a single row for each generation
+		const inner_components: ReactElement[] = [];
+		if (i === 0)
+		{
+			// Put the national dex at the top
+			inner_components.push(<Components.PokedexSelector game={Data.game_list[0]} key={0} />);
+		}
+		else
+		{
+			let key = 0;
+			for (const game of Data.game_list)
+			{
+				if (game.generation === i && game.id !== "nat")
+				{
+					inner_components.push(<Components.PokedexSelector game={game} key={key} />);
+					++key;
+					continue;
+				}
+			}
+		}
+
+
+		components.push(
+			<div key={i} className="flex flex-row gap-2 justify-center">
+				{inner_components}
+			</div>
+		);
+	}
+
+	return (
+		<div className="flex flex-col flex-wrap gap-2 justify-evenly">
+			{components}
 		</div>
 	);
 }

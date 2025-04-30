@@ -268,7 +268,7 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 export function PokedexSelector(props: {game: Data.GameData}): ReactElement
 {
 	return (
-		<Link href={"/planner?game=" + props.game.id}>
+		<Link href={"?game=" + props.game.id}>
 			<div className="panel p-1 px-2 select-none cursor-pointer text-center">
 				<div>Generation {props.game.generation}</div>
 				<div>{props.game.games}</div>
