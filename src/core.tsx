@@ -14,7 +14,7 @@ export function App(): ReactElement
 {
 	// Get the current pokedex for the app using the url fragment
 	const location = useSearchParams();
-	let selectedGame: Data.GameData | undefined;
+	let selectedGame: Data.Game | undefined;
 	for (const game of Data.game_list)
 	{
 		if (game.id === location.get("game"))
@@ -43,13 +43,13 @@ export function App(): ReactElement
  */
 export function Planner(): ReactElement
 {
-	const [selectedPokemon, setSelectedPokemon] = useState<Components.SelectedPokemon[]>([]);
+	const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Get the current pokedex for the app using the url fragment
 	const location = useSearchParams();
-	let selectedGame: Data.GameData = Data.game_list[0];
+	let selectedGame: Data.Game = Data.game_list[0];
 	for (const game of Data.game_list)
 	{
 		if (game.id === location.get("game"))
@@ -84,7 +84,7 @@ export function Planner(): ReactElement
 	}
 
 	// Change a selected pokemon's active ability
-	function swapAbility(selected_pokemon: Components.SelectedPokemon)
+	function swapAbility(selected_pokemon: Data.TeamSlot)
 	{
 		const party_pokemon = selectedPokemon.slice();
 		for (const pokemon of party_pokemon)

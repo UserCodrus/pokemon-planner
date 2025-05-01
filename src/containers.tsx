@@ -11,7 +11,7 @@ const party_size = 6;
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {generation: number, pokemon: Components.SelectedPokemon[], onSelect: Components.SelectionCallback, onSwitchAbility: Components.AbilityCallback}): ReactElement
+export function PartyDisplay(props: {generation: number, pokemon: Data.TeamSlot[], onSelect: Components.SelectionCallback, onSwitchAbility: Components.AbilityCallback}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokemon.length; ++i)
@@ -29,7 +29,7 @@ export function PartyDisplay(props: {generation: number, pokemon: Components.Sel
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], selectedPokemon: Data.TeamSlot[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
@@ -86,7 +86,7 @@ function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], se
 /**
  * A component that contains a set of pokedex displays
  */
-export function PokedexDisplay(props: {generation: number, pokedexes: string[], selectedPokemon: Components.SelectedPokemon[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {generation: number, pokedexes: string[], selectedPokemon: Data.TeamSlot[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i = 0; i < props.pokedexes.length; ++i)
@@ -139,12 +139,12 @@ export function FilterBar(props: {generation: number, typeFilter: boolean[], nam
 /**
  * A component that displays the party's advantages and disadvantages
  */
-export function PartyAnalysis(props: {generation: number, selectedPokemon: Components.SelectedPokemon[]}): ReactElement
+export function PartyAnalysis(props: {generation: number, selectedPokemon: Data.TeamSlot[]}): ReactElement
 {
 	// Calculate the type advantages and disadvantages of the team
-	const coverage: Components.SelectedPokemon[][] = [];
-	const advantages: Components.SelectedPokemon[][] = [];
-	const weaknesses: Components.SelectedPokemon[][] = [];
+	const coverage: Data.TeamSlot[][] = [];
+	const advantages: Data.TeamSlot[][] = [];
+	const weaknesses: Data.TeamSlot[][] = [];
 
 	for (let i = 0; i < Data.getNumTypes(); ++i)
 	{

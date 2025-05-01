@@ -1,6 +1,6 @@
-import Pokemon from "../data/pokemon.json";
-import Types from "../data/types.json";
-import Abilities from "../data/ability.json";
+import PokemonData from "../data/pokemon.json";
+import TypeData from "../data/types.json";
+import AbilityData from "../data/ability.json";
 
 // String representations of image folders
 const image_ext = ".png";
@@ -15,7 +15,7 @@ export const party_size = 6;
 /**
  * Information about an pokemon ability pulled from API data
  */
-export type AbilityData = {
+export type Ability = {
 	name: string,
 	defense?: {
 		types: number[],
@@ -27,7 +27,7 @@ export type AbilityData = {
 /**
  * Information about a pokemon form pulled from API data
  */
-export type PokemonData = {
+export type Pokemon = {
 	id: number,
 	name: string,
 	types: number[],
@@ -37,17 +37,9 @@ export type PokemonData = {
 }
 
 /**
- * Information about type effectiveness pulled from API data
- */
-export type TypeData = {
-	name: string,
-	damage: number[]
-}
-
-/**
  * Information about a game pulled from API data
  */ 
-export type GameData = {
+export type Game = {
 	id: string,
 	pokedexes: string[],
 	generation: number,
@@ -55,9 +47,27 @@ export type GameData = {
 }
 
 /**
+ * Data for a single team slot
+ */
+export type TeamSlot = {
+	id: number,
+	form?: number,
+	ability: number
+};
+
+/**
+ * Saved data for a pokemon team
+ */
+export type Team = {
+	name: string,
+	pokedex: string,
+	pokemon: TeamSlot[]
+};
+
+/**
  * The master list of pokedexes and their generations used in each game
  */
-export const game_list: GameData[] = [
+export const game_list: Game[] = [
 	{
 		id: "nat",
 		pokedexes: ["national"],
@@ -172,7 +182,7 @@ export const game_list: GameData[] = [
 		generation: 9,
 		games: "Scarlet and Violet"
 	},
-]
+];
 
 /**
  * A 1x1px transparent gif to use as a placeholder for missing images
@@ -212,9 +222,9 @@ export function imageURL(filename: string)
  * @param id The pokemon's national dex id
  * @param form The index of the pokemon's form
  */
-export function getPokemon(generation: number, id: number, form?: number): PokemonData
+export function getPokemon(generation: number, id: number, form?: number): Pokemon
 {
-	const pokemon = Pokemon[id];
+	const pokemon = PokemonData[id];
 	const selected_form = form ? pokemon.forms[form] : pokemon.forms[0];
 
 	// Determine which types the pokemon should use based on the currently selected generation
@@ -248,7 +258,7 @@ export function getPokemon(generation: number, id: number, form?: number): Pokem
  */
 export function getPokemonAbilities(generation: number, id: number, form?: number): number[]
 {
-	const pokemon = Pokemon[id];
+	const pokemon = PokemonData[id];
 	const selected_form = form ? pokemon.forms[form] : pokemon.forms[0];
 
 	// Reconstruct the pokemon's abilities for the current generation by inserting data for legacy abilities
@@ -268,9 +278,9 @@ export function getPokemonAbilities(generation: number, id: number, form?: numbe
 /**
  * Get ability data from the json file
  */
-export function getAbility(ability: number): AbilityData
+export function getAbility(ability: number): Ability
 {
-	return Abilities[ability];
+	return AbilityData[ability];
 }
 
 /** 
@@ -278,7 +288,7 @@ export function getAbility(ability: number): AbilityData
  */
 export function getNumTypes(): number
 {
-	return Types.length;
+	return TypeData.length;
 }
 
 /**
@@ -288,7 +298,7 @@ export function getNumTypes(): number
  */
 export function validType(generation: number, type: number): boolean
 {
-	return Types[type].generation <= generation;
+	return TypeData[type].generation <= generation;
 }
 
 /**
@@ -297,9 +307,9 @@ export function validType(generation: number, type: number): boolean
  */
 export function getTypeName(type: number): string
 {
-	if (type < Types.length)
+	if (type < TypeData.length)
 	{
-		return Types[type].name;
+		return TypeData[type].name;
 	}
 
 	return "unknown";
@@ -313,7 +323,7 @@ export function getTypeName(type: number): string
 export function getTypeAdvantage(generation: number, offensive_type: number, defensive_types: number[]): number
 {
 	let damage_multipliers: number[] = [];
-	for (const damage_set of Types[offensive_type].damage)
+	for (const damage_set of TypeData[offensive_type].damage)
 	{
 		if (damage_set.generation >= generation)
 		{

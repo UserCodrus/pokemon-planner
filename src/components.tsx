@@ -7,26 +7,10 @@ import * as Data from "./data";
 import Link from "next/link";
 
 export type SelectionCallback = (id: number, form?: number) => void;
-export type AbilityCallback = (selectedPokemon: SelectedPokemon) => void;
-export type GameCallback = (game: Data.GameData) => void;
+export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
+export type GameCallback = (game: Data.Game) => void;
 export type TypeFilterCallback = (type: number) => void;
 export type NameFilterCallback = (text: string) => void;
-
-export type SelectedPokemon = {
-	id: number,
-	form?: number,
-	ability: number
-};
-
-export type TypeAdvantage = {
-	pokemon: SelectedPokemon,
-	advantage: boolean
-}
-
-export type TypeComparison = {
-	advantages: TypeAdvantage[],
-	disadvantages: TypeAdvantage[],
-}
 
 const enum CoverageStyle {
 	neutral,
@@ -40,7 +24,7 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon: SelectedPokemon, abilityCallback: AbilityCallback ,cancelCallback: SelectionCallback}): ReactElement
+export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, abilityCallback: AbilityCallback ,cancelCallback: SelectionCallback}): ReactElement
 {
 	const size = 200;
 
@@ -187,7 +171,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
  */
 const icon_source = "/icons.svg"
 const icon_size = 16;
-export function CoverageIcon(props: {type: CoverageStyle, source?: SelectedPokemon}): ReactElement
+export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
 	let src = icon_source;
@@ -223,7 +207,7 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: SelectedPokem
 /**
  * A component that displays the type advantages and disadvantages the user's team has against a particular type
  */
-export function Coverage(props: {type: number, coverage: SelectedPokemon[], advantages: SelectedPokemon[], weaknesses: SelectedPokemon[]}): ReactElement
+export function Coverage(props: {type: number, coverage: Data.TeamSlot[], advantages: Data.TeamSlot[], weaknesses: Data.TeamSlot[]}): ReactElement
 {
 	// Create icons to show the team's strengths and weaknesses
 	const top_components: ReactElement[] = [];
@@ -265,7 +249,7 @@ export function Coverage(props: {type: number, coverage: SelectedPokemon[], adva
 /**
  * A component used to select a set of pokemon from a given game
  */
-export function PokedexSelector(props: {game: Data.GameData}): ReactElement
+export function PokedexSelector(props: {game: Data.Game}): ReactElement
 {
 	return (
 		<Link href={"?game=" + props.game.id}>
