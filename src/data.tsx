@@ -12,6 +12,9 @@ const misc_location = "/images/";
 
 export const party_size = 6;
 
+/**
+ * Information about an pokemon ability pulled from API data
+ */
 export type AbilityData = {
 	name: string,
 	defense?: {
@@ -21,7 +24,9 @@ export type AbilityData = {
 	}
 }
 
-// Data type for pokemon data
+/**
+ * Information about a pokemon form pulled from API data
+ */
 export type PokemonData = {
 	id: number,
 	name: string,
@@ -31,11 +36,17 @@ export type PokemonData = {
 	art: string
 }
 
+/**
+ * Information about type effectiveness pulled from API data
+ */
 export type TypeData = {
 	name: string,
 	damage: number[]
 }
 
+/**
+ * Information about a game pulled from API data
+ */ 
 export type GameData = {
 	id: string,
 	pokedexes: string[],
@@ -43,7 +54,9 @@ export type GameData = {
 	games: string
 }
 
-// The master list of pokedexes and their generations used in each game
+/**
+ * The master list of pokedexes and their generations used in each game
+ */
 export const game_list: GameData[] = [
 	{
 		id: "nat",
@@ -161,7 +174,9 @@ export const game_list: GameData[] = [
 	},
 ]
 
-// A 1x1px transparent gif to use as a placeholder
+/**
+ * A 1x1px transparent gif to use as a placeholder for missing images
+ */
 export const default_image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 /**
@@ -195,7 +210,7 @@ export function imageURL(filename: string)
  * Retrieve data for a given pokemon
  * @param generation The current generation the app is using
  * @param id The pokemon's national dex id
- * @param form The name of the pokemon's form
+ * @param form The index of the pokemon's form
  */
 export function getPokemon(generation: number, id: number, form?: number): PokemonData
 {
@@ -227,6 +242,9 @@ export function getPokemon(generation: number, id: number, form?: number): Pokem
 
 /**
  * Get ability data for a pokemon in a given generation
+ * @param generation The current generation the app is using
+ * @param id The pokemon's national dex id
+ * @param form The index of the pokemon's form
  */
 export function getPokemonAbilities(generation: number, id: number, form?: number): number[]
 {
