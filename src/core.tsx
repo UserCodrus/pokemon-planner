@@ -1,17 +1,35 @@
 'use client';
 
-import { ReactElement, useState, Suspense } from "react";
+import { ReactElement, useState, useEffect, useReducer, Suspense } from "react";
 
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
+import { DispatchContext, TeamContext, teamReducer, type Action } from "./reducer";
 import { useSearchParams } from "next/navigation";
+
+/**
+ * Next.js won't let me use useSearchParams without a suspense wrapper. I don't know why I need this, it should only take a few nanoseconds for the browser to retrieve this information.
+ */
+export function StupidWrapper(): ReactElement
+{
+	return <Suspense>
+		<App />
+	</Suspense>
+}
 
 /**
  * The core component of the app, responsible for routing between different views
  */
 export function App(): ReactElement
 {
+	const [team, dispatch] = useReducer(teamReducer, {
+		id: 0,
+		name: "New Team",
+		pokedex: "nat",
+		pokemon: []
+	});
+
 	// Get the current pokedex for the app using the url fragment
 	const location = useSearchParams();
 	let selectedGame: Data.Game | undefined;
@@ -24,10 +42,37 @@ export function App(): ReactElement
 		}
 	}
 
+	// Load saved teams from local storage
+	/*useEffect(() => {
+		const storage = localStorage.getItem("teams");
+		if (storage)
+		{
+			setSavedTeams(JSON.parse(storage));
+			console.log("Loaded team data from storage")
+		}
+		else
+		{
+			setSavedTeams([]);
+		}
+	}, []);
+
+	// Save team data to storage every time it changes
+	useEffect(() => {
+		if (savedTeams && savedTeams.length > 0)
+		{
+			localStorage.setItem("teams", JSON.stringify(savedTeams));
+			console.log("Saved team data to browser storage");
+		}
+	}, [savedTeams]);*/
+
 	if (selectedGame)
 	{
 		return (
-			<Planner />
+			<TeamContext.Provider value={team}>
+				<DispatchContext.Provider value={dispatch}>
+					<Planner team={team} />
+				</DispatchContext.Provider>
+			</TeamContext.Provider>
 		);
 	}
 	else
@@ -41,9 +86,9 @@ export function App(): ReactElement
 /**
  * The pokemon planner view
  */
-export function Planner(): ReactElement
+export function Planner(props: {team: Data.Team}): ReactElement
 {
-	const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
+	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 
@@ -56,54 +101,6 @@ export function Planner(): ReactElement
 		{
 			selectedGame = game;
 			break;
-		}
-	}
-
-	// Select or deselect a pokemon for the current party
-	function selectPokemon(id: number, form?: number)
-	{
-		const pokemon = selectedPokemon.slice();
-
-		// Remove the pokemon from the party if it has already been added
-		for (let i=0; i < pokemon.length; ++i)
-		{
-			if (pokemon[i].id === id && pokemon[i].form === form)
-			{
-				pokemon.splice(i, 1);
-				setSelectedPokemon(pokemon);
-				return;
-			}
-		}
-
-		// Add the pokemon to the party
-		if (selectedPokemon.length < 6)
-		{
-			pokemon.push({id: id, form: form, ability: 0});
-			setSelectedPokemon(pokemon);
-		}
-	}
-
-	// Change a selected pokemon's active ability
-	function swapAbility(selected_pokemon: Data.TeamSlot)
-	{
-		const party_pokemon = selectedPokemon.slice();
-		for (const pokemon of party_pokemon)
-		{
-			if (pokemon === selected_pokemon)
-			{
-				// Cycle between ability slots, skipping slots with no ability
-				const abilities = Data.getPokemonAbilities(selectedGame.generation, pokemon.id, pokemon.form);
-				const ability_slots = selectedGame.generation > 4 ? 2 : 1;
-				do
-				{
-					pokemon.ability++;
-					if (pokemon.ability > ability_slots)
-						pokemon.ability = 0;
-				} while (!abilities[pokemon.ability]);
-
-				setSelectedPokemon(party_pokemon);
-				return;
-			}
 		}
 	}
 
@@ -141,10 +138,10 @@ export function Planner(): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay generation={selectedGame.generation} pokemon={selectedPokemon} onSelect={selectPokemon} onSwitchAbility={swapAbility} />
-			<Containers.PartyAnalysis generation={selectedGame.generation} selectedPokemon={selectedPokemon} />
+			<Containers.PartyDisplay generation={selectedGame.generation} />
+			<Containers.PartyAnalysis generation={selectedGame.generation} />
 			<Containers.FilterBar generation={selectedGame.generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay generation={selectedGame.generation} pokedexes={selectedGame.pokedexes} selectedPokemon={selectedPokemon} typeFilter={typeFilter} nameFilter={nameFilter} onSelect={selectPokemon} />
+			<Containers.PokedexDisplay generation={selectedGame.generation} pokedexes={selectedGame.pokedexes} typeFilter={typeFilter} nameFilter={nameFilter} />
 		</div>
 	);
 }

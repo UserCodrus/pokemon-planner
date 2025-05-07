@@ -59,6 +59,7 @@ export type TeamSlot = {
  * Saved data for a pokemon team
  */
 export type Team = {
+	id: number,
 	name: string,
 	pokedex: string,
 	pokemon: TeamSlot[]

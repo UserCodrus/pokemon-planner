@@ -1,10 +1,11 @@
 'use client';
 
-import { MouseEvent, MouseEventHandler, ReactElement, useState } from "react";
+import { MouseEvent, MouseEventHandler, ReactElement, useContext, useState } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
 import Link from "next/link";
+import { DispatchContext, Task } from "./reducer";
 
 export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
@@ -24,8 +25,9 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, abilityCallback: AbilityCallback ,cancelCallback: SelectionCallback}): ReactElement
+export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot}): ReactElement
 {
+	const dispatch = useContext(DispatchContext);
 	const size = 200;
 
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
@@ -61,12 +63,18 @@ export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, 
 	// Handle mouse clicks
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
 	{
-		props.abilityCallback(props.pokemon);
+		dispatch({
+			type: Task.swap_ability,
+			data: props.pokemon
+		});
 	}
 	function handleRightClick(event: MouseEvent<HTMLDivElement>)
 	{
 		event.preventDefault();
-		props.cancelCallback(props.pokemon.id, props.pokemon.form);
+		dispatch({
+			type: Task.select_pokemon,
+			data: props.pokemon
+		});
 	}
 
 	return (
@@ -100,9 +108,10 @@ export function PokemonSelectorPopup(props: {pokemon: number}): ReactElement
  * @param props.id The id of the pokemon
  * @param props.form The pokemon's form id
  */
-export function PokemonSelector(props: {generation: number, id: number, form?: number, selected?: boolean, onClick: SelectionCallback}): ReactElement
+export function PokemonSelector(props: {generation: number, id: number, form?: number, selected?: boolean}): ReactElement
 {
 	const [contextMenu, setContextMenu] = useState<boolean>(false);
+	const dispatch = useContext(DispatchContext);
 	const size = 96;
 
 	const pokemon = Data.getPokemon(props.generation, props.id, props.form);
@@ -111,7 +120,10 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
 	{
 		setContextMenu(false);
-		props.onClick(props.id, props.form);
+		dispatch({
+			type: Task.select_pokemon,
+			data: { id: props.id, form: props.form }
+		});
 	}
 	function handleRightClick(event: MouseEvent<HTMLDivElement>)
 	{

@@ -1,22 +1,25 @@
 'use client';
 
-import { ReactElement, useMemo } from "react";
+import { ReactElement, useContext, useMemo } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
+import { DispatchContext, Task, TeamContext } from "./reducer";
 
 const party_size = 6;
 
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {generation: number, pokemon: Data.TeamSlot[], onSelect: Components.SelectionCallback, onSwitchAbility: Components.AbilityCallback}): ReactElement
+export function PartyDisplay(props: {generation: number}): ReactElement
 {
+	const team = useContext(TeamContext);
+
 	const components: ReactElement[] = [];
-	for (let i=0; i < props.pokemon.length; ++i)
+	for (let i=0; i < team.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember generation={props.generation} pokemon={props.pokemon[i]} key={i} cancelCallback={props.onSelect} abilityCallback={props.onSwitchAbility}/>)
+		components.push(<Components.PartyMember generation={props.generation} pokemon={team.pokemon[i]} key={i} />);
 	}
 
 	return (
@@ -29,8 +32,10 @@ export function PartyDisplay(props: {generation: number, pokemon: Data.TeamSlot[
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], selectedPokemon: Data.TeamSlot[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], typeFilter: boolean[], nameFilter: string}): ReactElement
 {
+	const team = useContext(TeamContext);
+
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokedex.entries.length; ++i)
@@ -61,7 +66,7 @@ function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], se
 
 		// Determine if the pokemon has been selected
 		let selected = false;
-		for (const selection of props.selectedPokemon)
+		for (const selection of team.pokemon)
 		{
 			if (selection.id === props.pokedex.entries[i][0] && selection.form === props.pokedex.entries[i][1])
 			{
@@ -70,7 +75,7 @@ function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], se
 			}
 		}
 
-		components.push(<Components.PokemonSelector generation={props.generation} id={props.pokedex.entries[i][0]} form={props.pokedex.entries[i][1]} selected={selected} onClick={props.onSelect} key={i}/>);
+		components.push(<Components.PokemonSelector generation={props.generation} id={props.pokedex.entries[i][0]} form={props.pokedex.entries[i][1]} selected={selected} key={i}/>);
 	}
 
 	return (
@@ -86,7 +91,7 @@ function PokedexGroup(props: {generation: number, pokedex: typeof Pokedex[0], se
 /**
  * A component that contains a set of pokedex displays
  */
-export function PokedexDisplay(props: {generation: number, pokedexes: string[], selectedPokemon: Data.TeamSlot[], typeFilter: boolean[], nameFilter: string, onSelect: Components.SelectionCallback}): ReactElement
+export function PokedexDisplay(props: {generation: number, pokedexes: string[], typeFilter: boolean[], nameFilter: string}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i = 0; i < props.pokedexes.length; ++i)
@@ -104,7 +109,7 @@ export function PokedexDisplay(props: {generation: number, pokedexes: string[], 
 
 		if (pokedex_data)
 		{
-			components.push(<PokedexGroup generation={props.generation} pokedex={pokedex_data} selectedPokemon={props.selectedPokemon} typeFilter={props.typeFilter} nameFilter={props.nameFilter} onSelect={props.onSelect} key={i} />)
+			components.push(<PokedexGroup generation={props.generation} pokedex={pokedex_data} typeFilter={props.typeFilter} nameFilter={props.nameFilter} key={i} />)
 		}
 	}
 
@@ -139,8 +144,10 @@ export function FilterBar(props: {generation: number, typeFilter: boolean[], nam
 /**
  * A component that displays the party's advantages and disadvantages
  */
-export function PartyAnalysis(props: {generation: number, selectedPokemon: Data.TeamSlot[]}): ReactElement
+export function PartyAnalysis(props: {generation: number}): ReactElement
 {
+	const team = useContext(TeamContext);
+
 	// Calculate the type advantages and disadvantages of the team
 	const coverage: Data.TeamSlot[][] = [];
 	const advantages: Data.TeamSlot[][] = [];
@@ -152,7 +159,7 @@ export function PartyAnalysis(props: {generation: number, selectedPokemon: Data.
 		advantages.push([]);
 		weaknesses.push([]);
 
-		for (const pokemon_selection of props.selectedPokemon)
+		for (const pokemon_selection of team.pokemon)
 		{
 			const pokemon = Data.getPokemon(props.generation, pokemon_selection.id, pokemon_selection.form);
 			const ability = Data.getAbility(Data.getPokemonAbilities(props.generation, pokemon_selection.id, pokemon_selection.form)[pokemon_selection.ability]);
