@@ -147,16 +147,7 @@ export function teamReducer(state: AppData, action: Action) {
 	}
 }
 
-export const DataContext = createContext<AppData>({
-	game: Data.game_list[0],
-	current_team: {
-		id: 0,
-		name: "New Team",
-		pokemon: [],
-		abilities: []
-	},
-	teams: []
-});
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 	console.error("Invalid dispatch function.");
 });
+export const GameContext = createContext<Data.Game | null>(null);

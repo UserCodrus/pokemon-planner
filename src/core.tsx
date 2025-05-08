@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, Suspense, useContext } f
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, newTeam, DataContext, teamReducer } from "./reducer";
+import { DispatchContext, newTeam, teamReducer, GameContext } from "./reducer";
 import { useSearchParams } from "next/navigation";
 
 /**
@@ -79,11 +79,11 @@ export function App(): ReactElement
 	if (data.game)
 	{
 		return (
-			<DataContext.Provider value={data}>
+			<GameContext.Provider value={data.game}>
 				<DispatchContext.Provider value={dispatch}>
-					<Planner />
+					<Planner team={data.current_team}/>
 				</DispatchContext.Provider>
-			</DataContext.Provider>
+			</GameContext.Provider>
 		);
 	}
 	else
@@ -99,7 +99,7 @@ export function App(): ReactElement
 /**
  * The pokemon planner view
  */
-export function Planner(): ReactElement
+export function Planner(props: {team: Data.Team}): ReactElement
 {
 	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
@@ -139,10 +139,10 @@ export function Planner(): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay />
-			<Containers.PartyAnalysis />
+			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
+			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} />
+			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} pokemon={props.team.pokemon} />
 		</div>
 	);
 }
