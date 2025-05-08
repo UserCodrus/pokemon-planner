@@ -17,9 +17,9 @@ export function PartyDisplay(): ReactElement
 	const data = useContext(DataContext);
 
 	const components: ReactElement[] = [];
-	for (let i=0; i < data.current_team.pokemon.length; ++i)
+	for (let i = 0; i < data.current_team.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember generation={data.game!.generation} pokemon={data.current_team.pokemon[i]} key={i} />);
+		components.push(<Components.PartyMember generation={data.game!.generation} pokemon={data.current_team.pokemon[i]} ability={data.current_team.abilities[i]} key={i} />);
 	}
 
 	return (
@@ -163,10 +163,10 @@ export function PartyAnalysis(): ReactElement
 		advantages.push([]);
 		weaknesses.push([]);
 
-		for (const pokemon_selection of data.current_team.pokemon)
+		for (let i = 0; i < data.current_team.pokemon.length; ++i)
 		{
-			const pokemon = Data.getPokemon(data.game!.generation, pokemon_selection.id, pokemon_selection.form);
-			const ability = Data.getAbility(Data.getPokemonAbilities(data.game!.generation, pokemon_selection.id, pokemon_selection.form)[pokemon_selection.ability]);
+			const pokemon = Data.getPokemon(data.game!.generation, data.current_team.pokemon[i].id, data.current_team.pokemon[i].form);
+			const ability = Data.getAbility(Data.getPokemonAbilities(data.game!.generation, data.current_team.pokemon[i].id, data.current_team.pokemon[i].form)[data.current_team.abilities[i]]);
 
 			// Calculate offensive advantages for the pokemon
 			let stab_advantage = false;
@@ -177,7 +177,7 @@ export function PartyAnalysis(): ReactElement
 			}
 			if (stab_advantage)
 			{
-				coverage[coverage.length-1].push(pokemon_selection);
+				coverage[coverage.length-1].push(data.current_team.pokemon[i]);
 			}
 
 			// Check for defensive strengths or weaknesses for the pokemon
@@ -196,11 +196,11 @@ export function PartyAnalysis(): ReactElement
 
 			if (defense_multiplier > 1)
 			{
-				weaknesses[weaknesses.length-1].push(pokemon_selection);
+				weaknesses[weaknesses.length-1].push(data.current_team.pokemon[i]);
 			}
 			else if (defense_multiplier < 1)
 			{
-				advantages[advantages.length-1].push(pokemon_selection);
+				advantages[advantages.length-1].push(data.current_team.pokemon[i]);
 			}
 		}
 	}

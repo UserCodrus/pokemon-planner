@@ -25,7 +25,7 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot}): ReactElement
+export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, ability: number}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const size = 200;
@@ -33,7 +33,7 @@ export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot})
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 
 	const ability_set = Data.getPokemonAbilities(props.generation, props.pokemon.id, props.pokemon.form);
-	const ability = Data.getAbility(ability_set[props.pokemon.ability]);
+	const ability = Data.getAbility(ability_set[props.ability]);
 
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	const type_images: ReactElement[] = [];
@@ -56,7 +56,7 @@ export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot})
 	if (props.generation > 2)
 	{
 		ability_text = ability.name;
-		if (props.pokemon.ability === 2)
+		if (props.ability === 2)
 			ability_text += " [Hidden]";
 	}
 

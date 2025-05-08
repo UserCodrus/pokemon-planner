@@ -33,6 +33,23 @@ export type AppData = {
 	teams: Data.Team[]
 };
 
+export function newTeam(teams: Data.Team[]): Data.Team {
+	// Get the last team id used by existing teams
+	let team_id = 0;
+	for (const team of teams)
+	{
+		if (team.id > team_id)
+			team_id = team.id;
+	}
+
+	return {
+		id: team_id + 1,
+		name: "New Team",
+		pokemon: [],
+		abilities: []
+	}
+}
+
 /**
  * The reducer that modifies global team data
  */
@@ -57,6 +74,7 @@ export function teamReducer(state: AppData, action: Action) {
 		// Add or remove the pokemon specified in the data payload
 		case Task.select_pokemon: {
 			const pokemon = state.current_team.pokemon.slice();
+			const abilities = state.current_team.abilities.slice();
 
 			// Remove the pokemon from the party if it has already been added
 			for (let i=0; i < pokemon.length; ++i)
@@ -64,11 +82,13 @@ export function teamReducer(state: AppData, action: Action) {
 				if (pokemon[i].id === action.data.id && pokemon[i].form === action.data.form)
 				{
 					pokemon.splice(i, 1);
+					abilities.splice(i, 1);
 					return {
 						...state,
 						current_team: {
 							...state.current_team,
-							pokemon: pokemon
+							pokemon: pokemon,
+							abilities: abilities
 						}
 					};
 				}
@@ -77,12 +97,14 @@ export function teamReducer(state: AppData, action: Action) {
 			// Add the pokemon to the party
 			if (pokemon.length < 6)
 			{
-				pokemon.push({id: action.data.id, form: action.data.form, ability: 0});
+				pokemon.push({id: action.data.id, form: action.data.form});
+				abilities.push(0);
 				return {
 					...state,
 					current_team: {
 						...state.current_team,
-						pokemon: pokemon
+						pokemon: pokemon,
+						abilities: abilities
 					}
 				};
 			}
@@ -96,24 +118,21 @@ export function teamReducer(state: AppData, action: Action) {
 				return null;
 
 			// Find which pokemon is being targeted by the action
-			const pokemon = state.current_team.pokemon.slice()
-			for (let i=0; i < pokemon.length; ++i)
+			const pokemon = state.current_team.pokemon;
+			const abilities = state.current_team.abilities.slice();
+			for (let i = 0; i < pokemon.length; ++i)
 			{
 				if (pokemon[i] === action.data)
 				{
-					const party_pokemon = structuredClone(pokemon[i]);
-
 					// Cycle between ability slots, skipping slots with no ability
-					const abilities = Data.getPokemonAbilities(state.game.generation, party_pokemon.id, party_pokemon.form);
+					const ability_data = Data.getPokemonAbilities(state.game.generation, pokemon[i].id, pokemon[i].form);
 					const ability_slots = state.game.generation > 4 ? 2 : 1;
 					do
 					{
-						party_pokemon.ability++;
-						if (party_pokemon.ability > ability_slots)
-							party_pokemon.ability = 0;
-					} while (!abilities[party_pokemon.ability]);
-					
-					pokemon[i] = party_pokemon;
+						abilities[i]++;
+						if (abilities[i] > ability_slots)
+							abilities[i] = 0;
+					} while (!ability_data[abilities[i]]);
 				}
 			}
 
@@ -121,7 +140,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				current_team: {
 					...state.current_team,
-					pokemon: pokemon
+					abilities: abilities
 				}
 			};
 		};
@@ -133,34 +152,11 @@ export const TeamContext = createContext<AppData>({
 	current_team: {
 		id: 0,
 		name: "New Team",
-		pokemon: []
+		pokemon: [],
+		abilities: []
 	},
 	teams: []
 });
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 	console.error("Invalid dispatch function.");
 });
-
-/**
- * A wrapper component that provides the team reducer for child components
- */
-export function TeamProvider(props: {children: ReactNode}): ReactElement
-{
-	const [tasks, dispatch] = useReducer(teamReducer, {
-		game: Data.game_list[0],
-		current_team: {
-			id: 0,
-			name: "New Team",
-			pokemon: []
-		},
-		teams: []
-	});
-
-	return (
-		<TeamContext.Provider value={tasks}>
-			<DispatchContext.Provider value={dispatch}>
-				{props.children}
-			</DispatchContext.Provider>
-		</TeamContext.Provider>
-	);
-}

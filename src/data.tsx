@@ -51,8 +51,7 @@ export type Game = {
  */
 export type TeamSlot = {
 	id: number,
-	form?: number,
-	ability: number
+	form?: number
 };
 
 /**
@@ -61,7 +60,8 @@ export type TeamSlot = {
 export type Team = {
 	id: number,
 	name: string,
-	pokemon: TeamSlot[]
+	pokemon: TeamSlot[],
+	abilities: number[]
 }
 
 /**
