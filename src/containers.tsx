@@ -5,7 +5,7 @@ import { ReactElement, useContext, useMemo } from "react";
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
-import { DispatchContext, Task, TeamContext as DataContext } from "./reducer";
+import { DataContext } from "./reducer";
 
 const party_size = 6;
 
@@ -17,9 +17,12 @@ export function PartyDisplay(): ReactElement
 	const data = useContext(DataContext);
 
 	const components: ReactElement[] = [];
-	for (let i = 0; i < data.current_team.pokemon.length; ++i)
+	for (let i = 0; i < party_size; ++i)
 	{
-		components.push(<Components.PartyMember generation={data.game!.generation} pokemon={data.current_team.pokemon[i]} ability={data.current_team.abilities[i]} key={i} />);
+		if (i < data.current_team.pokemon.length)
+			components.push(<Components.PartyMember generation={data.game!.generation} pokemon={data.current_team.pokemon[i]} ability={data.current_team.abilities[i]} key={i} />);
+		else
+			components.push(<Components.PartyMember generation={data.game!.generation} key={i} />);
 	}
 
 	return (

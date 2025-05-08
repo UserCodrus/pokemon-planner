@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, Suspense, useContext } f
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, newTeam, TeamContext, teamReducer, type Action } from "./reducer";
+import { DispatchContext, newTeam, DataContext, teamReducer } from "./reducer";
 import { useSearchParams } from "next/navigation";
 
 /**
@@ -79,11 +79,11 @@ export function App(): ReactElement
 	if (data.game)
 	{
 		return (
-			<TeamContext.Provider value={data}>
+			<DataContext.Provider value={data}>
 				<DispatchContext.Provider value={dispatch}>
 					<Planner />
 				</DispatchContext.Provider>
-			</TeamContext.Provider>
+			</DataContext.Provider>
 		);
 	}
 	else

@@ -147,7 +147,7 @@ export function teamReducer(state: AppData, action: Action) {
 	}
 }
 
-export const TeamContext = createContext<AppData>({
+export const DataContext = createContext<AppData>({
 	game: Data.game_list[0],
 	current_team: {
 		id: 0,

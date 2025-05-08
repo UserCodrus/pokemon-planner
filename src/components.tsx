@@ -25,22 +25,25 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, ability: number}): ReactElement
+export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot, ability?: number}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const size = 200;
 
-	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
-
-	const ability_set = Data.getPokemonAbilities(props.generation, props.pokemon.id, props.pokemon.form);
-	const ability = Data.getAbility(ability_set[props.ability]);
-
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
-	const type_images: ReactElement[] = [];
+	let name_text = "";
+	let ability_text = "";
+
 	let art_alt = "Empty";
 	let art_src = Data.default_image;
-	if (props.pokemon.id > 0)
+	const type_images: ReactElement[] = [];
+
+	if (props.pokemon)
 	{
+		// Retrieve pokemon data
+		const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
+		name_text = pokemon.name;
+
 		for (let i=0; i < pokemon.types.length; ++i)
 		{
 			const src = Data.typeSpriteURL(pokemon.types[i]);
@@ -49,39 +52,43 @@ export function PartyMember(props: {generation: number, pokemon: Data.TeamSlot, 
 
 		art_src = pokemon.art;
 		art_alt = pokemon.name;
-	}
 
-	// Set the text for the ability line
-	let ability_text = "";
-	if (props.generation > 2)
-	{
-		ability_text = ability.name;
-		if (props.ability === 2)
-			ability_text += " [Hidden]";
+		// Set the text for the ability line
+		if (props.ability !== undefined && props.generation > 2)
+		{
+			const ability_set = Data.getPokemonAbilities(props.generation, props.pokemon.id, props.pokemon.form);
+			const ability = Data.getAbility(ability_set[props.ability]);
+	
+			ability_text = ability.name;
+			if (props.ability === 2)
+				ability_text += " [Hidden]";
+		}
 	}
 
 	// Handle mouse clicks
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
 	{
-		dispatch({
-			type: Task.swap_ability,
-			data: props.pokemon
-		});
+		if (props.pokemon)
+			dispatch({
+				type: Task.swap_ability,
+				data: props.pokemon
+			});
 	}
 	function handleRightClick(event: MouseEvent<HTMLDivElement>)
 	{
 		event.preventDefault();
-		dispatch({
-			type: Task.select_pokemon,
-			data: props.pokemon
-		});
+		if (props.pokemon)
+			dispatch({
+				type: Task.select_pokemon,
+				data: props.pokemon
+			});
 	}
 
 	return (
 		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
-			<div className="text-center min-h-6">{props.pokemon.id > 0 ? pokemon.name : ""}</div>
+			<div className="text-center min-h-6">{name_text}</div>
 			<Image src={art_src} width={size} height={size} alt={art_alt} />
-			<div>{ability_text}</div>
+			<div className="text-center min-h-6">{ability_text}</div>
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
 				{type_images}
 			</div>
