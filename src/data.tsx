@@ -56,14 +56,13 @@ export type TeamSlot = {
 };
 
 /**
- * Saved data for a pokemon team
+ * Data for a pokemon team
  */
 export type Team = {
 	id: number,
 	name: string,
-	game: Game | null,
 	pokemon: TeamSlot[]
-};
+}
 
 /**
  * The master list of pokedexes and their generations used in each game

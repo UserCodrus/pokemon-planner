@@ -5,7 +5,7 @@ import { ReactElement, useContext, useMemo } from "react";
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
-import { DispatchContext, Task, TeamContext } from "./reducer";
+import { DispatchContext, Task, TeamContext as DataContext } from "./reducer";
 
 const party_size = 6;
 
@@ -14,12 +14,12 @@ const party_size = 6;
  */
 export function PartyDisplay(): ReactElement
 {
-	const team = useContext(TeamContext);
+	const data = useContext(DataContext);
 
 	const components: ReactElement[] = [];
-	for (let i=0; i < team.pokemon.length; ++i)
+	for (let i=0; i < data.current_team.pokemon.length; ++i)
 	{
-		components.push(<Components.PartyMember generation={team.game!.generation} pokemon={team.pokemon[i]} key={i} />);
+		components.push(<Components.PartyMember generation={data.game!.generation} pokemon={data.current_team.pokemon[i]} key={i} />);
 	}
 
 	return (
@@ -34,13 +34,13 @@ export function PartyDisplay(): ReactElement
  */
 function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[], nameFilter: string}): ReactElement
 {
-	const team = useContext(TeamContext);
+	const data = useContext(DataContext);
 
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
 	for (let i=0; i < props.pokedex.entries.length; ++i)
 	{
-		const pokemon = Data.getPokemon(team.game!.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
+		const pokemon = Data.getPokemon(data.game!.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
@@ -66,7 +66,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 
 		// Determine if the pokemon has been selected
 		let selected = false;
-		for (const selection of team.pokemon)
+		for (const selection of data.current_team.pokemon)
 		{
 			if (selection.id === props.pokedex.entries[i][0] && selection.form === props.pokedex.entries[i][1])
 			{
@@ -75,7 +75,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 			}
 		}
 
-		components.push(<Components.PokemonSelector generation={team.game!.generation} id={props.pokedex.entries[i][0]} form={props.pokedex.entries[i][1]} selected={selected} key={i}/>);
+		components.push(<Components.PokemonSelector generation={data.game!.generation} id={props.pokedex.entries[i][0]} form={props.pokedex.entries[i][1]} selected={selected} key={i}/>);
 	}
 
 	return (
@@ -93,16 +93,16 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
  */
 export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string}): ReactElement
 {
-	const team = useContext(TeamContext);
+	const data = useContext(DataContext);
 	
 	const components: ReactElement[] = [];
-	for (let i = 0; i < team.game!.pokedexes.length; ++i)
+	for (let i = 0; i < data.game!.pokedexes.length; ++i)
 	{
 		// Find the pokedex with the id matching the provided prop
 		let pokedex_data: typeof Pokedex[0] | undefined;
 		for (const dex_data of Pokedex)
 		{
-			if (dex_data.id === team.game!.pokedexes[i])
+			if (dex_data.id === data.game!.pokedexes[i])
 			{
 				pokedex_data = dex_data;
 				break;
@@ -127,13 +127,13 @@ export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string
  */
 export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
 {
-	const team = useContext(TeamContext);
+	const data = useContext(DataContext);
 
 	// Create a full set of filter buttons
 	const type_buttons: ReactElement[] = [];
 	for (let i=0; i<Data.getNumTypes(); ++i)
 	{
-		if (Data.validType(team.game!.generation, i))
+		if (Data.validType(data.game!.generation, i))
 			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i} />)
 	}
 
@@ -150,7 +150,7 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
  */
 export function PartyAnalysis(): ReactElement
 {
-	const team = useContext(TeamContext);
+	const data = useContext(DataContext);
 
 	// Calculate the type advantages and disadvantages of the team
 	const coverage: Data.TeamSlot[][] = [];
@@ -163,16 +163,16 @@ export function PartyAnalysis(): ReactElement
 		advantages.push([]);
 		weaknesses.push([]);
 
-		for (const pokemon_selection of team.pokemon)
+		for (const pokemon_selection of data.current_team.pokemon)
 		{
-			const pokemon = Data.getPokemon(team.game!.generation, pokemon_selection.id, pokemon_selection.form);
-			const ability = Data.getAbility(Data.getPokemonAbilities(team.game!.generation, pokemon_selection.id, pokemon_selection.form)[pokemon_selection.ability]);
+			const pokemon = Data.getPokemon(data.game!.generation, pokemon_selection.id, pokemon_selection.form);
+			const ability = Data.getAbility(Data.getPokemonAbilities(data.game!.generation, pokemon_selection.id, pokemon_selection.form)[pokemon_selection.ability]);
 
 			// Calculate offensive advantages for the pokemon
 			let stab_advantage = false;
 			for (const type of pokemon.types)
 			{
-				if (Data.getTypeAdvantage(team.game!.generation, type, [i]) > 1)
+				if (Data.getTypeAdvantage(data.game!.generation, type, [i]) > 1)
 					stab_advantage = true;
 			}
 			if (stab_advantage)
@@ -181,15 +181,15 @@ export function PartyAnalysis(): ReactElement
 			}
 
 			// Check for defensive strengths or weaknesses for the pokemon
-			let defense_multiplier = Data.getTypeAdvantage(team.game!.generation, i, pokemon.types);
+			let defense_multiplier = Data.getTypeAdvantage(data.game!.generation, i, pokemon.types);
 
 			// Apply ability bonuses
-			if (ability.defense && team.game!.generation > 2)
+			if (ability.defense && data.game!.generation > 2)
 			{
 				for (const type of ability.defense.types)
 				{
 					if (type === i)
-						if (!ability.defense.generation || ability.defense.generation >= team.game!.generation)
+						if (!ability.defense.generation || ability.defense.generation >= data.game!.generation)
 							defense_multiplier *= ability.defense.multiplier;
 				}
 			}
@@ -209,7 +209,7 @@ export function PartyAnalysis(): ReactElement
 	const components: ReactElement[] = [];
 	for (let i=0; i<Data.getNumTypes(); ++i)
 	{
-		if (Data.validType(team.game!.generation, i))
+		if (Data.validType(data.game!.generation, i))
 			components.push(<Components.Coverage type={i} coverage={coverage[i]} advantages={advantages[i]} weaknesses={weaknesses[i]} key={i} />)
 	}
 

@@ -35,23 +35,34 @@ export function App(): ReactElement
 		}
 	}
 
-	const [team, dispatch] = useReducer(teamReducer, {
-		id: 0,
-		name: "New Team",
+	const [data, dispatch] = useReducer(teamReducer, {
 		game: selected_game ? selected_game : null,
-		pokemon: []
+		current_team: {
+			id: 0,
+			name: "New Team",
+			pokemon: []
+		},
+		teams: []
 	});
 
 	// Set the current game from the url fragment if it isn't already set
 	if (!selected_game)
 	{
-		team.game = null;
-		team.pokemon = [];
+		data.game = null;
+		data.current_team = {
+			id: 0,
+			name: "New Team",
+			pokemon: []
+		};
 	}
-	else if (selected_game != team.game)
+	else if (selected_game != data.game)
 	{
-		team.game = selected_game;
-		team.pokemon = [];
+		data.game = selected_game;
+		data.current_team = {
+			id: 0,
+			name: "New Team",
+			pokemon: []
+		};
 	}
 
 	// Load saved teams from local storage
@@ -77,10 +88,10 @@ export function App(): ReactElement
 		}
 	}, [savedTeams]);*/
 
-	if (team.game)
+	if (data.game)
 	{
 		return (
-			<TeamContext.Provider value={team}>
+			<TeamContext.Provider value={data}>
 				<DispatchContext.Provider value={dispatch}>
 					<Planner />
 				</DispatchContext.Provider>

@@ -21,9 +21,22 @@ export type Action = {
 }
 
 /**
+ * 
+ */
+
+/**
+ * Global data for the app
+ */
+export type AppData = {
+	game: Data.Game | null,
+	current_team: Data.Team,
+	teams: Data.Team[]
+};
+
+/**
  * The reducer that modifies global team data
  */
-export function teamReducer(state: Data.Team, action: Action) {
+export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
 		// Store the data payload as the new team object
 		case Task.select_team: {
@@ -34,13 +47,16 @@ export function teamReducer(state: Data.Team, action: Action) {
 		case Task.change_name: {
 			return {
 				...state,
-				name: action.data
+				current_team: {
+					...state.current_team,
+					name: action.data
+				}
 			}
 		};
 
 		// Add or remove the pokemon specified in the data payload
 		case Task.select_pokemon: {
-			const pokemon = state.pokemon.slice();
+			const pokemon = state.current_team.pokemon.slice();
 
 			// Remove the pokemon from the party if it has already been added
 			for (let i=0; i < pokemon.length; ++i)
@@ -50,7 +66,10 @@ export function teamReducer(state: Data.Team, action: Action) {
 					pokemon.splice(i, 1);
 					return {
 						...state,
-						pokemon: pokemon
+						current_team: {
+							...state.current_team,
+							pokemon: pokemon
+						}
 					};
 				}
 			}
@@ -61,7 +80,10 @@ export function teamReducer(state: Data.Team, action: Action) {
 				pokemon.push({id: action.data.id, form: action.data.form, ability: 0});
 				return {
 					...state,
-					pokemon: pokemon
+					current_team: {
+						...state.current_team,
+						pokemon: pokemon
+					}
 				};
 			}
 
@@ -74,7 +96,7 @@ export function teamReducer(state: Data.Team, action: Action) {
 				return null;
 
 			// Find which pokemon is being targeted by the action
-			const pokemon = state.pokemon.slice()
+			const pokemon = state.current_team.pokemon.slice()
 			for (let i=0; i < pokemon.length; ++i)
 			{
 				if (pokemon[i] === action.data)
@@ -97,17 +119,23 @@ export function teamReducer(state: Data.Team, action: Action) {
 
 			return {
 				...state,
-				pokemon: pokemon
+				current_team: {
+					...state.current_team,
+					pokemon: pokemon
+				}
 			};
 		};
 	}
 }
 
-export const TeamContext = createContext<Data.Team>({
-	id: 0,
-	name: "Invalid Team",
+export const TeamContext = createContext<AppData>({
 	game: Data.game_list[0],
-	pokemon: []
+	current_team: {
+		id: 0,
+		name: "New Team",
+		pokemon: []
+	},
+	teams: []
 });
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 	console.error("Invalid dispatch function.");
@@ -119,10 +147,13 @@ export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 export function TeamProvider(props: {children: ReactNode}): ReactElement
 {
 	const [tasks, dispatch] = useReducer(teamReducer, {
-		id: 0,
-		name: "New Team",
 		game: Data.game_list[0],
-		pokemon: []
+		current_team: {
+			id: 0,
+			name: "New Team",
+			pokemon: []
+		},
+		teams: []
 	});
 
 	return (
