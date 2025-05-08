@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, useState, useEffect, useReducer, Suspense } from "react";
+import { ReactElement, useState, useEffect, useReducer, Suspense, useContext } from "react";
 
 import * as Components from "./components";
 import * as Containers from "./containers";
@@ -23,23 +23,35 @@ export function StupidWrapper(): ReactElement
  */
 export function App(): ReactElement
 {
-	const [team, dispatch] = useReducer(teamReducer, {
-		id: 0,
-		name: "New Team",
-		pokedex: "nat",
-		pokemon: []
-	});
-
 	// Get the current pokedex for the app using the url fragment
 	const location = useSearchParams();
-	let selectedGame: Data.Game | undefined;
+	let selected_game: Data.Game | undefined;
 	for (const game of Data.game_list)
 	{
 		if (game.id === location.get("game"))
 		{
-			selectedGame = game;
+			selected_game = game;
 			break;
 		}
+	}
+
+	const [team, dispatch] = useReducer(teamReducer, {
+		id: 0,
+		name: "New Team",
+		game: selected_game ? selected_game : null,
+		pokemon: []
+	});
+
+	// Set the current game from the url fragment if it isn't already set
+	if (!selected_game)
+	{
+		team.game = null;
+		team.pokemon = [];
+	}
+	else if (selected_game != team.game)
+	{
+		team.game = selected_game;
+		team.pokemon = [];
 	}
 
 	// Load saved teams from local storage
@@ -65,12 +77,12 @@ export function App(): ReactElement
 		}
 	}, [savedTeams]);*/
 
-	if (selectedGame)
+	if (team.game)
 	{
 		return (
 			<TeamContext.Provider value={team}>
 				<DispatchContext.Provider value={dispatch}>
-					<Planner team={team} />
+					<Planner />
 				</DispatchContext.Provider>
 			</TeamContext.Provider>
 		);
@@ -78,7 +90,9 @@ export function App(): ReactElement
 	else
 	{
 		return (
-			<Selector />
+			<DispatchContext.Provider value={dispatch}>
+				<Selector />
+			</DispatchContext.Provider>
 		);
 	}
 }
@@ -86,23 +100,11 @@ export function App(): ReactElement
 /**
  * The pokemon planner view
  */
-export function Planner(props: {team: Data.Team}): ReactElement
+export function Planner(): ReactElement
 {
 	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
-
-	// Get the current pokedex for the app using the url fragment
-	const location = useSearchParams();
-	let selectedGame: Data.Game = Data.game_list[0];
-	for (const game of Data.game_list)
-	{
-		if (game.id === location.get("game"))
-		{
-			selectedGame = game;
-			break;
-		}
-	}
 
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number)
@@ -138,10 +140,10 @@ export function Planner(props: {team: Data.Team}): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<Containers.PartyDisplay generation={selectedGame.generation} />
-			<Containers.PartyAnalysis generation={selectedGame.generation} />
-			<Containers.FilterBar generation={selectedGame.generation} typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay generation={selectedGame.generation} pokedexes={selectedGame.pokedexes} typeFilter={typeFilter} nameFilter={nameFilter} />
+			<Containers.PartyDisplay />
+			<Containers.PartyAnalysis />
+			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
+			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} />
 		</div>
 	);
 }
@@ -175,7 +177,6 @@ export function Selector(): ReactElement
 				}
 			}
 		}
-
 
 		components.push(
 			<div key={i} className="flex flex-row gap-2 justify-center">

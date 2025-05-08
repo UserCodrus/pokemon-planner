@@ -61,7 +61,7 @@ export type TeamSlot = {
 export type Team = {
 	id: number,
 	name: string,
-	pokedex: string,
+	game: Game | null,
 	pokemon: TeamSlot[]
 };
 

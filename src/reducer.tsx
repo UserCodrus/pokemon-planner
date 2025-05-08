@@ -70,16 +70,8 @@ export function teamReducer(state: Data.Team, action: Action) {
 
 		// Toggle the ability of a pokemon
 		case Task.swap_ability: {
-			// Determine which generation is being used in the planner
-			let generation = 9;
-			for (const game of Data.game_list)
-			{
-				if (game.id === state.pokedex)
-				{
-					generation = game.generation;
-					break;
-				}
-			}
+			if (!state.game)
+				return null;
 
 			// Find which pokemon is being targeted by the action
 			const pokemon = state.pokemon.slice()
@@ -90,8 +82,8 @@ export function teamReducer(state: Data.Team, action: Action) {
 					const party_pokemon = structuredClone(pokemon[i]);
 
 					// Cycle between ability slots, skipping slots with no ability
-					const abilities = Data.getPokemonAbilities(generation, party_pokemon.id, party_pokemon.form);
-					const ability_slots = generation > 4 ? 2 : 1;
+					const abilities = Data.getPokemonAbilities(state.game.generation, party_pokemon.id, party_pokemon.form);
+					const ability_slots = state.game.generation > 4 ? 2 : 1;
 					do
 					{
 						party_pokemon.ability++;
@@ -114,7 +106,7 @@ export function teamReducer(state: Data.Team, action: Action) {
 export const TeamContext = createContext<Data.Team>({
 	id: 0,
 	name: "Invalid Team",
-	pokedex: 'rby',
+	game: Data.game_list[0],
 	pokemon: []
 });
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
@@ -129,7 +121,7 @@ export function TeamProvider(props: {children: ReactNode}): ReactElement
 	const [tasks, dispatch] = useReducer(teamReducer, {
 		id: 0,
 		name: "New Team",
-		pokedex: 'rby',
+		game: Data.game_list[0],
 		pokemon: []
 	});
 
