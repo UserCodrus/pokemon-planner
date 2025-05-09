@@ -4,6 +4,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
 
 /**
  * Constants describing the various actions that can be performed on team data via the reducer
+ * @param change_game Change the selected game. Data should be a game id matching a game in Data.game_list
  * @param load_teams Store a set of teams. Data should be an array of Data.Team.
  * @param save_current_team Overwrite changes made to the current team. Data is not used.
  * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
@@ -14,6 +15,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
  * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
  */
 export const enum Task {
+	change_game,
 	load_teams, 
 
 	save_current_team,
@@ -66,6 +68,25 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
  */
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
+		// Find a game matching the provided id
+		case Task.change_game: {
+			let selected_game: Data.Game | undefined;
+			for (const game of Data.game_list)
+			{
+				if (game.id === action.data)
+				{
+					selected_game = game;
+					break;
+				}
+			}
+
+			if (selected_game)
+				return {
+					...state,
+					game: selected_game
+				}
+		};
+
 		// Overwrite the current team data with the provided teams
 		case Task.load_teams: {
 			return {
@@ -238,6 +259,7 @@ export function teamReducer(state: AppData, action: Action) {
 		};
 	}
 
+	console.error("Failed to apply action id: " + action.type);
 	return state;
 }
 

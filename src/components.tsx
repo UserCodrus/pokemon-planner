@@ -271,14 +271,19 @@ export function Coverage(props: {type: number, coverage: Data.TeamSlot[], advant
 export function PokedexSelector(props: {game: Data.Game}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
+
+	function handleClick() {
+		dispatch({
+			type: Task.change_game,
+			data: props.game.id
+		});
+	}
 	
 	return (
-		<Link href={"?game=" + props.game.id}>
-			<div className="panel p-1 px-2 select-none cursor-pointer text-center">
-				<div>Generation {props.game.generation}</div>
-				<div>{props.game.games}</div>
-			</div>
-		</Link>
+		<div className="panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
+			<div>Generation {props.game.generation}</div>
+			<div>{props.game.games}</div>
+		</div>
 	);
 }
 

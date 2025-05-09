@@ -1,23 +1,11 @@
 'use client';
 
-import { ReactElement, useState, useEffect, useReducer, Suspense, useContext } from "react";
+import { ReactElement, useState, useEffect, useReducer, useContext } from "react";
 
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
 import { DispatchContext, newTeam, teamReducer, GameContext, Task } from "./reducer";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-
-/**
- * Next.js won't let me use useSearchParams without a suspense wrapper. I don't know why I need this, it should only take a few nanoseconds for the browser to retrieve this information.
- */
-export function StupidWrapper(): ReactElement
-{
-	return <Suspense>
-		<App />
-	</Suspense>
-}
 
 /**
  * The core component of the app, responsible for routing between different views
@@ -29,26 +17,6 @@ export function App(): ReactElement
 		current_team: newTeam([], ""),
 		teams: []
 	});
-
-	// Get the current pokedex for the app using the url fragment
-	const location = useSearchParams();
-	let selected_game: Data.Game | undefined;
-	for (const game of Data.game_list)
-	{
-		if (game.id === location.get("game"))
-		{
-			selected_game = game;
-			break;
-		}
-	}
-
-	// Set the current game from the url fragment if it isn't already set
-	if (selected_game && !data.game)
-	{
-		data.game = selected_game;
-		data.current_team = newTeam(data.teams, data.game.id);
-		console.log(data.current_team);
-	}
 
 	// Load teams from storage after the app starts
 	useEffect(() => {
