@@ -4,9 +4,23 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
 
 /**
  * Constants describing the various actions that can be performed on team data via the reducer
+ * @param load_teams Store a set of teams. Data should be an array of Data.Team.
+ * @param save_current_team Overwrite changes made to the current team. Data is not used.
+ * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
+ * @param new_team Delete the existing team in the current_team slot and create a new one. Data is not used.
+ * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id.
+ * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
+ * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
+ * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
  */
 export const enum Task {
+	load_teams, 
+
+	save_current_team,
+	save_new_team,
+	new_team,
 	select_team,
+
 	change_name,
 	select_pokemon,
 	swap_ability
@@ -17,12 +31,8 @@ export const enum Task {
  */
 export type Action = {
 	type: Task,
-	data: any
+	data?: any
 }
-
-/**
- * 
- */
 
 /**
  * Global data for the app
@@ -33,7 +43,7 @@ export type AppData = {
 	teams: Data.Team[]
 };
 
-export function newTeam(teams: Data.Team[]): Data.Team {
+export function newTeam(teams: Data.Team[], game: string): Data.Team {
 	// Get the last team id used by existing teams
 	let team_id = 0;
 	for (const team of teams)
@@ -44,6 +54,7 @@ export function newTeam(teams: Data.Team[]): Data.Team {
 
 	return {
 		id: team_id + 1,
+		game: game,
 		name: "New Team",
 		pokemon: [],
 		abilities: []
@@ -55,19 +66,101 @@ export function newTeam(teams: Data.Team[]): Data.Team {
  */
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
-		// Store the data payload as the new team object
+		// Overwrite the current team data with the provided teams
+		case Task.load_teams: {
+			return {
+				...state,
+				teams: action.data as Data.Team[]
+			}
+		};
+
+		// Store changes made to the current team
+		case Task.save_current_team: {
+			// Remove the team from its current spot in the team list if it has already been saved
+			const team_list = state.teams.slice();
+			for (let i = 0; i < team_list.length; ++i)
+			{
+				if (team_list[i].id === state.current_team.id)
+				{
+					team_list.splice(i, 1);
+					break;
+				}
+			}
+
+			// Add the team data back into the team list
+			team_list.push(structuredClone(state.current_team));
+			return {
+				...state,
+				teams: team_list
+			};
+		};
+
+		// Store the current team to the team list as a new team
+		case Task.save_new_team: {
+			// Get an unused team id
+			const team_list = state.teams.slice();
+			let team_id = 0;
+			for (const team of team_list)
+			{
+				if (team.id > team_id)
+					team_id = team.id;
+			}
+
+			// Copy the team data and add it to the team list
+			const new_team = structuredClone(state.current_team);
+			new_team.id = team_id + 1;
+
+			team_list.push(new_team);
+			return {
+				...state,
+				current_team: new_team,
+				teams: team_list
+			};
+		};
+
+		// Reset the active team
+		case Task.new_team: {
+			const new_team = newTeam(state.teams, state.game!.id);
+			return {
+				...state,
+				current_team: new_team
+			}
+		};
+
+		// Set the team with the given id as the active team
 		case Task.select_team: {
-			return action.data;
+			const team_list = state.teams.slice();
+			for (const team of team_list)
+			{
+				if (team.id === action.data)
+				{
+					let selected_game: Data.Game | undefined;
+					for (const game of Data.game_list)
+					{
+						if (game.id === team.game)
+						{
+							selected_game = game;
+							break;
+						}
+					}
+					
+					if (selected_game)
+						return {
+							...state,
+							game: selected_game,
+							current_team: structuredClone(team)
+						}
+				}
+			}
 		};
 
 		// Set the name of the team to the data payload
 		case Task.change_name: {
-			console.log("Team name changed to: " + action.data)
 			return {
 				...state,
 				current_team: {
 					...state.current_team,
-					name: action.data
+					name: action.data as string
 				}
 			}
 		};
@@ -109,14 +202,12 @@ export function teamReducer(state: AppData, action: Action) {
 					}
 				};
 			}
-
-			return state;
 		};
 
 		// Toggle the ability of a pokemon
 		case Task.swap_ability: {
 			if (!state.game)
-				return null;
+				return state;
 
 			// Find which pokemon is being targeted by the action
 			const pokemon = state.current_team.pokemon;
@@ -146,6 +237,8 @@ export function teamReducer(state: AppData, action: Action) {
 			};
 		};
 	}
+
+	return state;
 }
 
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{

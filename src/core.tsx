@@ -5,8 +5,9 @@ import { ReactElement, useState, useEffect, useReducer, Suspense, useContext } f
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, newTeam, teamReducer, GameContext } from "./reducer";
+import { DispatchContext, newTeam, teamReducer, GameContext, Task } from "./reducer";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 /**
  * Next.js won't let me use useSearchParams without a suspense wrapper. I don't know why I need this, it should only take a few nanoseconds for the browser to retrieve this information.
@@ -23,6 +24,12 @@ export function StupidWrapper(): ReactElement
  */
 export function App(): ReactElement
 {
+	const [data, dispatch] = useReducer(teamReducer, {
+		game: null,
+		current_team: newTeam([], ""),
+		teams: []
+	});
+
 	// Get the current pokedex for the app using the url fragment
 	const location = useSearchParams();
 	let selected_game: Data.Game | undefined;
@@ -35,46 +42,36 @@ export function App(): ReactElement
 		}
 	}
 
-	const [data, dispatch] = useReducer(teamReducer, {
-		game: selected_game ? selected_game : null,
-		current_team: newTeam([]),
-		teams: []
-	});
-
 	// Set the current game from the url fragment if it isn't already set
-	if (!selected_game)
-	{
-		data.game = null;
-		data.current_team = newTeam(data.teams);
-	}
-	else if (selected_game != data.game)
+	if (selected_game && !data.game)
 	{
 		data.game = selected_game;
-		data.current_team = newTeam(data.teams);
+		data.current_team = newTeam(data.teams, data.game.id);
+		console.log(data.current_team);
 	}
 
-	// Load saved teams from local storage
-	/*useEffect(() => {
+	// Load teams from storage after the app starts
+	useEffect(() => {
 		const storage = localStorage.getItem("teams");
 		if (storage)
 		{
-			setSavedTeams(JSON.parse(storage));
-			console.log("Loaded team data from storage")
-		}
-		else
-		{
-			setSavedTeams([]);
+			dispatch({
+				type: Task.load_teams,
+				data: JSON.parse(storage)
+			});
+			console.log("Loaded team data from storage");
+			console.log(JSON.parse(storage));
 		}
 	}, []);
 
-	// Save team data to storage every time it changes
+	// Push any changes to team data to storage
 	useEffect(() => {
-		if (savedTeams && savedTeams.length > 0)
+		if (data.teams && data.teams.length > 0)
 		{
-			localStorage.setItem("teams", JSON.stringify(savedTeams));
+			localStorage.setItem("teams", JSON.stringify(data.teams));
 			console.log("Saved team data to browser storage");
 		}
-	}, [savedTeams]);*/
+	}, [data.teams]);
 
 	if (data.game)
 	{
@@ -101,6 +98,8 @@ export function App(): ReactElement
  */
 export function Planner(props: {team: Data.Team}): ReactElement
 {
+	const dispatch = useContext(DispatchContext);
+
 	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
@@ -139,6 +138,29 @@ export function Planner(props: {team: Data.Team}): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
+			<div>
+				<button className="panel p-2 m-1 clickable" onClick={()=>{
+					dispatch({
+						type: Task.save_current_team
+					});
+				}}>Save team</button>
+				<button className="panel p-2 m-1 clickable" onClick={()=>{
+					dispatch({
+						type: Task.save_new_team
+					});
+				}}>Save as new</button>
+				<button className="panel p-2 m-1 clickable" onClick={()=>{
+					dispatch({
+						type: Task.new_team
+					});
+				}}>New team</button>
+				<button className="panel p-2 m-1 clickable" onClick={()=>{
+					dispatch({
+						type: Task.select_team,
+						data: 1
+					});
+				}}>Load team</button>
+			</div>
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
