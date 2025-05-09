@@ -289,32 +289,16 @@ export function TeamName(props: {name: string}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 
-	// Change the team name when the form loses focus
-	function handleBlur(e: FocusEvent<HTMLFormElement>) {
-		const data = new FormData(e.currentTarget);
-		const text = data.get("textbox");
-		if (text)
-			dispatch({
-				type: Task.change_name,
-				data: text.valueOf()
-			});
-	}
-	// Force the form to lose focus when it is submitted
-	function handleSubmit(e: FormEvent<HTMLFormElement>)
-	{
-		e.preventDefault();
-		for (const child of e.currentTarget.children)
-		{
-			if (child instanceof HTMLInputElement)
-				child.blur();
-		}
-	}
-
 	return (
 		<div className="panel text-lg text-center p-2 min-w-1/4">
-			<form onSubmit={(e)=>handleSubmit(e)} onBlur={(e)=>handleBlur(e)} >
-				<input type="text" name="textbox" defaultValue={props.name} className="text-center" />
-			</form>
+			<input type="text" name="textbox" value={props.name} className="text-center"
+				onChange={(e)=>{
+					dispatch({
+						type: Task.change_name,
+						data: e.currentTarget.value
+					})
+				}}
+			/>
 		</div>
 	);
 }
