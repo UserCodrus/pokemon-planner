@@ -83,7 +83,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 
 	return (
 		<div className="text-center">
-			<div className="panel text-lg p-2 mb-2 w-1/4 inline-block">{props.pokedex.name}</div>
+			<div className="panel text-lg p-2 mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
 			<div className="flex flex-row flex-wrap justify-center gap-2">
 				{components}
 			</div>
@@ -180,7 +180,6 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 			}
 			if (stab_advantage)
 			{
-				console.log("advantage for type " + type_id + " from mon " + props.pokemon[i].id)
 				coverage[coverage.length-1].push(props.pokemon[i]);
 			}
 

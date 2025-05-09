@@ -139,6 +139,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
+			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />

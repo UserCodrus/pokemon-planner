@@ -62,6 +62,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Set the name of the team to the data payload
 		case Task.change_name: {
+			console.log("Team name changed to: " + action.data)
 			return {
 				...state,
 				current_team: {
