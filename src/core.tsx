@@ -129,6 +129,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 					});
 				}}>Load team</button>
 			</div>
+			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />

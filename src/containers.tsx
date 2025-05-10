@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, useContext, useMemo } from "react";
+import { ReactElement, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
@@ -221,4 +221,49 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 			{components}
 		</div>
 	);
+}
+
+/**
+ * The container for the main menu
+ */
+export function MenuBox(props: {closeCallback: Function}): ReactElement
+{
+	// Add a global listener to run the close callback when a clicking outside the menu
+	const ref = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const handleClick = (e: MouseEvent) => {
+			if (!ref.current?.contains(e.target as Node))
+				props.closeCallback();
+		}
+		document.addEventListener("click", handleClick);
+		document.addEventListener("contextmenu", handleClick);
+
+		return () => {
+			document.removeEventListener("click", handleClick);
+			document.removeEventListener("contextmenu", handleClick);
+		}
+	}, [ref]);
+	
+	return (
+		<div className="sidemenu" ref={ref}>
+			Hello there.
+		</div>
+	);
+}
+
+/**
+ * The sidebar menu
+ */
+export function PopupMenu(): ReactElement
+{
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	if (menuOpen)
+	{
+		return <MenuBox closeCallback={()=>{setMenuOpen(false)}} />
+	}
+	else
+	{
+		return <Components.MenuButton openCallback={()=>{setMenuOpen(true)}} />
+	}
 }

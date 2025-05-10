@@ -61,6 +61,23 @@ footer {
 		animation: animation-grow 0.05s linear;
 	}
 
+	.sidemenu {
+		position: fixed;
+		z-index: 1;
+
+		left: 0;
+		top: 0;
+
+		min-height: 100%;
+		min-width: 50em;
+
+		background-color: var(--color-panel);
+		backdrop-filter: blur(10px);
+		padding: 0.5rem;
+
+		animation: animation-fade-in 0.05s linear;
+	}
+
 	.fade {
 		transition: scale 0.2s ease-in-out;
 		scale: 1;

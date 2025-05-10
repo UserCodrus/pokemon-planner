@@ -202,7 +202,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
 /**
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
-const icon_source = "/icons.svg"
+const icon_source = "/icons.svg";
 const icon_size = 16;
 export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
 {
@@ -318,6 +318,18 @@ export function TeamName(props: {name: string}): ReactElement
 					})
 				}}
 			/>
+		</div>
+	);
+}
+
+/**
+ * A floating menu icon that sticks to the corner of the screen
+ */
+export function MenuButton(props: {openCallback: Function}): ReactElement
+{
+	return (
+		<div className="fixed left-2 top-2 text-black" onClick={()=>props.openCallback()}>
+			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
 	);
 }
