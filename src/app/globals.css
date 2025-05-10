@@ -57,14 +57,16 @@ footer {
 		backdrop-filter: blur(10px);
 		border-radius: 0.5rem;
 		padding: 0.5rem;
+
+		animation: animation-grow 0.05s linear;
 	}
 
 	.fade {
-		transition: opacity 0.2s ease-in-out;
-		opacity: 1;
+		transition: scale 0.2s ease-in-out;
+		scale: 1;
 	}
 	.fade.hide {
-		opacity: 0;
+		scale: 0;
 	}
 
 	.anim-pulse {
@@ -90,4 +92,9 @@ footer {
 	0% { transform: rotate3d(0, 1, 0, 90deg); }
 	70% { transform: rotate3d(0, 1, 0, -20deg); }
 	100% { transform: rotate3d(0, 1, 0, 0deg); }
+}
+
+@keyframes animation-grow {
+	0% { transform: scale(0); }
+	100% { transform: scale(1); }
 }
