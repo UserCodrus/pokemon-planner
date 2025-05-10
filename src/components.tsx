@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, FocusEvent, MouseEvent, MouseEventHandler, ReactElement, useContext, useState } from "react";
+import { FormEvent, FocusEvent, MouseEvent, MouseEventHandler, ReactElement, useContext, useState, useEffect } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -99,8 +99,22 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 /**
  * A context menu that sits above a pokemon selector after right clicking
  */
-export function PokemonSelectorPopup(props: {pokemon: number}): ReactElement
+export function PokemonSelectorPopup(props: {pokemon: number, closeCallback: Function}): ReactElement
 {
+	// Add a global listener to run the close callback when a clicking anywhere on the page
+	useEffect(() => {
+		const handleClick = () => {
+			props.closeCallback();
+		}
+		document.addEventListener("click", handleClick);
+		document.addEventListener("contextmenu", handleClick);
+
+		return () => {
+			document.removeEventListener("click", handleClick);
+			document.removeEventListener("contextmenu", handleClick);
+		}
+	}, []);
+
 	return (
 		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon} target="_blank" rel="noopener noreferrer">
 			<div className="popup">
@@ -139,12 +153,12 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	}
 
 	return (
-		<div className="relative" onMouseLeave={(e)=>setContextMenu(false)}>
+		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
 			<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
-			{contextMenu && <PokemonSelectorPopup pokemon={props.id} />}
+			{contextMenu && <PokemonSelectorPopup pokemon={props.id} closeCallback={()=>{setContextMenu(false)}} />}
 		</div>
 	);
 }
