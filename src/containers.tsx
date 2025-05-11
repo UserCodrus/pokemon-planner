@@ -1,11 +1,11 @@
 'use client';
 
-import { ReactElement, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ReactElement, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
-import { GameContext } from "./reducer";
+import { DispatchContext, GameContext, Task } from "./reducer";
 
 const party_size = 6;
 
@@ -226,7 +226,7 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 /**
  * The container for the main menu
  */
-export function MenuBox(props: {closeCallback: Function}): ReactElement
+export function MenuBox(props: {closeCallback: Function, children: ReactNode}): ReactElement
 {
 	// Add a global listener to run the close callback when a clicking outside the menu
 	const ref = useRef<HTMLDivElement>(null);
@@ -246,7 +246,7 @@ export function MenuBox(props: {closeCallback: Function}): ReactElement
 	
 	return (
 		<div className="sidemenu" ref={ref}>
-			Hello there.
+			{props.children}
 		</div>
 	);
 }
@@ -257,10 +257,32 @@ export function MenuBox(props: {closeCallback: Function}): ReactElement
 export function PopupMenu(): ReactElement
 {
 	const [menuOpen, setMenuOpen] = useState(false);
+	const dispatch = useContext(DispatchContext);
 
 	if (menuOpen)
 	{
-		return <MenuBox closeCallback={()=>{setMenuOpen(false)}} />
+		return (
+			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
+				<div className="flex flex-col">
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.save_current_team });
+						setMenuOpen(false);
+					}}>Save team</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.save_new_team });
+						setMenuOpen(false);
+					}}>Save as new</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.new_team });
+						setMenuOpen(false);
+					}}>New team</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.select_team, data: 1 });
+						setMenuOpen(false);
+					}}>Load team</button>
+				</div>
+			</MenuBox>
+		);
 	}
 	else
 	{

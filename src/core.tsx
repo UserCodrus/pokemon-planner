@@ -66,8 +66,6 @@ export function App(): ReactElement
  */
 export function Planner(props: {team: Data.Team}): ReactElement
 {
-	const dispatch = useContext(DispatchContext);
-
 	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
@@ -106,29 +104,6 @@ export function Planner(props: {team: Data.Team}): ReactElement
 
 	return (
 		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
-			<div>
-				<button className="panel p-2 m-1 clickable" onClick={()=>{
-					dispatch({
-						type: Task.save_current_team
-					});
-				}}>Save team</button>
-				<button className="panel p-2 m-1 clickable" onClick={()=>{
-					dispatch({
-						type: Task.save_new_team
-					});
-				}}>Save as new</button>
-				<button className="panel p-2 m-1 clickable" onClick={()=>{
-					dispatch({
-						type: Task.new_team
-					});
-				}}>New team</button>
-				<button className="panel p-2 m-1 clickable" onClick={()=>{
-					dispatch({
-						type: Task.select_team,
-						data: 1
-					});
-				}}>Load team</button>
-			</div>
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />

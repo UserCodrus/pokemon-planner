@@ -69,7 +69,6 @@ footer {
 		top: 0;
 
 		min-height: 100%;
-		min-width: 50em;
 
 		background-color: var(--color-panel);
 		backdrop-filter: blur(10px);

@@ -328,7 +328,7 @@ export function TeamName(props: {name: string}): ReactElement
 export function MenuButton(props: {openCallback: Function}): ReactElement
 {
 	return (
-		<div className="fixed left-2 top-2 text-black" onClick={()=>props.openCallback()}>
+		<div className="fixed left-2 top-2 text-black cursor-pointer" onClick={()=>props.openCallback()}>
 			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
 	);
