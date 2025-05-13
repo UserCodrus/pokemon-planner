@@ -15,7 +15,7 @@ export function App(): ReactElement
 	const [data, dispatch] = useReducer(teamReducer, {
 		game: null,
 		current_team: newTeam([], ""),
-		teams: []
+		teams: null
 	});
 
 	// Load teams from storage after the app starts
@@ -28,7 +28,13 @@ export function App(): ReactElement
 				data: JSON.parse(storage)
 			});
 			console.log("Loaded team data from storage");
-			console.log(JSON.parse(storage));
+		}
+		else
+		{
+			dispatch({
+				type: Task.load_teams,
+				data: []
+			});
 		}
 	}, []);
 
@@ -41,24 +47,32 @@ export function App(): ReactElement
 		}
 	}, [data.teams]);
 
-	if (data.game)
+	if (!data.teams)
 	{
+		// Display a loading screen if team data has not been loaded yet
 		return (
-			<GameContext.Provider value={data.game}>
-				<DispatchContext.Provider value={dispatch}>
-					<Planner team={data.current_team}/>
-				</DispatchContext.Provider>
-			</GameContext.Provider>
+			<div className="panel">
+				Loading...
+			</div>
 		);
 	}
-	else
+	if (!data.game)
 	{
+		// Display the game selector if no game is selected
 		return (
 			<DispatchContext.Provider value={dispatch}>
-				<Selector />
+				<Selector teams={data.teams} />
 			</DispatchContext.Provider>
 		);
 	}
+
+	return (
+		<GameContext.Provider value={data.game}>
+			<DispatchContext.Provider value={dispatch}>
+				<Planner team={data.current_team}/>
+			</DispatchContext.Provider>
+		</GameContext.Provider>
+	);
 }
 
 /**
@@ -117,10 +131,17 @@ export function Planner(props: {team: Data.Team}): ReactElement
 /**
  * The view that lets the player select a game to use
  */
-export function Selector(): ReactElement
+export function Selector(props: {teams: Data.Team[]}): ReactElement
 {
+	// Create a set of party selector components
+	const party_components: ReactElement[] = [];
+	for (let i = 0; i < props.teams.length; ++i)
+	{
+		party_components.push(<Containers.PartySelector party={props.teams[i]} key={i} />);
+	}
+
 	// Create a set of pokedex selector components
-	const components: ReactElement[] = [];
+	const pokedex_components: ReactElement[] = [];
 	for (let i = 0; i <= 9; ++i)
 	{
 		// Create a single row for each generation
@@ -144,7 +165,7 @@ export function Selector(): ReactElement
 			}
 		}
 
-		components.push(
+		pokedex_components.push(
 			<div key={i} className="flex flex-row gap-2 justify-center">
 				{inner_components}
 			</div>
@@ -152,8 +173,13 @@ export function Selector(): ReactElement
 	}
 
 	return (
-		<div className="flex flex-col flex-wrap gap-2 justify-evenly">
-			{components}
+		<div>
+			<div className="flex flex-col flex-wrap gap-2 justify-evenly py-4">
+				{party_components}
+			</div>
+			<div className="flex flex-col flex-wrap gap-2 justify-evenly">
+				{pokedex_components}
+			</div>
 		</div>
 	);
 }

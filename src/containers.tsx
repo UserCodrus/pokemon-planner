@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { MouseEventHandler, ReactElement, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
@@ -28,6 +28,48 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	return (
 		<div className="flex flex-row gap-2 relative">
 			{components}
+		</div>
+	);
+}
+
+/**
+ * A container that displays a saved party and selects it by clicking
+ */
+export function PartySelector(props: {party: Data.Team}): ReactElement
+{
+	const dispatch = useContext(DispatchContext);
+
+	// Get the game data for the game the party was made for
+	let game: Data.Game | null = null;
+	for (const game_data of Data.game_list)
+	{
+		if (game_data.id === props.party.game)
+		{
+			game = game_data;
+			break;
+		}
+	}
+
+	// Handle mouse clicks on the team
+	function handleClick() {
+		dispatch({
+			type: Task.select_team,
+			data: props.party.id
+		});
+	}
+
+	// Create a set of party components
+	const components: ReactElement[] = [];
+	for (let i = 0; i < props.party.pokemon.length; ++i)
+	{
+		components.push(<Components.PartyMemberSmall generation={game!.generation} pokemon={props.party.pokemon[i]} key={i} />);
+	}
+
+	return (
+		<div className="panel clickable p-2 text-center" onClick={() => handleClick()}>
+			<div>{props.party.name}</div>
+			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.games}</div>
+			<div className="flex flex-row">{components}</div>
 		</div>
 	);
 }

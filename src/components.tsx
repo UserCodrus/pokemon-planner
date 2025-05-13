@@ -97,6 +97,21 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 }
 
 /**
+ * A more compact party member component
+ */
+export function PartyMemberSmall(props: {generation: number, pokemon: Data.TeamSlot}): ReactElement
+{
+	const size = 96;
+	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
+
+	return (
+		<div className="p-1 min-w-[96px] min-h-[96px]">
+			<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
+		</div>
+	);
+}
+
+/**
  * A context menu that sits above a pokemon selector after right clicking
  */
 export function PokemonSelectorPopup(props: {pokemon: number, closeCallback: Function}): ReactElement

@@ -12,6 +12,19 @@ const misc_location = "/images/";
 
 export const party_size = 6;
 
+const roman_numerals = [
+	"I",
+	"II",
+	"III",
+	"IV",
+	"V",
+	"VI",
+	"VII",
+	"VIII",
+	"IX",
+	"X"
+];
+
 /**
  * Information about an pokemon ability pulled from API data
  */
@@ -339,4 +352,17 @@ export function getTypeAdvantage(generation: number, offensive_type: number, def
 		final_multiplier *= damage_multipliers[type];
 	}
 	return final_multiplier;
+}
+
+/**
+ * Convert a number into a roman numeral string
+ * @param number The number being converted
+ * @returns A string representation of the roman numeral form of the number
+ */
+export function getRomanNumeral(number: number): string
+{
+	if (number > 0 && number < 11)
+		return roman_numerals[number];
+
+	return "?";
 }

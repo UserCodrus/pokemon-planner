@@ -42,7 +42,7 @@ export type Action = {
 export type AppData = {
 	game: Data.Game | null,
 	current_team: Data.Team,
-	teams: Data.Team[]
+	teams: Data.Team[] | null
 };
 
 export function newTeam(teams: Data.Team[], game: string): Data.Team {
@@ -97,6 +97,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Store changes made to the current team
 		case Task.save_current_team: {
+			if (!state.teams)
+				break;
+
 			// Remove the team from its current spot in the team list if it has already been saved
 			const team_list = state.teams.slice();
 			for (let i = 0; i < team_list.length; ++i)
@@ -118,6 +121,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Store the current team to the team list as a new team
 		case Task.save_new_team: {
+			if (!state.teams)
+				break;
+
 			// Get an unused team id
 			const team_list = state.teams.slice();
 			let team_id = 0;
@@ -141,6 +147,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Reset the active team
 		case Task.new_team: {
+			if (!state.teams)
+				break;
+
 			const new_team = newTeam(state.teams, state.game!.id);
 			return {
 				...state,
@@ -150,6 +159,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Set the team with the given id as the active team
 		case Task.select_team: {
+			if (!state.teams)
+				break;
+			
 			const team_list = state.teams.slice();
 			for (const team of team_list)
 			{
