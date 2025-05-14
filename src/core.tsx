@@ -18,7 +18,8 @@ export function App(): ReactElement
 	const [data, dispatch] = useReducer(teamReducer, {
 		game: null,
 		current_team: newTeam([], ""),
-		teams: null
+		teams: null,
+		modal: null
 	});
 
 	// Load teams from storage after the app starts
@@ -72,6 +73,7 @@ export function App(): ReactElement
 	return (
 		<GameContext.Provider value={data.game}>
 			<DispatchContext.Provider value={dispatch}>
+				{data.modal && <Components.ModalBox modalData={data.modal} />}
 				<Planner team={data.current_team}/>
 			</DispatchContext.Provider>
 		</GameContext.Provider>

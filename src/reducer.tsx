@@ -13,6 +13,8 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
  * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
  * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
  * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
+ * @param open_modal Open a modal pop-up box with a set of buttons. Data should be a Data.Modal object describing the modal's contents.
+ * @param close_modal Clears the current modal pop-up. Data is not used.
  */
 export const enum Task {
 	change_game,
@@ -25,7 +27,10 @@ export const enum Task {
 
 	change_name,
 	select_pokemon,
-	swap_ability
+	swap_ability,
+
+	open_modal,
+	close_modal
 }
 
 /**
@@ -42,7 +47,8 @@ export type Action = {
 export type AppData = {
 	game: Data.Game | null,
 	current_team: Data.Team,
-	teams: Data.Team[] | null
+	teams: Data.Team[] | null,
+	modal: Data.Modal | null
 };
 
 export function newTeam(teams: Data.Team[], game: string): Data.Team {
@@ -270,6 +276,22 @@ export function teamReducer(state: AppData, action: Action) {
 					abilities: abilities
 				}
 			};
+		};
+
+		// Open a modal pop-up
+		case Task.open_modal: {
+			return {
+				...state,
+				modal: action.data
+			}
+		};
+
+		// Close the current modal pop-up
+		case Task.close_modal: {
+			return {
+				...state,
+				modal: null
+			}
 		};
 	}
 

@@ -11,7 +11,6 @@ const pokemon_sprite_location = "/images/pokemon/sprites/";
 const misc_location = "/images/";
 
 export const party_size = 6;
-
 const roman_numerals = [
 	"I",
 	"II",
@@ -76,6 +75,22 @@ export type Team = {
 	name: string,
 	pokemon: TeamSlot[],
 	abilities: number[]
+}
+
+/**
+ * A structure describing a button with that runs a callback function when clicked
+ */
+export type Button = {
+	label: string,
+	callback?: Function
+}
+
+/**
+ * A structure describing a modal pop-up
+ */
+export type Modal = {
+	message: string,
+	buttons: Button[]
 }
 
 /**

@@ -348,3 +348,42 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 		</div>
 	);
 }
+
+/**
+ * A modal pop-up that gives the user a series of options with actions attached to them
+ */
+export function ModalBox(props: {modalData: Data.Modal}): ReactElement
+{
+	const dispatch = useContext(DispatchContext);
+
+	// Create the buttons for the modal box
+	const buttons: ReactElement[] = [];
+	if (props.modalData.buttons.length > 0)
+	{
+		for (let i = 0; i < props.modalData.buttons.length; ++i)
+		{
+			buttons.push(<button className="p-2" key={i} onClick={() => {
+				if (props.modalData.buttons[i].callback)
+					// @ts-ignore because the linter can't understand this line for some reason? I checked for a null callback on the line above, silly linter.
+					props.modalData.buttons[i].callback(); 
+				dispatch({ type: Task.close_modal });
+			}}>{props.modalData.buttons[i].label}</button>);
+		}
+	}
+	else
+	{
+		buttons.push(<button className="p-2" onClick={() => {
+			dispatch({ type: Task.close_modal });
+		}}>Confirm</button>);
+	}
+
+	return (
+		<div>
+			<div className="fixed bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm" />
+			<div className="fixed panel z-10 top-1/2 left-1-2 p-2 text-center">
+				<div>{props.modalData.message}</div>
+				<div>{buttons}</div>
+			</div>
+		</div>
+	)
+}

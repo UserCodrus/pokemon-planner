@@ -9,6 +9,7 @@
 	--font-mono: var(--font-geist-mono);
 
 	--color-panel: rgb(0 0 0 / 50%);
+	--color-shade: rgb(128 128 128 / 50%);
 	--color-highlight: #fdd700;
 	--color-highlight-text: #000000;
 

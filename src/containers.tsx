@@ -322,6 +322,23 @@ export function PopupMenu(): ReactElement
 						dispatch({ type: Task.select_team, data: 1 });
 						setMenuOpen(false);
 					}}>Load team</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.open_modal, data: {
+							message: "Hello, there!",
+							buttons: [{
+								label: "Yep",
+								callback: ()=>{
+									alert("Yay!");
+								}
+							}, {
+								label: "Nope",
+								callback: ()=>{
+									
+								}
+							}]
+						} });
+						setMenuOpen(false);
+					}}>Popup</button>
 				</div>
 			</MenuBox>
 		);
