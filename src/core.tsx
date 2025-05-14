@@ -7,6 +7,9 @@ import * as Containers from "./containers";
 import * as Data from "./data";
 import { DispatchContext, newTeam, teamReducer, GameContext, Task } from "./reducer";
 
+// Start the app without team data to avoid issues with invalid team data
+const debug = false;
+
 /**
  * The core component of the app, responsible for routing between different views
  */
@@ -21,7 +24,7 @@ export function App(): ReactElement
 	// Load teams from storage after the app starts
 	useEffect(() => {
 		const storage = localStorage.getItem("teams");
-		if (storage)
+		if (storage && !debug)
 		{
 			dispatch({
 				type: Task.load_teams,

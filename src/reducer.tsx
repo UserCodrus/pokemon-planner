@@ -83,6 +83,7 @@ export function teamReducer(state: AppData, action: Action) {
 			if (selected_game)
 				return {
 					...state,
+					current_team: newTeam(state.teams!, selected_game.id),
 					game: selected_game
 				}
 		};
@@ -167,6 +168,7 @@ export function teamReducer(state: AppData, action: Action) {
 			{
 				if (team.id === action.data)
 				{
+					// Set the game to match the team's required game
 					let selected_game: Data.Game | undefined;
 					for (const game of Data.game_list)
 					{
