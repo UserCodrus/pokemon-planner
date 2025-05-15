@@ -288,6 +288,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 	
 	return (
 		<div className="sidemenu" ref={ref}>
+			<div className="text-center text-lg p-2">Menu</div>
 			{props.children}
 		</div>
 	);
