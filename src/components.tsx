@@ -378,11 +378,10 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 	}
 
 	return (
-		<div>
-			<div className="fixed bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm" />
-			<div className="fixed panel z-10 top-1/2 left-1-2 p-2 text-center">
+		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
+			<div className="panel z-10 p-2 grow-0 text-center">
 				<div>{props.modalData.message}</div>
-				<div>{buttons}</div>
+				<div className="flex flex-row justify-evenly">{buttons}</div>
 			</div>
 		</div>
 	)
