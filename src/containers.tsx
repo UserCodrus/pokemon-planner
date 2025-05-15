@@ -307,38 +307,38 @@ export function PopupMenu(): ReactElement
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="flex flex-col">
 					<button className="panel p-2 m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.save_current_team });
-						setMenuOpen(false);
-					}}>Save team</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.save_new_team });
-						setMenuOpen(false);
-					}}>Save as new</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.new_team });
-						setMenuOpen(false);
-					}}>New team</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.select_team, data: 1 });
-						setMenuOpen(false);
-					}}>Load team</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
-							message: "Hello, there!",
+							message: "Do you wish to overwrite the current team?",
 							buttons: [{
-								label: "Yep",
+								label: "Overwrite",
 								callback: ()=>{
-									alert("Yay!");
+									dispatch({ type: Task.save_current_team });
 								}
 							}, {
-								label: "Nope",
+								label: "Save new team",
 								callback: ()=>{
-									
+									dispatch({ type: Task.save_new_team });
 								}
+							}, {
+								label: "Cancel"
 							}]
 						} });
 						setMenuOpen(false);
-					}}>Popup</button>
+					}}>Save Team</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.open_modal, data: {
+							message: "Do you wish to create a new team? Unsaved data will be lost.",
+							buttons: [{
+								label: "Yes",
+								callback: ()=>{
+									dispatch({ type: Task.new_team });
+								}
+							}, {
+								label: "Cancel"
+							}]
+						} });
+						setMenuOpen(false);
+					}}>New Team</button>
 				</div>
 			</MenuBox>
 		);
