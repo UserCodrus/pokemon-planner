@@ -76,6 +76,12 @@ export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
 		// Find a game matching the provided id
 		case Task.change_game: {
+			if (!action.data)
+				return {
+					...state,
+					game: null
+				}
+
 			let selected_game: Data.Game | undefined;
 			for (const game of Data.game_list)
 			{

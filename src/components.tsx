@@ -382,6 +382,11 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 
+	// Create divs for each line of message text
+	const messages: ReactElement[] = props.modalData.message.split('\n').map((value, i) => {
+		return <div key={i}>{value}</div>
+	});
+
 	// Create the buttons for the modal box
 	const buttons: ReactElement[] = [];
 	if (props.modalData.buttons.length > 0)
@@ -406,7 +411,7 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 	return (
 		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
 			<div className="panel z-10 p-2 grow-0 text-center">
-				<div>{props.modalData.message}</div>
+				{messages}
 				<div className="flex flex-row justify-evenly">{buttons}</div>
 			</div>
 		</div>

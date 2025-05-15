@@ -321,6 +321,20 @@ export function PopupMenu(): ReactElement
 				<div className="flex flex-col">
 					<button className="panel p-2 m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
+							message: "Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost.",
+							buttons: [{
+								label: "Yes",
+								callback: ()=>{
+									dispatch({ type: Task.change_game, data: null });
+								}
+							}, {
+								label: "Cancel"
+							}]
+						} });
+						setMenuOpen(false);
+					}}>Home</button>
+					<button className="panel p-2 m-1 clickable" onClick={()=>{
+						dispatch({ type: Task.open_modal, data: {
 							message: "Do you wish to overwrite the current team?",
 							buttons: [{
 								label: "Overwrite",
@@ -340,7 +354,7 @@ export function PopupMenu(): ReactElement
 					}}>Save Team</button>
 					<button className="panel p-2 m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
-							message: "Do you wish to create a new team? Unsaved data will be lost.",
+							message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
 							buttons: [{
 								label: "Yes",
 								callback: ()=>{
