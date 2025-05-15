@@ -90,7 +90,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Activate or deactivate a type filter option
-	function toggleTypeFilter(type: number)
+	function toggleTypeFilter(type: number, single?: boolean)
 	{
 		// Toggle all the types on or off if all is specified
 		if (type === -1)
@@ -101,11 +101,21 @@ export function Planner(props: {team: Data.Team}): ReactElement
 				if (!filter)
 				{
 					setTypeFilter(Array(Data.getNumTypes()).fill(true));
+					return;
 				}
 			}
 
 			// If everything is enabled, disable everything
 			setTypeFilter(Array(Data.getNumTypes()).fill(false));
+			return;
+		}
+
+		// Enable a single type if the whitlist flag is enabled
+		if (single)
+		{
+			const filter = Array(Data.getNumTypes()).fill(false);
+			filter[type] = true;
+			setTypeFilter(filter);
 			return;
 		}
 

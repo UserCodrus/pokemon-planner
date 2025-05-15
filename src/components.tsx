@@ -10,7 +10,7 @@ import { DispatchContext, Task } from "./reducer";
 export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
 export type GameCallback = (game: Data.Game) => void;
-export type TypeFilterCallback = (type: number) => void;
+export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 
 const enum CoverageStyle {
@@ -194,6 +194,10 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 			width={size} height={size}
 			alt={Data.getTypeName(props.type)}
 			onClick={()=>props.onClick(props.type)}
+			onContextMenu={(e)=>{
+				e.preventDefault();
+				props.onClick(props.type, true);
+			}}
 			className={"cursor-pointer" + filter_style}
 		/>
 	);
