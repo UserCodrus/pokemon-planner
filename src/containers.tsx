@@ -26,7 +26,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	}
 
 	return (
-		<div className="flex flex-row gap-2 relative">
+		<div className="flex flex-row gap-2 relative justify-between">
 			{components}
 		</div>
 	);
@@ -195,8 +195,8 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 	}
 
 	return (
-		<div className="panel flex flex-row flex-grow gap-1">
-			<div className="flex flex-row gap-1">{type_buttons}</div>
+		<div className="panel flex flex-row flex-grow gap-1 justify-evenly">
+			<div className="flex flex-row gap-1 flex-wrap justify-evenly">{type_buttons}</div>
 			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 		</div>
 	);

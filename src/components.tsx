@@ -350,7 +350,7 @@ export function TeamName(props: {name: string}): ReactElement
 	const dispatch = useContext(DispatchContext);
 
 	return (
-		<div className="panel text-lg text-center min-w-1/4">
+		<div className="panel text-lg text-center min-w-1/4 self-center">
 			<input type="text" name="textbox" value={props.name} className="text-center"
 				onChange={(e)=>{
 					dispatch({

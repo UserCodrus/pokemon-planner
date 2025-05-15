@@ -121,7 +121,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 	}
 
 	return (
-		<div className="flex flex-col w-4/5 py-8 gap-4 items-center">
+		<div className="flex flex-col w-4/5 py-8 gap-4 items-stretch">
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
