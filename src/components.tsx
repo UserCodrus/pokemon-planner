@@ -85,7 +85,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 	}
 
 	return (
-		<div className="panel clickable p-4 flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+		<div className="panel clickable p-4 max-w-[30%] flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 			<div className="text-center min-h-6">{name_text}</div>
 			<Image src={art_src} width={size} height={size} alt={art_alt} />
 			<div className="text-center min-h-6">{ability_text}</div>
@@ -235,7 +235,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
 			type="text" value={props.text}
 			placeholder="Type a name to filter"
 			onChange={(event)=>props.onChange(event.target.value)}
-			className="bg-white text-black px-2"
+			className="bg-white text-black px-2 max-h-6"
 		/>
 	)
 }
@@ -369,7 +369,7 @@ export function TeamName(props: {name: string}): ReactElement
 export function MenuButton(props: {openCallback: Function}): ReactElement
 {
 	return (
-		<div className="fixed left-2 top-2 text-black cursor-pointer" onClick={()=>props.openCallback()}>
+		<div className="fixed left-2 top-2 z-1 text-black cursor-pointer" onClick={()=>props.openCallback()}>
 			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
 	);

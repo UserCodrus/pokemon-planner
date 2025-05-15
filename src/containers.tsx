@@ -26,7 +26,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	}
 
 	return (
-		<div className="flex flex-row gap-2 relative justify-between">
+		<div className="flex flex-row flex-wrap gap-2 relative justify-between">
 			{components}
 		</div>
 	);
