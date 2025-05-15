@@ -90,28 +90,17 @@ export function Planner(props: {team: Data.Team}): ReactElement
 	const [nameFilter, setNameFilter] = useState<string>("");
 
 	// Activate or deactivate a type filter option
-	function toggleTypeFilter(type: number, single?: boolean)
+	function toggleTypeFilter(type: number, whitelist?: boolean)
 	{
-		// Toggle all the types on or off if all is specified
+		// Toggle all the types on or off based on the whitelist flag if the type is set to -1
 		if (type === -1)
 		{
-			// If any types are disabled, enable everything
-			for (const filter of typeFilter)
-			{
-				if (!filter)
-				{
-					setTypeFilter(Array(Data.getNumTypes()).fill(true));
-					return;
-				}
-			}
-
-			// If everything is enabled, disable everything
-			setTypeFilter(Array(Data.getNumTypes()).fill(false));
+			setTypeFilter(Array(Data.getNumTypes()).fill(Boolean(whitelist)));
 			return;
 		}
 
-		// Enable a single type if the whitlist flag is enabled
-		if (single)
+		// Enable a single type if the whitelist flag is enabled
+		if (whitelist)
 		{
 			const filter = Array(Data.getNumTypes()).fill(false);
 			filter[type] = true;

@@ -174,12 +174,24 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 {
 	const game = useContext(GameContext);
 
+	// Determine if any filters are disabled for the all filter button
+	let all_filter = true;
+	for (const filter of props.typeFilter)
+	{
+		if (!filter)
+		{
+			all_filter = false;
+			break;
+		}
+	}
+
 	// Create a full set of filter buttons
 	const type_buttons: ReactElement[] = [];
+	type_buttons.push(<Components.AllFilterButton active={all_filter} onClick={props.onClickType} key={0} />);
 	for (let i=0; i<Data.getNumTypes(); ++i)
 	{
 		if (Data.validType(game!.generation, i))
-			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i} />)
+			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i+1} />)
 	}
 
 	return (

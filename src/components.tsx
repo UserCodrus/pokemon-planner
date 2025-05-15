@@ -181,6 +181,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 /**
  * A button that enables or disables filtering of selectable pokemon by a given type
  * @param props.type The id of the type the button will control
+ * @param props.active A flag that determines if the button will be rendered in its active or inactive state
  * @param props.onClick The function called when the filter button is clicked
  */
 export function TypeFilterButton(props: {type: number, active: boolean, onClick: TypeFilterCallback}): ReactElement
@@ -200,6 +201,27 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 			}}
 			className={"cursor-pointer" + filter_style}
 		/>
+	);
+}
+
+/**
+ * A button that enables or disables filtering of all pokemon types
+ * @param props.active A flag that determines if the button will be rendered in its active or inactive state
+ * @param props.onClick The function called when the filter button is clicked
+ */
+export function AllFilterButton(props: {active: boolean, onClick: TypeFilterCallback}): ReactElement
+{
+	const filter_style = props.active ? "" : " inactive";
+
+	return (
+		<button
+			className={"min-w-[32px] min-h-[32px] cursor-pointer" + filter_style}
+			onClick={()=>props.onClick(-1, true)}
+			onContextMenu={(e)=>{
+				e.preventDefault();
+				props.onClick(-1, false);
+			}}
+		>ALL</button>
 	);
 }
 
