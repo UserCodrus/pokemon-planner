@@ -350,7 +350,7 @@ export function TeamName(props: {name: string}): ReactElement
 	const dispatch = useContext(DispatchContext);
 
 	return (
-		<div className="panel text-lg text-center p-2 min-w-1/4">
+		<div className="panel text-lg text-center min-w-1/4">
 			<input type="text" name="textbox" value={props.name} className="text-center"
 				onChange={(e)=>{
 					dispatch({
@@ -410,7 +410,7 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 
 	return (
 		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
-			<div className="panel z-10 p-2 grow-0 text-center">
+			<div className="panel z-10 grow-0 text-center">
 				{messages}
 				<div className="flex flex-row justify-evenly">{buttons}</div>
 			</div>

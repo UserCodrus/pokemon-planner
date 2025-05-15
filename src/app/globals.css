@@ -30,9 +30,11 @@ footer {
 
 @layer components {
 	.panel {
+		position: relative;
+		padding: 0.5rem;
+
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
-		position: relative;
 	}
 	.panel.clickable {
 		user-select: none;

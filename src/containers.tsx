@@ -66,7 +66,7 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	}
 
 	return (
-		<div className="panel clickable p-2 text-center" onClick={() => handleClick()}>
+		<div className="panel clickable text-center" onClick={() => handleClick()}>
 			<div>{props.party.name}</div>
 			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.games}</div>
 			<div className="flex flex-row">{components}</div>
@@ -125,7 +125,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 
 	return (
 		<div className="text-center">
-			<div className="panel text-lg p-2 mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
+			<div className="panel text-lg mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
 			<div className="flex flex-row flex-wrap justify-center gap-2">
 				{components}
 			</div>
@@ -195,7 +195,7 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 	}
 
 	return (
-		<div className="panel p-2 flex flex-row flex-grow gap-1">
+		<div className="panel flex flex-row flex-grow gap-1">
 			<div className="flex flex-row gap-1">{type_buttons}</div>
 			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 		</div>
@@ -271,7 +271,7 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 	}
 
 	return (
-		<div className="panel p-4 flex flex-row flex-wrap justify-center gap-2">
+		<div className="panel flex flex-row flex-wrap justify-center gap-2">
 			{components}
 		</div>
 	);
@@ -319,7 +319,7 @@ export function PopupMenu(): ReactElement
 		return (
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="flex flex-col">
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
+					<button className="panel m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
 							message: "Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost.",
 							buttons: [{
@@ -333,7 +333,7 @@ export function PopupMenu(): ReactElement
 						} });
 						setMenuOpen(false);
 					}}>Home</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
+					<button className="panel m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
 							message: "Do you wish to overwrite the current team?",
 							buttons: [{
@@ -352,7 +352,7 @@ export function PopupMenu(): ReactElement
 						} });
 						setMenuOpen(false);
 					}}>Save Team</button>
-					<button className="panel p-2 m-1 clickable" onClick={()=>{
+					<button className="panel m-1 clickable" onClick={()=>{
 						dispatch({ type: Task.open_modal, data: {
 							message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
 							buttons: [{
