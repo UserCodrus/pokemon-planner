@@ -195,7 +195,7 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 	}
 
 	return (
-		<div className="panel flex flex-row flex-grow gap-1 justify-evenly">
+		<div className="panel flex flex-row flex-grow gap-1 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-evenly">{type_buttons}</div>
 			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 		</div>
@@ -314,58 +314,28 @@ export function PopupMenu(): ReactElement
 	const [menuOpen, setMenuOpen] = useState(false);
 	const dispatch = useContext(DispatchContext);
 
+	const closeMenu = ()=>setMenuOpen(false);
+
 	if (menuOpen)
 	{
 		return (
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
-				<div className="flex flex-col">
-					<button className="panel m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.open_modal, data: {
-							message: "Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost.",
-							buttons: [{
-								label: "Yes",
-								callback: ()=>{
-									dispatch({ type: Task.change_game, data: null });
-								}
-							}, {
-								label: "Cancel"
-							}]
-						} });
-						setMenuOpen(false);
-					}}>Home</button>
-					<button className="panel m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.open_modal, data: {
-							message: "Do you wish to overwrite the current team?",
-							buttons: [{
-								label: "Overwrite",
-								callback: ()=>{
-									dispatch({ type: Task.save_current_team });
-								}
-							}, {
-								label: "Save new team",
-								callback: ()=>{
-									dispatch({ type: Task.save_new_team });
-								}
-							}, {
-								label: "Cancel"
-							}]
-						} });
-						setMenuOpen(false);
-					}}>Save Team</button>
-					<button className="panel m-1 clickable" onClick={()=>{
-						dispatch({ type: Task.open_modal, data: {
-							message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
-							buttons: [{
-								label: "Yes",
-								callback: ()=>{
-									dispatch({ type: Task.new_team });
-								}
-							}, {
-								label: "Cancel"
-							}]
-						} });
-						setMenuOpen(false);
-					}}>New Team</button>
+				<div className="flex flex-col gap-2">
+					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
+						tasks={[{label: "Confirm", task: Task.home}]}
+						confirmation={"Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost."}
+						menuCallback={closeMenu}
+					/>
+					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
+						tasks={[{label: "Overwrite", task: Task.save_current_team}, {label: "Save as New", task: Task.save_new_team}]}
+						confirmation={"Do you wish to save this team?\nExisting saved data for this team will be overwritten."}
+						menuCallback={closeMenu}
+					/>
+					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
+						tasks={[{label: "Confirm", task: Task.new_team}]}
+						confirmation={"Do you wish to create a new team?\nUnsaved changes to the current team will be lost."}
+						menuCallback={closeMenu}
+					/>
 				</div>
 			</MenuBox>
 		);

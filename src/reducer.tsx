@@ -4,6 +4,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
 
 /**
  * Constants describing the various actions that can be performed on team data via the reducer
+ * @param home Returns the app to the landing page. Data is not used.
  * @param change_game Change the selected game. Data should be a game id matching a game in Data.game_list
  * @param load_teams Store a set of teams. Data should be an array of Data.Team.
  * @param save_current_team Overwrite changes made to the current team. Data is not used.
@@ -17,6 +18,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
  * @param close_modal Clears the current modal pop-up. Data is not used.
  */
 export const enum Task {
+	home,
 	change_game,
 	load_teams, 
 
@@ -74,6 +76,14 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
  */
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
+		// Set the game to null to revert to the home screen
+		case Task.home: {
+			return {
+				...state,
+				game: null
+			}
+		};
+
 		// Find a game matching the provided id
 		case Task.change_game: {
 			if (!action.data)

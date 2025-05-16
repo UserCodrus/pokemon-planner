@@ -13,6 +13,11 @@ export type GameCallback = (game: Data.Game) => void;
 export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 
+type ModalButton = {
+	label: string,
+	task: Task
+}
+
 const enum CoverageStyle {
 	neutral,
 	coverage,
@@ -372,6 +377,43 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 		<div className="fixed left-2 top-2 z-1 text-black cursor-pointer" onClick={()=>props.openCallback()}>
 			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
+	);
+}
+
+/**
+ * A button for the main side menu
+ */
+export function SidebarButton(props: {label: string, icon: string, confirmation: string, tasks: ModalButton[], menuCallback: Function}): ReactElement
+{
+	const dispatch = useContext(DispatchContext);
+
+	// Construct a set of modal buttons that will appear when the sidebar button is clicked
+	const modal_buttons: Data.Button[] = [];
+	for (const task of props.tasks)
+	{
+		modal_buttons.push({
+			label: task.label,
+			callback: ()=>{
+					dispatch({ type: task.task});
+				}
+		})
+	}
+	modal_buttons.push({label: "Cancel"});
+
+	// Dispatch an action to open the modal popup when the button is clicked
+	function handleClick() {
+		dispatch({ type: Task.open_modal, data: {
+			message: props.confirmation,
+			buttons: modal_buttons
+		} });
+		props.menuCallback();
+	}
+
+	return (
+		<button className="panel clickable flex flex-row items-center" onClick={()=>handleClick()}>
+			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
+			<div className="mx-4 flex-grow">{props.label}</div>
+		</button>
 	);
 }
 
