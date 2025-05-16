@@ -11,6 +11,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
  * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
  * @param new_team Delete the existing team in the current_team slot and create a new one. Data is not used.
  * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id.
+ * @param delete_team Delete a team from the team list. Data should be the team id of the team being deleted.
  * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
  * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
  * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
@@ -26,6 +27,7 @@ export const enum Task {
 	save_new_team,
 	new_team,
 	select_team,
+	delete_team,
 
 	change_name,
 	select_pokemon,
@@ -207,6 +209,27 @@ export function teamReducer(state: AppData, action: Action) {
 							game: selected_game,
 							current_team: structuredClone(team)
 						}
+				}
+			}
+		};
+
+		// Find a team in the team list and remove it
+		case Task.delete_team: {
+			if (!state.teams)
+				break;
+
+			console.log("deleting team: " + action.data)
+			console.log(state.teams);
+			const team_list = state.teams.slice();
+			const team_index = team_list.findIndex((value)=>value.id === action.data);
+
+			if (team_index > -1)
+			{
+				console.log("Team delete")
+				team_list.splice(team_index, 1);
+				return {
+					...state,
+					teams: team_list
 				}
 			}
 		};

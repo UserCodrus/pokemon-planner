@@ -65,6 +65,7 @@ export function App(): ReactElement
 		// Display the game selector if no game is selected
 		return (
 			<DispatchContext.Provider value={dispatch}>
+				{data.modal && <Components.ModalBox modalData={data.modal} />}
 				<Selector teams={data.teams} />
 			</DispatchContext.Provider>
 		);

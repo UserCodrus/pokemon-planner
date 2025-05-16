@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEventHandler, ReactElement, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { MouseEvent as ReactMouseEvent, ReactElement, ReactNode, useContext, useEffect, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
@@ -50,11 +50,33 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 		}
 	}
 
-	// Handle mouse clicks on the team
-	function handleClick() {
+	// Select the team when the component is left clicked
+	function handleLeftClick(event: ReactMouseEvent<HTMLDivElement>) {
 		dispatch({
 			type: Task.select_team,
 			data: props.party.id
+		});
+	}
+	// Delete the team when the component is right clicked and the user confirms the modal popup
+	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
+		event.preventDefault();
+		dispatch({
+			type: Task.open_modal,
+			data: {
+				message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
+				buttons: [
+					{
+						label: "Confirm",
+						callback: () => {
+							dispatch({
+								type: Task.delete_team,
+								data: props.party.id
+							});
+						}
+					},
+					{ label: "Cancel" }
+				]
+			}
 		});
 	}
 
@@ -66,7 +88,7 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	}
 
 	return (
-		<div className="panel clickable text-center" onClick={() => handleClick()}>
+		<div className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
 			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.games}</div>
 			<div className="flex flex-row">{components}</div>
@@ -312,8 +334,6 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 export function PopupMenu(): ReactElement
 {
 	const [menuOpen, setMenuOpen] = useState(false);
-	const dispatch = useContext(DispatchContext);
-
 	const closeMenu = ()=>setMenuOpen(false);
 
 	if (menuOpen)

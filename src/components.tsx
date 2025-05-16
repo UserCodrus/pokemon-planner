@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, FocusEvent, MouseEvent, MouseEventHandler, ReactElement, useContext, useState, useEffect } from "react";
+import { MouseEvent, ReactElement, useContext, useState, useEffect } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
