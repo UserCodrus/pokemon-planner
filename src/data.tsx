@@ -49,13 +49,22 @@ export type Pokemon = {
 }
 
 /**
- * Information about a game pulled from API data
+ * Information about a single version of a pokemon game
+ */
+export type Version = {
+	name: string,			// The name of the game
+	blacklist?: number[]	// Pokemon that shouldn't appear in the game
+}
+
+/**
+ * Information about each set of pokemon games
  */ 
 export type Game = {
 	id: string,
 	pokedexes: string[],
 	generation: number,
-	games: string
+	name: string,
+	versions: Version[]
 }
 
 /**
@@ -101,115 +110,165 @@ export const game_list: Game[] = [
 		id: "nat",
 		pokedexes: ["national"],
 		generation: 9,
-		games: "National Pokédex"
+		name: "National Pokédex",
+		versions: []
 	},
 	{
 		id: "rby",
 		pokedexes: ["kanto"],
 		generation: 1,
-		games: "Red, Blue, and Yellow"
+		name: "Red, Blue, and Yellow",
+		versions: [
+			{
+				name: "Red",
+				blacklist: [
+					27, 28, 37, 38, 52, 53, 69, 70, 71, 126, 127
+				]
+			},
+			{
+				name: "Blue",
+				blacklist: [
+					23, 24, 43, 44, 45, 56, 57, 58, 59, 123, 125
+				]
+			},
+			{
+				name: "Yellow",
+				blacklist: [
+					13, 14, 15, 23, 24, 26, 52, 53, 109, 110, 124, 125, 126
+				]
+			}
+		]
 	},
 	{
 		id: "gsc",
 		pokedexes: ["original-johto"],
 		generation: 2,
-		games: "Gold, Silver, and Crystal"
+		name: "Gold, Silver, and Crystal",
+		versions: [
+			{
+				name: "Gold",
+				blacklist: [
+					37, 38, 52, 53, 165, 166, 225, 227, 231, 232
+				]
+			},
+			{
+				name: "Silver",
+				blacklist: [
+					56, 57, 58, 59, 167, 168, 207, 216, 217, 226
+				]
+			},
+			{
+				name: "Crystal",
+				blacklist: [
+					37, 38, 56, 57, 179, 180, 181, 203, 223, 224
+				]
+			}
+		]
 	},
 	{
 		id: "rse",
 		pokedexes: ["hoenn"],
 		generation: 3,
-		games: "Ruby, Sapphire, and Emerald"
+		name: "Ruby, Sapphire, and Emerald",
+		versions: []
 	},
 	{
 		id: "frlg",
 		pokedexes: ["kanto"],
 		generation: 3,
-		games: "Fire Red and Leaf Green"
+		name: "Fire Red and Leaf Green",
+		versions: []
 	},
 	{
-		id: "dp",
-		pokedexes: ["original-sinnoh"],
-		generation: 4,
-		games: "Diamond and Pearl"
-	},
-	{
-		id: "pt",
+		id: "dppt",
 		pokedexes: ["extended-sinnoh"],
 		generation: 4,
-		games: "Platinum"
+		name: "Diamond, Pearl, and Platinum",
+		versions: []
 	},
 	{
 		id: "hgss",
 		pokedexes: ["updated-johto"],
 		generation: 4,
-		games: "HeartGold and SoulSilver"
+		name: "HeartGold and SoulSilver",
+		versions: []
 	},
 	{
 		id: "bw",
 		pokedexes: ["original-unova"],
 		generation: 5,
-		games: "Black and White"
+		name: "Black and White",
+		versions: []
 	},
 	{
 		id: "b2w2",
 		pokedexes: ["updated-unova"],
 		generation: 5,
-		games: "Black 2 and White 2"
+		name: "Black 2 and White 2",
+		versions: []
 	},
 	{
 		id: "xy",
 		pokedexes: ["kalos-central", "kalos-coastal", "kalos-mountain"],
 		generation: 6,
-		games: "X and Y"
+		name: "X and Y",
+		versions: []
 	},
 	{
 		id: "oras",
 		pokedexes: ["updated-hoenn"],
 		generation: 6,
-		games: "Omega Ruby and Alpha Sapphire"
+		name: "Omega Ruby and Alpha Sapphire",
+		versions: []
 	},
 	{
 		id: "sm",
 		pokedexes: ["original-alola"],
 		generation: 7,
-		games: "Sun and Moon"
+		name: "Sun and Moon",
+		versions: []
 	},
 	{
 		id: "usum",
 		pokedexes: ["updated-alola"],
 		generation: 7,
-		games: "Ultra Sun and Ultra Moon"
+		name: "Ultra Sun and Ultra Moon",
+		versions: []
 	},
 	{
 		id: "lg",
 		pokedexes: ["letsgo-kanto"],
 		generation: 7,
-		games: "Let's Go Pikachu and Let's Go Eevee"
+		name: "Let's Go Pikachu and Let's Go Eevee",
+		versions: []
 	},
 	{
 		id: "ss",
 		pokedexes: ["galar", "isle-of-armor", "crown-tundra"],
 		generation: 8,
-		games: "Sword and Shield"
+		name: "Sword and Shield",
+		versions: []
 	},
 	{
 		id: "ls",
 		pokedexes: ["hisui"],
 		generation: 8,
-		games: "Legends Arceus"
+		name: "Legends Arceus",
+		versions: []
 	},
 	{
 		id: "bdsp",
-		pokedexes: ["extended-sinnoh"],
+		pokedexes: ["original-sinnoh"],
 		generation: 8,
-		games: "Brilliant Diamond and Shining Pearl"
+		name: "Brilliant Diamond and Shining Pearl",
+		versions: []
 	},
 	{
 		id: "sv",
 		pokedexes: ["paldea", "kitakami", "blueberry"],
 		generation: 9,
-		games: "Scarlet and Violet"
+		name: "Scarlet and Violet",
+		versions: []
 	},
 ];
 
@@ -376,7 +435,7 @@ export function getTypeAdvantage(generation: number, offensive_type: number, def
  */
 export function getRomanNumeral(number: number): string
 {
-	if (number > 0 && number < 11)
+	if (number >= 0 && number <= 10)
 		return roman_numerals[number];
 
 	return "?";

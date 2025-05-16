@@ -12,6 +12,7 @@ export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
 export type GameCallback = (game: Data.Game) => void;
 export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
+export type VersionFilterCallback = (version: number) => void;
 
 type ModalButton = {
 	label: string,
@@ -342,7 +343,7 @@ export function PokedexSelector(props: {game: Data.Game}): ReactElement
 	return (
 		<div className="panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
 			<div>Generation {props.game.generation}</div>
-			<div>{props.game.games}</div>
+			<div>{props.game.name}</div>
 		</div>
 	);
 }
@@ -458,4 +459,26 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 			</div>
 		</div>
 	)
+}
+
+/**
+ * A component that lets the user select a version to filter selectable pokemon
+ */
+export function VersionSelector(props: {game: Data.Game, onSelect: Function}): ReactElement
+{
+	// Create a set of options for the selector box
+	const options: ReactElement[] = [];
+	for (let i = 0; i < props.game.versions.length; ++i)
+	{
+		options.push(<option value={i} key={i+1}>{props.game.versions[i].name}</option>);
+	}
+
+	if (options.length > 0)
+		options.unshift(<option value={-1} key={0}>All</option>);
+
+	return (
+		<select onChange={(e)=>props.onSelect(e.currentTarget.value)}>
+			{options}
+		</select>
+	);
 }

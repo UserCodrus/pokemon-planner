@@ -90,7 +90,7 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	return (
 		<div className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
-			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.games}</div>
+			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.name}</div>
 			<div className="flex flex-row">{components}</div>
 		</div>
 	);
@@ -99,13 +99,16 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 /**
  * A component that contains all selectable pokemon from a given pokedex
  */
-function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[], nameFilter: string, pokemon: Data.TeamSlot[]}): ReactElement
+function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[], nameFilter: string, versionFilter: number, pokemon: Data.TeamSlot[]}): ReactElement
 {
 	const game = useContext(GameContext);
+	const version = props.versionFilter > -1 ? game!.versions[props.versionFilter] : null;
+
+	console.log(version);
 
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
-	for (let i=0; i < props.pokedex.entries.length; ++i)
+	pokemon: for (let i=0; i < props.pokedex.entries.length; ++i)
 	{
 		const pokemon = Data.getPokemon(game!.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
 
@@ -129,6 +132,19 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 			const name = pokemon.name.toLowerCase();
 			if (!name.includes(props.nameFilter))
 				continue;
+		}
+
+		// Check the pokemon against version filters
+		if (version && version.blacklist)
+		{
+			for (const id of version.blacklist)
+			{
+				if (id === pokemon.id)
+				{
+					console.log("matched vfilter " + id);
+					continue pokemon;
+				}
+			}
 		}
 
 		// Determine if the pokemon has been selected
@@ -158,7 +174,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 /**
  * A component that contains a set of pokedex displays
  */
-export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string, pokemon: Data.TeamSlot[]}): ReactElement
+export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string, versionFilter: number, pokemon: Data.TeamSlot[]}): ReactElement
 {
 	const game = useContext(GameContext);
 
@@ -178,7 +194,7 @@ export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string
 
 		if (pokedex_data)
 		{
-			components.push(<PokedexGroup pokedex={pokedex_data} typeFilter={props.typeFilter} nameFilter={props.nameFilter} pokemon={props.pokemon} key={i} />)
+			components.push(<PokedexGroup pokedex={pokedex_data} typeFilter={props.typeFilter} nameFilter={props.nameFilter} versionFilter={props.versionFilter} pokemon={props.pokemon} key={i} />)
 		}
 	}
 
@@ -192,7 +208,7 @@ export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string
 /**
  * A component containing filters toggles for selectable pokemon
  */
-export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback}): ReactElement
+export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
 {
 	const game = useContext(GameContext);
 
@@ -219,6 +235,7 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 	return (
 		<div className="panel flex flex-row flex-grow gap-1 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-evenly">{type_buttons}</div>
+			<Components.VersionSelector game={game!} onSelect={props.onSelectVersion} />
 			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 		</div>
 	);

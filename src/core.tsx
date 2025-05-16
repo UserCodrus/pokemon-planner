@@ -86,9 +86,9 @@ export function App(): ReactElement
  */
 export function Planner(props: {team: Data.Team}): ReactElement
 {
-	//const [selectedPokemon, setSelectedPokemon] = useState<Data.TeamSlot[]>([]);
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
+	const [versionFilter, setVersionFilter] = useState<number>(-1);
 
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number, whitelist?: boolean)
@@ -121,14 +121,19 @@ export function Planner(props: {team: Data.Team}): ReactElement
 		setNameFilter(filter);
 	}
 
+	function changeVersionFilter(version: number)
+	{
+		setVersionFilter(version);
+	}
+
 	return (
 		<div className="flex flex-col min-w-4/5 max-w-[90%] py-8 gap-4 items-stretch">
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
-			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} />
-			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} pokemon={props.team.pokemon} />
+			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
+			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
 	);
 }
