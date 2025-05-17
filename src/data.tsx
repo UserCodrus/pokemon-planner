@@ -170,14 +170,46 @@ export const game_list: Game[] = [
 		pokedexes: ["hoenn"],
 		generation: 3,
 		name: "Ruby, Sapphire, and Emerald",
-		versions: []
+		versions: [
+			{
+				name: "Ruby",
+				blacklist: [
+					270, 271, 272, 302, 336, 337, 380, 382
+				]
+			},
+			{
+				name: "Sapphire",
+				blacklist: [
+					273, 274, 275, 303, 335, 338, 381, 383
+				]
+			},
+			{
+				name: "Emerald",
+				blacklist: [
+					283, 284, 307, 308, 315, 335, 337
+				]
+			}
+		]
 	},
 	{
 		id: "frlg",
 		pokedexes: ["kanto"],
 		generation: 3,
 		name: "Fire Red and Leaf Green",
-		versions: []
+		versions: [
+			{
+				name: "Fire Red",
+				blacklist: [
+					27, 28, 37, 38, 69, 70, 71, 79, 80, 120, 121, 126, 127, 183, 184, 199, 200, 215, 223, 224, 226, 240, 298
+				]
+			},
+			{
+				name: "Leaf Green",
+				blacklist: [
+					23, 24, 43, 44, 45, 54, 55, 58, 59, 90, 91, 123, 125, 182, 194, 195, 198, 211, 212, 225, 227, 239
+				]
+			},
+		]
 	},
 	{
 		id: "dppt",
@@ -191,7 +223,20 @@ export const game_list: Game[] = [
 		pokedexes: ["updated-johto"],
 		generation: 4,
 		name: "HeartGold and SoulSilver",
-		versions: []
+		versions: [
+			{
+				name: "HeartGold",
+				blacklist: [
+					37, 38, 52, 53, 140, 141, 165, 166, 216, 217, 225, 227, 303, 316, 317, 345, 346, 381, 383
+				]
+			},
+			{
+				name: "SoulSilver",
+				blacklist: [
+					56, 56, 58, 59, 138, 139, 167, 168, 207, 226, 231, 232, 302, 343, 344, 347, 348, 380, 382, 458, 472
+				]
+			}
+		]
 	},
 	{
 		id: "bw",

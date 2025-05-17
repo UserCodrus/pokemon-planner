@@ -474,11 +474,19 @@ export function VersionSelector(props: {game: Data.Game, onSelect: Function}): R
 	}
 
 	if (options.length > 0)
+	{
 		options.unshift(<option value={-1} key={0}>All</option>);
 
-	return (
-		<select onChange={(e)=>props.onSelect(e.currentTarget.value)}>
-			{options}
-		</select>
-	);
+		return (
+			<select className="panel" onChange={(e)=>props.onSelect(e.currentTarget.value)}>
+				{options}
+			</select>
+		);
+	}
+	else
+	{
+		return (
+			<div></div>
+		);
+	}
 }
