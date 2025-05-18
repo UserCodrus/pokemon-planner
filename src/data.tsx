@@ -53,7 +53,8 @@ export type Pokemon = {
  */
 export type Version = {
 	name: string,			// The name of the game
-	blacklist?: number[]	// Pokemon that shouldn't appear in the game
+	blacklist?: number[],	// Pokemon that shouldn't appear in the game
+	limit?: number			// A cutoff for pokedex entries - entries higher than this number will be blacklisted
 }
 
 /**
@@ -216,7 +217,28 @@ export const game_list: Game[] = [
 		pokedexes: ["extended-sinnoh"],
 		generation: 4,
 		name: "Diamond, Pearl, and Platinum",
-		versions: []
+		versions: [
+			{
+				name: "Diamond",
+				blacklist: [
+					79, 80, 127, 199, 200, 228, 229, 234, 363, 364, 365, 371, 372, 373, 410, 411, 429, 431, 432, 484
+				],
+				limit: 153
+			},
+			{
+				name: "Pearl",
+				blacklist: [
+					86, 87, 123, 198, 212, 246, 247, 248, 261, 262, 304, 305, 306, 352, 408, 409, 430, 434, 435, 483
+				],
+				limit: 153
+			},
+			{
+				name: "Platinum",
+				blacklist: [
+					198, 200, 328, 329, 330, 366, 367, 368, 429, 430, 431, 432, 434, 435
+				]
+			}
+		]
 	},
 	{
 		id: "hgss",

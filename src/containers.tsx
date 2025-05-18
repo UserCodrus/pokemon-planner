@@ -105,10 +105,12 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 	const version = props.versionFilter > -1 ? game!.versions[props.versionFilter] : null;
 
 	console.log(version);
+	const limit = (version && version.limit) ? version.limit : props.pokedex.entries.length;
+	console.log(limit);
 
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
-	pokemon: for (let i=0; i < props.pokedex.entries.length; ++i)
+	pokemon: for (let i = 0; i < limit; ++i)
 	{
 		const pokemon = Data.getPokemon(game!.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
 
@@ -126,25 +128,25 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 		if (!visible)
 			continue;
 
+		// Check the pokemon against version filters
+		if (version)
+		{
+			if (version.blacklist)
+			{
+				for (const id of version.blacklist)
+				{
+					if (id === pokemon.id)
+						continue pokemon;
+				}
+			}
+		}
+
 		// Check the pokemon's name against the name filters
 		if (props.nameFilter)
 		{
 			const name = pokemon.name.toLowerCase();
 			if (!name.includes(props.nameFilter))
 				continue;
-		}
-
-		// Check the pokemon against version filters
-		if (version && version.blacklist)
-		{
-			for (const id of version.blacklist)
-			{
-				if (id === pokemon.id)
-				{
-					console.log("matched vfilter " + id);
-					continue pokemon;
-				}
-			}
 		}
 
 		// Determine if the pokemon has been selected
