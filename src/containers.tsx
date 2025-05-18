@@ -199,7 +199,7 @@ export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string
 	}
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-2 min-h-[90vh]">
 			{components}
 		</div>
 	);

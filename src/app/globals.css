@@ -19,6 +19,7 @@
 
 body {
 	background: var(--gradient);
+	background-attachment: fixed;
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
