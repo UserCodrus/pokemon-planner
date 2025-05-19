@@ -55,7 +55,7 @@ footer {
 		z-index: 1;
 
 		bottom: 100%;
-		left: 0%;
+		left: -6px;
 
 		background-color: var(--color-panel);
 		backdrop-filter: blur(10px);

@@ -120,7 +120,7 @@ export function PartyMemberSmall(props: {generation: number, pokemon: Data.TeamS
 /**
  * A context menu that sits above a pokemon selector after right clicking
  */
-export function PokemonSelectorPopup(props: {pokemon: number, closeCallback: Function}): ReactElement
+export function PokemonSelectorPopup(props: {pokemon: Data.Pokemon, closeCallback: Function}): ReactElement
 {
 	// Add a global listener to run the close callback when a clicking anywhere on the page
 	useEffect(() => {
@@ -136,10 +136,21 @@ export function PokemonSelectorPopup(props: {pokemon: number, closeCallback: Fun
 		}
 	}, []);
 
+	// Get images for the pokemon's types
+	const type_images: ReactElement[] = [];
+	for (let i=0; i < props.pokemon.types.length; ++i)
+	{
+		const src = Data.typeSpriteURL(props.pokemon.types[i]);
+		type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(props.pokemon.types[i])} key={i}/>)
+	}
+
 	return (
-		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon} target="_blank" rel="noopener noreferrer">
+		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon.id} target="_blank" rel="noopener noreferrer">
 			<div className="popup">
-				View on Pokémon Database
+				<div>{props.pokemon.name}</div>
+				<div className="flex flex-col min-w-[100px] justify-center">
+					{type_images}
+				</div>
 			</div>
 		</Link>
 	)
@@ -179,7 +190,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
-			{contextMenu && <PokemonSelectorPopup pokemon={props.id} closeCallback={()=>{setContextMenu(false)}} />}
+			{contextMenu && <PokemonSelectorPopup pokemon={pokemon} closeCallback={()=>{setContextMenu(false)}} />}
 		</div>
 	);
 }
