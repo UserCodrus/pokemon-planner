@@ -265,56 +265,160 @@ export const game_list: Game[] = [
 		pokedexes: ["original-unova"],
 		generation: 5,
 		name: "Black and White",
-		versions: []
+		versions: [
+			{
+				name: "Black",
+				blacklist: [
+					10, 11, 12, 46, 47, 200, 261, 262, 312, 429, 577, 578, 579, 627, 628, 642, 644
+				]
+			},
+			{
+				name: "White",
+				blacklist: [
+					13, 14, 15, 198, 228, 229, 285, 286, 311, 430, 574, 575, 576, 629, 630, 641, 643
+				]
+			}
+		]
 	},
 	{
 		id: "b2w2",
 		pokedexes: ["updated-unova"],
 		generation: 5,
 		name: "Black 2 and White 2",
-		versions: []
+		versions: [
+			{
+				name: "Black 2",
+				blacklist: [
+					10, 11, 12, 122, 125, 165, 166, 239, 300, 301, 312, 322, 323, 378, 380, 431, 432, 439, 466, 577, 578, 579, 627, 628, 643
+				]
+			},
+			{
+				name: "White 2",
+				blacklist: [
+					13, 14, 15, 126, 167, 168, 185, 240, 311, 325, 326, 379, 381, 427, 428, 434, 435, 438, 443, 444, 445, 467, 574, 575, 576, 629, 630, 644
+				]
+			}
+		]
 	},
 	{
 		id: "xy",
 		pokedexes: ["kalos-central", "kalos-coastal", "kalos-mountain"],
 		generation: 6,
 		name: "X and Y",
-		versions: []
+		versions: [
+			{
+				name: "X",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Y",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "oras",
 		pokedexes: ["updated-hoenn"],
 		generation: 6,
 		name: "Omega Ruby and Alpha Sapphire",
-		versions: []
+		versions: [
+			{
+				name: "Omega Ruby",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Alpha Sapphire",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "sm",
 		pokedexes: ["original-alola"],
 		generation: 7,
 		name: "Sun and Moon",
-		versions: []
+		versions: [
+			{
+				name: "Sun",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Moon",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "usum",
 		pokedexes: ["updated-alola"],
 		generation: 7,
 		name: "Ultra Sun and Ultra Moon",
-		versions: []
+		versions: [
+			{
+				name: "Ultra Sun",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Ultra Moon",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "lg",
 		pokedexes: ["letsgo-kanto"],
 		generation: 7,
 		name: "Let's Go Pikachu and Let's Go Eevee",
-		versions: []
+		versions: [
+			{
+				name: "Let's Go Pikachu",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Let's Go Eevee",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "ss",
 		pokedexes: ["galar", "isle-of-armor", "crown-tundra"],
 		generation: 8,
 		name: "Sword and Shield",
-		versions: []
+		versions: [
+			{
+				name: "Sword",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Shield",
+				blacklist: [
+					
+				]
+			}
+		]
 	},
 	{
 		id: "ls",
@@ -328,14 +432,36 @@ export const game_list: Game[] = [
 		pokedexes: ["original-sinnoh"],
 		generation: 8,
 		name: "Brilliant Diamond and Shining Pearl",
-		versions: []
+		versions: [{
+				name: "Brilliant Diamond",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Shining Pearl",
+				blacklist: [
+					
+				]
+			}]
 	},
 	{
 		id: "sv",
 		pokedexes: ["paldea", "kitakami", "blueberry"],
 		generation: 9,
 		name: "Scarlet and Violet",
-		versions: []
+		versions: [{
+				name: "Scarlet",
+				blacklist: [
+
+				]
+			},
+			{
+				name: "Violet",
+				blacklist: [
+					
+				]
+			}]
 	},
 ];
 
