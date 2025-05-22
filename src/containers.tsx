@@ -210,7 +210,7 @@ export function PokedexDisplay(props: {typeFilter: boolean[], nameFilter: string
 /**
  * A component containing filters toggles for selectable pokemon
  */
-export function FilterBar(props: {typeFilter: boolean[], name: string, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
+export function FilterBar(props: {typeFilter: boolean[], name: string, version: number, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
 {
 	const game = useContext(GameContext);
 
@@ -237,8 +237,12 @@ export function FilterBar(props: {typeFilter: boolean[], name: string, onClickTy
 	return (
 		<div className="panel flex flex-row flex-grow gap-1 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-evenly">{type_buttons}</div>
-			<Components.VersionSelector game={game!} onSelect={props.onSelectVersion} />
-			<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
+			<div className="flex flex-row gap-3 items-center">
+				<PopupBox text={props.version > -1 ? game!.versions[props.version].name : "All"}>
+					<Components.VersionSelector game={game!} version={props.version} onSelect={props.onSelectVersion} />
+				</PopupBox>
+				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
+			</div>
 		</div>
 	);
 }
@@ -383,4 +387,40 @@ export function PopupMenu(): ReactElement
 	{
 		return <Components.MenuButton openCallback={()=>{setMenuOpen(true)}} />
 	}
+}
+
+const icon_source = "/icons.svg";
+
+/**
+ * A component that displays a pop-up when clicked
+ */
+export function PopupBox(props: {text: string, children: ReactNode}): ReactElement
+{
+	const [open, setOpen] = useState(false);
+
+	// Add a global listener to run the close callback when a clicking anywhere on the page
+	useEffect(() => {
+		const handleClick = () => { setOpen(false); }
+
+		if (open)
+		{
+			document.addEventListener("click", handleClick);
+			document.addEventListener("contextmenu", handleClick);
+		}
+
+		return () => {
+			document.removeEventListener("click", handleClick);
+			document.removeEventListener("contextmenu", handleClick);
+		}
+	}, [open]);
+
+	return (
+		<div className="relative">
+			<div className="flex flex-row gap-1 items-center min-w-32 cursor-pointer" onClick={() => {setOpen(true)}}>
+				<div className="min-w-32">{props.text}</div>
+				<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
+			</div>
+			{open && props.children}
+		</div>
+	)
 }

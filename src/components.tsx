@@ -146,7 +146,7 @@ export function PokemonSelectorPopup(props: {pokemon: Data.Pokemon, closeCallbac
 
 	return (
 		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon.id} target="_blank" rel="noopener noreferrer">
-			<div className="popup">
+			<div className="popup anim-grow left-[-6px] bottom-full">
 				<div>{props.pokemon.name}</div>
 				<div className="flex flex-col min-w-[100px] justify-center">
 					{type_images}
@@ -186,7 +186,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 
 	return (
 		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div className="panel clickable p-1 min-w-[96px] min-h-[96px] relative" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+			<div className="panel clickable p-1 min-w-[96px] min-h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
@@ -473,31 +473,20 @@ export function ModalBox(props: {modalData: Data.Modal}): ReactElement
 }
 
 /**
- * A component that lets the user select a version to filter selectable pokemon
+ * A dropdown with a list of selectable vewrsions
  */
-export function VersionSelector(props: {game: Data.Game, onSelect: Function}): ReactElement
+export function VersionSelector(props: {game: Data.Game, version: number, onSelect: Function}): ReactElement
 {
 	// Create a set of options for the selector box
 	const options: ReactElement[] = [];
 	for (let i = 0; i < props.game.versions.length; ++i)
 	{
-		options.push(<option value={i} key={i+1}>{props.game.versions[i].name}</option>);
+		options.push(<li className="clickable" key={i+1} onClick={()=>props.onSelect(i)}>{props.game.versions[i].name}</li>);
 	}
 
-	if (options.length > 0)
-	{
-		options.unshift(<option value={-1} key={0}>All</option>);
+	options.unshift(<li className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
 
-		return (
-			<select className="panel" onChange={(e)=>props.onSelect(e.currentTarget.value)}>
-				{options}
-			</select>
+	return (
+			<ul className="popup top-full left-0 min-w-32 anim-grow">{options}</ul>
 		);
-	}
-	else
-	{
-		return (
-			<div></div>
-		);
-	}
 }

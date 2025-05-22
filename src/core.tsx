@@ -132,7 +132,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
 			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
-			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
+			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
 			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
 	);

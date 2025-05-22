@@ -37,10 +37,10 @@ footer {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
 	}
-	.panel.clickable {
+	.clickable {
 		user-select: none;
 	}
-	.panel.clickable:hover {
+	.clickable:hover {
 		background-color: var(--color-highlight);
 		color: #000000;
 		cursor: pointer;
@@ -54,15 +54,10 @@ footer {
 		position: absolute;
 		z-index: 1;
 
-		bottom: 100%;
-		left: -6px;
-
 		background-color: var(--color-panel);
 		backdrop-filter: blur(10px);
 		border-radius: 0.5rem;
 		padding: 0.5rem;
-
-		animation: animation-grow 0.05s linear;
 	}
 
 	.sidemenu {
@@ -95,6 +90,9 @@ footer {
 	}
 	.anim-fade-in {
 		animation: animation-fade-in 0.2s linear;
+	}
+	.anim-grow {
+		animation: animation-grow 0.05s linear;
 	}
 }
 
