@@ -50,7 +50,7 @@ export type Action = {
  */
 export type AppData = {
 	game: Data.Game | null,
-	current_team: Data.Team,
+	current_team: Data.Team | null,
 	teams: Data.Team[] | null,
 	modal: Data.Modal | null
 };
@@ -122,7 +122,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Store changes made to the current team
 		case Task.save_current_team: {
-			if (!state.teams)
+			if (!state.teams || !state.current_team)
 				break;
 
 			// Remove the team from its current spot in the team list if it has already been saved
@@ -146,7 +146,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Store the current team to the team list as a new team
 		case Task.save_new_team: {
-			if (!state.teams)
+			if (!state.teams || !state.current_team)
 				break;
 
 			// Get an unused team id
@@ -187,30 +187,46 @@ export function teamReducer(state: AppData, action: Action) {
 			if (!state.teams)
 				break;
 			
-			const team_list = state.teams.slice();
-			for (const team of team_list)
+			let selected_team: Data.Team | null = null;
+			if (state.current_team && (state.current_team.id === action.data))
 			{
-				if (team.id === action.data)
+				// If the selected team is the same as the current team, skip searching for teams
+				selected_team = state.current_team;
+			}
+			else
+			{
+				// Searth the team list to find a team with a matching id
+				const team_list = state.teams.slice();
+				for (const team of team_list)
 				{
-					// Set the game to match the team's required game
-					let selected_game: Data.Game | undefined;
-					for (const game of Data.game_list)
+					if (team.id === action.data)
 					{
-						if (game.id === team.game)
-						{
-							selected_game = game;
-							break;
-						}
+						selected_team = structuredClone(team);
+						break;
 					}
-					
-					if (selected_game)
-						return {
-							...state,
-							game: selected_game,
-							current_team: structuredClone(team)
-						}
 				}
 			}
+
+			if (!selected_team)
+				break;
+
+			// Set the game to match the team's required game
+			let selected_game: Data.Game | undefined;
+			for (const game of Data.game_list)
+			{
+				if (game.id === selected_team.game)
+				{
+					selected_game = game;
+					break;
+				}
+			}
+			
+			if (selected_game)
+				return {
+					...state,
+					game: selected_game,
+					current_team: selected_team
+				}
 		};
 
 		// Find a team in the team list and remove it
@@ -236,6 +252,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Set the name of the team to the data payload
 		case Task.change_name: {
+			if (!state.current_team)
+				break;
+
 			return {
 				...state,
 				current_team: {
@@ -247,6 +266,9 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Add or remove the pokemon specified in the data payload
 		case Task.select_pokemon: {
+			if (!state.current_team)
+				break;
+
 			const pokemon = state.current_team.pokemon.slice();
 			const abilities = state.current_team.abilities.slice();
 
@@ -286,7 +308,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Toggle the ability of a pokemon
 		case Task.swap_ability: {
-			if (!state.game)
+			if (!state.game || !state.current_team)
 				return state;
 
 			// Find which pokemon is being targeted by the action

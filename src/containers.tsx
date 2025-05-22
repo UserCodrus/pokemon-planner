@@ -365,8 +365,8 @@ export function PopupMenu(): ReactElement
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="flex flex-col gap-2">
 					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
-						tasks={[{label: "Confirm", task: Task.home}]}
-						confirmation={"Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost."}
+						tasks={[{label: "", task: Task.home}]}
+						//confirmation={"Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost."}
 						menuCallback={closeMenu}
 					/>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"

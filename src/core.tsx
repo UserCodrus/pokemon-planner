@@ -17,7 +17,7 @@ export function App(): ReactElement
 {
 	const [data, dispatch] = useReducer(teamReducer, {
 		game: null,
-		current_team: newTeam([], ""),
+		current_team: null,
 		teams: null,
 		modal: null
 	});
@@ -66,19 +66,30 @@ export function App(): ReactElement
 		return (
 			<DispatchContext.Provider value={dispatch}>
 				{data.modal && <Components.ModalBox modalData={data.modal} />}
-				<Selector teams={data.teams} />
+				<Selector teams={data.teams} selectedTeam={data.current_team} />
 			</DispatchContext.Provider>
 		);
 	}
 
-	return (
-		<GameContext.Provider value={data.game}>
-			<DispatchContext.Provider value={dispatch}>
-				{data.modal && <Components.ModalBox modalData={data.modal} />}
-				<Planner team={data.current_team}/>
-			</DispatchContext.Provider>
-		</GameContext.Provider>
-	);
+	if (data.current_team)
+	{
+		return (
+			<GameContext.Provider value={data.game}>
+				<DispatchContext.Provider value={dispatch}>
+					{data.modal && <Components.ModalBox modalData={data.modal} />}
+					<Planner team={data.current_team}/>
+				</DispatchContext.Provider>
+			</GameContext.Provider>
+		);
+	}
+	else
+	{
+		return (
+			<div className="panel">
+				Error, try again later.
+			</div>
+		);
+	}
 }
 
 /**
@@ -141,7 +152,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 /**
  * The view that lets the player select a game to use
  */
-export function Selector(props: {teams: Data.Team[]}): ReactElement
+export function Selector(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
@@ -184,6 +195,7 @@ export function Selector(props: {teams: Data.Team[]}): ReactElement
 
 	return (
 		<div>
+			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} /></div>}
 			<div className="flex flex-col flex-wrap gap-2 justify-evenly py-4">
 				{party_components}
 			</div>

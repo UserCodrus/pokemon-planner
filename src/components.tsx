@@ -395,7 +395,7 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 /**
  * A button for the main side menu
  */
-export function SidebarButton(props: {label: string, icon: string, confirmation: string, tasks: ModalButton[], menuCallback: Function}): ReactElement
+export function SidebarButton(props: {label: string, icon: string, confirmation?: string, tasks: ModalButton[], menuCallback: Function}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 
@@ -414,10 +414,19 @@ export function SidebarButton(props: {label: string, icon: string, confirmation:
 
 	// Dispatch an action to open the modal popup when the button is clicked
 	function handleClick() {
-		dispatch({ type: Task.open_modal, data: {
-			message: props.confirmation,
-			buttons: modal_buttons
-		} });
+		if (props.confirmation)
+		{
+			dispatch({ type: Task.open_modal, data: {
+				message: props.confirmation,
+				buttons: modal_buttons
+			} });
+		}
+		else
+		{
+			dispatch({
+				type: props.tasks[0].task
+			})
+		}
 		props.menuCallback();
 	}
 
