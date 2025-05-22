@@ -395,43 +395,10 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 /**
  * A button for the main side menu
  */
-export function SidebarButton(props: {label: string, icon: string, confirmation?: string, tasks: ModalButton[], menuCallback: Function}): ReactElement
+export function SidebarButton(props: {label: string, icon: string, onClick:Function}): ReactElement
 {
-	const dispatch = useContext(DispatchContext);
-
-	// Construct a set of modal buttons that will appear when the sidebar button is clicked
-	const modal_buttons: Data.Button[] = [];
-	for (const task of props.tasks)
-	{
-		modal_buttons.push({
-			label: task.label,
-			callback: ()=>{
-					dispatch({ type: task.task});
-				}
-		})
-	}
-	modal_buttons.push({label: "Cancel"});
-
-	// Dispatch an action to open the modal popup when the button is clicked
-	function handleClick() {
-		if (props.confirmation)
-		{
-			dispatch({ type: Task.open_modal, data: {
-				message: props.confirmation,
-				buttons: modal_buttons
-			} });
-		}
-		else
-		{
-			dispatch({
-				type: props.tasks[0].task
-			})
-		}
-		props.menuCallback();
-	}
-
 	return (
-		<button className="panel clickable flex flex-row items-center" onClick={()=>handleClick()}>
+		<button className="panel clickable flex flex-row items-center" onClick={()=>props.onClick()}>
 			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
 			<div className="mx-4 flex-grow">{props.label}</div>
 		</button>

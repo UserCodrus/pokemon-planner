@@ -356,6 +356,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
  */
 export function PopupMenu(): ReactElement
 {
+	const dispatch = useContext(DispatchContext);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const closeMenu = ()=>setMenuOpen(false);
 
@@ -365,19 +366,35 @@ export function PopupMenu(): ReactElement
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="flex flex-col gap-2">
 					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
-						tasks={[{label: "", task: Task.home}]}
-						//confirmation={"Are you sure you wish to return to the home screen?\nUnsaved changes to the current team will be lost."}
-						menuCallback={closeMenu}
+						onClick={() => {
+							dispatch({type: Task.home});
+							setMenuOpen(false);
+						}}
 					/>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
-						tasks={[{label: "Overwrite", task: Task.save_current_team}, {label: "Save as New", task: Task.save_new_team}]}
-						confirmation={"Do you wish to save this team?\nExisting saved data for this team will be overwritten."}
-						menuCallback={closeMenu}
+						onClick={() => {
+							dispatch({ type: Task.open_modal, data: {
+								message: "Do you wish to save this team?\nExisting saved data for this team will be overwritten.",
+								buttons: [
+									{ label: "Overwrite", callback: () => dispatch({ type: Task.save_current_team})},
+									{ label: "Save as New", callback: () => dispatch({ type: Task.save_new_team})},
+									{ label: "Cancel" }
+								]
+							} });
+							setMenuOpen(false);
+						}}
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
-						tasks={[{label: "Confirm", task: Task.new_team}]}
-						confirmation={"Do you wish to create a new team?\nUnsaved changes to the current team will be lost."}
-						menuCallback={closeMenu}
+						onClick={() => {
+							dispatch({ type: Task.open_modal, data: {
+								message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+								buttons: [
+									{ label: "Confirm", callback: () => dispatch({ type: Task.new_team})},
+									{ label: "Cancel" }
+								]
+							} });
+							setMenuOpen(false);
+						}}
 					/>
 				</div>
 			</MenuBox>
