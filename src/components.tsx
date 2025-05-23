@@ -252,7 +252,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
 			type="text" value={props.text}
 			placeholder="Type a name to filter"
 			onChange={(event)=>props.onChange(event.target.value)}
-			className="bg-white text-black px-2 max-h-6"
+			className="inner-panel px-2 max-h-8"
 		/>
 	)
 }
@@ -368,7 +368,7 @@ export function TeamName(props: {name: string}): ReactElement
 
 	return (
 		<div className="panel text-lg text-center min-w-1/4 self-center">
-			<input type="text" name="textbox" value={props.name} className="text-center"
+			<input type="text" name="textbox" value={props.name} className="text-center rounded-lg"
 				onChange={(e)=>{
 					dispatch({
 						type: Task.change_name,
@@ -463,6 +463,6 @@ export function VersionSelector(props: {game: Data.Game, version: number, onSele
 	options.unshift(<li className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
 
 	return (
-			<ul className="popup top-full left-0 min-w-32 anim-grow">{options}</ul>
+			<ul className="popup top-full left-0 min-w-full anim-grow">{options}</ul>
 		);
 }

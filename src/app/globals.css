@@ -12,6 +12,7 @@
 	--color-shade: rgb(128 128 128 / 50%);
 	--color-highlight: #fdd700;
 	--color-highlight-text: #000000;
+	--color-outline: var(--foreground);
 
 	--color-advantage: #fb406a;
 	--color-disadvantage: #007efe;
@@ -29,6 +30,10 @@ footer {
 	text-align: center;
 }
 
+*:focus {
+	outline: 2px solid white;
+}
+
 @layer components {
 	.panel {
 		position: relative;
@@ -37,6 +42,12 @@ footer {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
 	}
+	.inner-panel {
+		background-color: var(--color-panel);
+		border-radius: 0.5rem;
+		border-color: var(--color-outline);
+	}
+
 	.clickable {
 		user-select: none;
 	}
