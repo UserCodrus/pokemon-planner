@@ -80,6 +80,7 @@ export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
 		// Set the game to null to revert to the home screen
 		case Task.home: {
+			window.scrollTo(0, 0);
 			return {
 				...state,
 				game: null
@@ -105,11 +106,14 @@ export function teamReducer(state: AppData, action: Action) {
 			}
 
 			if (selected_game)
+			{
+				window.scrollTo(0, 0);
 				return {
 					...state,
 					current_team: newTeam(state.teams!, selected_game.id),
 					game: selected_game
 				}
+			}
 		};
 
 		// Overwrite the current team data with the provided teams
@@ -222,11 +226,14 @@ export function teamReducer(state: AppData, action: Action) {
 			}
 			
 			if (selected_game)
+			{
+				window.scrollTo(0, 0);
 				return {
 					...state,
 					game: selected_game,
 					current_team: selected_team
 				}
+			}
 		};
 
 		// Find a team in the team list and remove it
