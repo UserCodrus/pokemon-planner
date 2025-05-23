@@ -309,13 +309,15 @@ export const game_list: Game[] = [
 			{
 				name: "X",
 				blacklist: [
-
+					138, 139, 140, 141, 309, 310, 690, 691, 717,
+					90, 91, 214, 246, 247, 248, 509, 510, 538, 682, 683
 				]
 			},
 			{
 				name: "Y",
 				blacklist: [
-					
+					120, 121, 228, 229, 304, 305, 306, 345, 346, 347, 348, 692, 693, 719,
+					127, 261, 262, 539, 684, 685
 				]
 			}
 		]
@@ -329,13 +331,13 @@ export const game_list: Game[] = [
 			{
 				name: "Omega Ruby",
 				blacklist: [
-
+					138, 139, 249, 270, 271, 272, 302, 336, 337, 380, 382, 408, 409, 483, 539, 564, 565, 642, 644, 692, 693
 				]
 			},
 			{
 				name: "Alpha Sapphire",
 				blacklist: [
-					
+					140, 141, 250, 273, 274, 275, 303, 335, 338, 381, 383, 410, 411, 484, 538, 566, 567, 641, 643, 690, 691
 				]
 			}
 		]
@@ -384,18 +386,18 @@ export const game_list: Game[] = [
 		id: "lg",
 		pokedexes: ["letsgo-kanto"],
 		generation: 7,
-		name: "Let's Go Pikachu and Let's Go Eevee",
+		name: "Let's Go, Pikachu! and Let's Go, Eevee!",
 		versions: [
 			{
-				name: "Let's Go Pikachu",
+				name: "Let's Go, Pikachu!",
 				blacklist: [
-
+					23, 24, 37, 38, 52, 69, 70, 71, 109, 110, 127
 				]
 			},
 			{
-				name: "Let's Go Eevee",
+				name: "Let's Go, Eevee!",
 				blacklist: [
-					
+					27, 28, 43, 44, 45, 56, 57, 58, 88, 89, 123,
 				]
 			}
 		]
