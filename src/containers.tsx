@@ -88,7 +88,7 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	}
 
 	return (
-		<div className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
+		<div tabIndex={0} className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
 			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.name}</div>
 			<div className="flex flex-row">{components}</div>

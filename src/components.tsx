@@ -348,7 +348,7 @@ export function PokedexSelector(props: {game: Data.Game}): ReactElement
 	}
 	
 	return (
-		<div className="panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
+		<div tabIndex={0} className="panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
 			<div>Generation {props.game.generation}</div>
 			<div>{props.game.name}</div>
 		</div>
