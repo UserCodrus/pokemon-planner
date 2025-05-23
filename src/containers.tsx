@@ -432,7 +432,7 @@ export function PopupBox(props: {text: string, children: ReactNode}): ReactEleme
 
 	return (
 		<div className="relative">
-			<div className="inner-panel cursor-pointer flex flex-row gap-1 items-center px-2 max-h-8" onClick={() => {setOpen(true)}}>
+			<div tabIndex={0} className="inner-panel cursor-pointer flex flex-row gap-1 items-center px-2 max-h-8" onClick={() => {setOpen(true)}}>
 				<div className="min-w-32">{props.text}</div>
 				<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
 			</div>

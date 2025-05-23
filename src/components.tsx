@@ -14,11 +14,6 @@ export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 export type VersionFilterCallback = (version: number) => void;
 
-type ModalButton = {
-	label: string,
-	task: Task
-}
-
 const enum CoverageStyle {
 	neutral,
 	coverage,
@@ -91,7 +86,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 	}
 
 	return (
-		<div className="panel clickable p-4 max-w-[30%] flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+		<div tabIndex={0} className="panel clickable p-4 max-w-[30%] flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 			<div className="text-center min-h-6">{name_text}</div>
 			<Image src={art_src} width={size} height={size} alt={art_alt} />
 			<div className="text-center min-h-6">{ability_text}</div>
@@ -186,7 +181,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 
 	return (
 		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div className="panel clickable p-1 min-w-[96px] min-h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+			<div tabIndex={0} className="panel clickable p-1 min-w-[96px] min-h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
@@ -208,6 +203,7 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 
 	return (
 		<Image
+			tabIndex={0}
 			src={Data.typeIconURL(props.type)}
 			width={size} height={size}
 			alt={Data.getTypeName(props.type)}
@@ -216,7 +212,7 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 				e.preventDefault();
 				props.onClick(props.type, true);
 			}}
-			className={"cursor-pointer" + filter_style}
+			className={"rounded-2xl cursor-pointer" + filter_style}
 		/>
 	);
 }
@@ -232,7 +228,7 @@ export function AllFilterButton(props: {active: boolean, onClick: TypeFilterCall
 
 	return (
 		<button
-			className={"min-w-[32px] min-h-[32px] cursor-pointer" + filter_style}
+			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer" + filter_style}
 			onClick={()=>props.onClick(-1, true)}
 			onContextMenu={(e)=>{
 				e.preventDefault();
@@ -386,7 +382,7 @@ export function TeamName(props: {name: string}): ReactElement
 export function MenuButton(props: {openCallback: Function}): ReactElement
 {
 	return (
-		<div className="fixed left-2 top-2 z-1 text-black cursor-pointer" onClick={()=>props.openCallback()}>
+		<div tabIndex={0} className="fixed left-2 top-2 z-1 text-black cursor-pointer" onClick={()=>props.openCallback()}>
 			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
 	);
@@ -457,12 +453,12 @@ export function VersionSelector(props: {game: Data.Game, version: number, onSele
 	const options: ReactElement[] = [];
 	for (let i = 0; i < props.game.versions.length; ++i)
 	{
-		options.push(<li className="clickable" key={i+1} onClick={()=>props.onSelect(i)}>{props.game.versions[i].name}</li>);
+		options.push(<li tabIndex={0} className="clickable" key={i+1} onClick={()=>props.onSelect(i)}>{props.game.versions[i].name}</li>);
 	}
 
-	options.unshift(<li className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
+	options.unshift(<li tabIndex={0} className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
 
 	return (
-			<ul className="popup top-full left-0 min-w-full anim-grow">{options}</ul>
+			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
 		);
 }
