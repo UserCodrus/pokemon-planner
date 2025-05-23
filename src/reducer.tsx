@@ -38,6 +38,15 @@ export const enum Task {
 }
 
 /**
+ * An enum describing all of the views available in the app
+ */
+export const enum View {
+	home,
+	planner,
+	compare
+}
+
+/**
  * The data type for a teamReducer action
  */
 export type Action = {
@@ -49,6 +58,7 @@ export type Action = {
  * Global data for the app
  */
 export type AppData = {
+	view: View,
 	game: Data.Game | null,
 	current_team: Data.Team | null,
 	teams: Data.Team[] | null,
@@ -83,16 +93,17 @@ export function teamReducer(state: AppData, action: Action) {
 			window.scrollTo(0, 0);
 			return {
 				...state,
-				game: null
+				view: View.home
 			}
 		};
 
-		// Find a game matching the provided id
+		// Find a game matching the provided id and set the planner view
 		case Task.change_game: {
 			if (!action.data)
 				return {
 					...state,
-					game: null
+					game: null,
+					view: View.home
 				}
 
 			let selected_game: Data.Game | undefined;
@@ -111,7 +122,8 @@ export function teamReducer(state: AppData, action: Action) {
 				return {
 					...state,
 					current_team: newTeam(state.teams!, selected_game.id),
-					game: selected_game
+					game: selected_game,
+					view: View.planner
 				}
 			}
 		};
@@ -186,7 +198,7 @@ export function teamReducer(state: AppData, action: Action) {
 			}
 		};
 
-		// Set the team with the given id as the active team
+		// Set the team with the given id as the active team and load the planner
 		case Task.select_team: {
 			if (!state.teams)
 				break;
@@ -231,7 +243,8 @@ export function teamReducer(state: AppData, action: Action) {
 				return {
 					...state,
 					game: selected_game,
-					current_team: selected_team
+					current_team: selected_team,
+					view: View.planner
 				}
 			}
 		};

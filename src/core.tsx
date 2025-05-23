@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, newTeam, teamReducer, GameContext, Task } from "./reducer";
+import { DispatchContext, teamReducer, GameContext, Task, View } from "./reducer";
 
 // Start the app without team data to avoid issues with invalid team data
 const debug = false;
@@ -16,6 +16,7 @@ const debug = false;
 export function App(): ReactElement
 {
 	const [data, dispatch] = useReducer(teamReducer, {
+		view: View.home,
 		game: null,
 		current_team: null,
 		teams: null,
@@ -51,45 +52,51 @@ export function App(): ReactElement
 		}
 	}, [data.teams]);
 
+	// Display a loading screen if team data has not been loaded yet
 	if (!data.teams)
-	{
-		// Display a loading screen if team data has not been loaded yet
 		return (
 			<div className="panel">
 				Loading...
 			</div>
 		);
-	}
-	if (!data.game)
-	{
-		// Display the game selector if no game is selected
-		return (
-			<DispatchContext.Provider value={dispatch}>
-				{data.modal && <Components.ModalBox modalData={data.modal} />}
-				<Selector teams={data.teams} selectedTeam={data.current_team} />
-			</DispatchContext.Provider>
-		);
-	}
 
-	if (data.current_team)
+	switch (data.view)
 	{
-		return (
-			<GameContext.Provider value={data.game}>
+		// Display the landing page
+		case View.home: {
+			return (
 				<DispatchContext.Provider value={dispatch}>
 					{data.modal && <Components.ModalBox modalData={data.modal} />}
-					<Planner team={data.current_team}/>
+					<Selector teams={data.teams} selectedTeam={data.current_team} />
 				</DispatchContext.Provider>
-			</GameContext.Provider>
-		);
+			);
+		};
+
+		// Display the team planner
+		case View.planner: {
+			if (data.current_team)
+				return (
+					<GameContext.Provider value={data.game}>
+						<DispatchContext.Provider value={dispatch}>
+							{data.modal && <Components.ModalBox modalData={data.modal} />}
+							<Planner team={data.current_team}/>
+						</DispatchContext.Provider>
+					</GameContext.Provider>
+				);
+		};
+
+		// Display the team comparison page
+		case View.compare: {
+
+		};
 	}
-	else
-	{
-		return (
-			<div className="panel">
-				Error, try again later.
-			</div>
-		);
-	}
+
+	// Fallback if anything goes wrong
+	return (
+		<div className="panel">
+			Error, try again later.
+		</div>
+	);
 }
 
 /**
@@ -205,3 +212,7 @@ export function Selector(props: {teams: Data.Team[], selectedTeam: Data.Team | n
 		</div>
 	);
 }
+
+/**
+ * A view that compares the current team to a different team
+ */
