@@ -5,6 +5,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
 /**
  * Constants describing the various actions that can be performed on team data via the reducer
  * @param home Returns the app to the landing page. Data is not used.
+ * @param compare Switches to the comparison view. Data is not used.
  * @param change_game Change the selected game. Data should be a game id matching a game in Data.game_list
  * @param load_teams Store a set of teams. Data should be an array of Data.Team.
  * @param save_current_team Overwrite changes made to the current team. Data is not used.
@@ -20,6 +21,7 @@ import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, use
  */
 export const enum Task {
 	home,
+	compare,
 	change_game,
 	load_teams, 
 
@@ -88,12 +90,21 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
  */
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
-		// Set the game to null to revert to the home screen
+		// Switch to the home view
 		case Task.home: {
 			window.scrollTo(0, 0);
 			return {
 				...state,
 				view: View.home
+			}
+		};
+
+		// Switch to the compare view
+		case Task.compare: {
+			window.scrollTo(0, 0);
+			return {
+				...state,
+				view: View.compare
 			}
 		};
 
@@ -204,7 +215,7 @@ export function teamReducer(state: AppData, action: Action) {
 				break;
 			
 			let selected_team: Data.Team | null = null;
-			if (state.current_team && (state.current_team.id === action.data))
+			if (state.current_team && (state.current_team.id === action.data || !action.data))
 			{
 				// If the selected team is the same as the current team, skip searching for teams
 				selected_team = state.current_team;

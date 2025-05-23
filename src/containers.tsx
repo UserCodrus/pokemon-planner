@@ -370,6 +370,18 @@ export function PopupMenu(): ReactElement
 							setMenuOpen(false);
 						}}
 					/>
+					<Components.SidebarButton label="Planner" icon="solar--notebook-square-bold"
+						onClick={() => {
+							dispatch({type: Task.select_team});
+							setMenuOpen(false);
+						}}
+					/>
+					<Components.SidebarButton label="Compare Teams" icon="solar--tuning-square-2-bold"
+						onClick={() => {
+							dispatch({type: Task.compare});
+							setMenuOpen(false);
+						}}
+					/>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
 							dispatch({ type: Task.open_modal, data: {

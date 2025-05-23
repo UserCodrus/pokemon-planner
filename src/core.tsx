@@ -67,7 +67,7 @@ export function App(): ReactElement
 			return (
 				<DispatchContext.Provider value={dispatch}>
 					{data.modal && <Components.ModalBox modalData={data.modal} />}
-					<Selector teams={data.teams} selectedTeam={data.current_team} />
+					<SelectorView teams={data.teams} selectedTeam={data.current_team} />
 				</DispatchContext.Provider>
 			);
 		};
@@ -79,7 +79,7 @@ export function App(): ReactElement
 					<GameContext.Provider value={data.game}>
 						<DispatchContext.Provider value={dispatch}>
 							{data.modal && <Components.ModalBox modalData={data.modal} />}
-							<Planner team={data.current_team}/>
+							<PlannerView team={data.current_team}/>
 						</DispatchContext.Provider>
 					</GameContext.Provider>
 				);
@@ -87,7 +87,15 @@ export function App(): ReactElement
 
 		// Display the team comparison page
 		case View.compare: {
-
+			if (data.current_team)
+				return (
+					<GameContext.Provider value={data.game}>
+						<DispatchContext.Provider value={dispatch}>
+							{data.modal && <Components.ModalBox modalData={data.modal} />}
+							<CompareView teams={data.teams} selectedTeam={data.current_team} />
+						</DispatchContext.Provider>
+					</GameContext.Provider>
+				);
 		};
 	}
 
@@ -102,7 +110,7 @@ export function App(): ReactElement
 /**
  * The pokemon planner view
  */
-export function Planner(props: {team: Data.Team}): ReactElement
+function PlannerView(props: {team: Data.Team}): ReactElement
 {
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
@@ -159,7 +167,7 @@ export function Planner(props: {team: Data.Team}): ReactElement
 /**
  * The view that lets the player select a game to use
  */
-export function Selector(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
+function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
@@ -216,3 +224,43 @@ export function Selector(props: {teams: Data.Team[], selectedTeam: Data.Team | n
 /**
  * A view that compares the current team to a different team
  */
+function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): ReactElement
+{
+	const [compareTeam, setCompareTeam] = useState<Data.Team>();
+
+	// Create a list of selectable teams
+	const team_components: ReactElement[] = [];
+	let key = 0;
+	for (const team of props.teams)
+	{
+		const game = Data.getGame(team.game);
+		const current_game = Data.getGame(props.selectedTeam.game);
+
+		if (game.generation === current_game.generation)
+		{
+			team_components.push(<li className="clickable" key={key} onClick={() => setCompareTeam(team)}>{team.name}</li>);
+			key++;
+		}
+	}
+
+	return (
+		<div className="flex flex-col py-8 gap-4 items-stretch w-4/5">
+			<Containers.PopupMenu />
+			<Components.TeamName name={props.selectedTeam.name} />
+			<Containers.PartyDisplay pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} />
+			<Containers.PartyAnalysis pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} />
+
+			<div className="flex items-center justify-center">
+				<Containers.PopupBox text={compareTeam ? compareTeam.name : "Select a team"} >
+					<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{team_components}</ul>
+				</Containers.PopupBox>
+			</div>
+
+			{compareTeam && <div className="flex flex-col gap-4">
+				<Containers.PartyAnalysis pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} />
+				<Containers.PartyDisplay pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} />
+			</div>}
+
+		</div>
+	);
+}

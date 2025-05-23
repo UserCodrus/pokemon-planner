@@ -635,3 +635,17 @@ export function getRomanNumeral(number: number): string
 
 	return "?";
 }
+
+/**
+ * Get the game matching a given game id
+ */
+export function getGame(id: string): Game
+{
+	for (const game of game_list)
+	{
+		if (game.id === id)
+			return game;
+	}
+
+	return game_list[0];
+}
