@@ -6,6 +6,7 @@ import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
 import { DispatchContext, GameContext, Task } from "./reducer";
+import { ModalContext } from "./modal";
 
 const party_size = 6;
 
@@ -38,6 +39,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 export function PartySelector(props: {party: Data.Team}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
+	const openModal = useContext(ModalContext);
 
 	// Get the game data for the game the party was made for
 	let game: Data.Game | null = null;
@@ -60,23 +62,20 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	// Delete the team when the component is right clicked and the user confirms the modal popup
 	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
 		event.preventDefault();
-		dispatch({
-			type: Task.open_modal,
-			data: {
-				message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
-				buttons: [
-					{
-						label: "Confirm",
-						callback: () => {
-							dispatch({
-								type: Task.delete_team,
-								data: props.party.id
-							});
-						}
-					},
-					{ label: "Cancel" }
-				]
-			}
+		openModal({
+			message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
+			buttons: [
+				{
+					label: "Confirm",
+					callback: () => {
+						dispatch({
+							type: Task.delete_team,
+							data: props.party.id
+						});
+					}
+				},
+				{ label: "Cancel" }
+			]
 		});
 	}
 
@@ -357,6 +356,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 export function PopupMenu(): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
+	const openModal = useContext(ModalContext);
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	if (menuOpen)
@@ -384,26 +384,26 @@ export function PopupMenu(): ReactElement
 					/>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
-							dispatch({ type: Task.open_modal, data: {
+							openModal({
 								message: "Do you wish to save this team?\nExisting saved data for this team will be overwritten.",
 								buttons: [
 									{ label: "Overwrite", callback: () => dispatch({ type: Task.save_current_team})},
 									{ label: "Save as New", callback: () => dispatch({ type: Task.save_new_team})},
 									{ label: "Cancel" }
 								]
-							} });
+							});
 							setMenuOpen(false);
 						}}
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
-							dispatch({ type: Task.open_modal, data: {
+							openModal({
 								message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
 								buttons: [
 									{ label: "Confirm", callback: () => dispatch({ type: Task.new_team})},
 									{ label: "Cancel" }
 								]
-							} });
+							});
 							setMenuOpen(false);
 						}}
 					/>

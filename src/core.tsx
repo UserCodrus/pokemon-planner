@@ -6,6 +6,7 @@ import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
 import { DispatchContext, teamReducer, GameContext, Task, View } from "./reducer";
+import { ModalWrapper } from "./modal";
 
 // Start the app without team data to avoid issues with invalid team data
 const debug = false;
@@ -19,8 +20,7 @@ export function App(): ReactElement
 		view: View.home,
 		game: null,
 		current_team: null,
-		teams: null,
-		modal: null
+		teams: null
 	});
 
 	// Load teams from storage after the app starts
@@ -66,8 +66,9 @@ export function App(): ReactElement
 		case View.home: {
 			return (
 				<DispatchContext.Provider value={dispatch}>
-					{data.modal && <Components.ModalBox modalData={data.modal} />}
-					<SelectorView teams={data.teams} selectedTeam={data.current_team} />
+					<ModalWrapper>
+						<SelectorView teams={data.teams} selectedTeam={data.current_team} />
+					</ModalWrapper>
 				</DispatchContext.Provider>
 			);
 		};
@@ -78,8 +79,9 @@ export function App(): ReactElement
 				return (
 					<GameContext.Provider value={data.game}>
 						<DispatchContext.Provider value={dispatch}>
-							{data.modal && <Components.ModalBox modalData={data.modal} />}
-							<PlannerView team={data.current_team}/>
+							<ModalWrapper>
+								<PlannerView team={data.current_team}/>
+							</ModalWrapper>
 						</DispatchContext.Provider>
 					</GameContext.Provider>
 				);
@@ -91,8 +93,9 @@ export function App(): ReactElement
 				return (
 					<GameContext.Provider value={data.game}>
 						<DispatchContext.Provider value={dispatch}>
-							{data.modal && <Components.ModalBox modalData={data.modal} />}
-							<CompareView teams={data.teams} selectedTeam={data.current_team} />
+							<ModalWrapper>
+								<CompareView teams={data.teams} selectedTeam={data.current_team} />
+							</ModalWrapper>
 						</DispatchContext.Provider>
 					</GameContext.Provider>
 				);

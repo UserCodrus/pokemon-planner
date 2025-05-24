@@ -402,49 +402,6 @@ export function SidebarButton(props: {label: string, icon: string, onClick:Funct
 }
 
 /**
- * A modal pop-up that gives the user a series of options with actions attached to them
- */
-export function ModalBox(props: {modalData: Data.Modal}): ReactElement
-{
-	const dispatch = useContext(DispatchContext);
-
-	// Create divs for each line of message text
-	const messages: ReactElement[] = props.modalData.message.split('\n').map((value, i) => {
-		return <div key={i}>{value}</div>
-	});
-
-	// Create the buttons for the modal box
-	const buttons: ReactElement[] = [];
-	if (props.modalData.buttons.length > 0)
-	{
-		for (let i = 0; i < props.modalData.buttons.length; ++i)
-		{
-			buttons.push(<button className="p-2" key={i} onClick={() => {
-				if (props.modalData.buttons[i].callback)
-					// @ts-ignore because the linter can't understand this line for some reason? I checked for a null callback on the line above, silly linter.
-					props.modalData.buttons[i].callback(); 
-				dispatch({ type: Task.close_modal });
-			}}>{props.modalData.buttons[i].label}</button>);
-		}
-	}
-	else
-	{
-		buttons.push(<button className="p-2" onClick={() => {
-			dispatch({ type: Task.close_modal });
-		}}>Confirm</button>);
-	}
-
-	return (
-		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
-			<div className="panel z-10 grow-0 text-center">
-				{messages}
-				<div className="flex flex-row justify-evenly">{buttons}</div>
-			</div>
-		</div>
-	)
-}
-
-/**
  * A dropdown with a list of selectable vewrsions
  */
 export function VersionSelector(props: {game: Data.Game, version: number, onSelect: Function}): ReactElement
