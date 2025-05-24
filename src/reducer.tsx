@@ -1,6 +1,6 @@
 import * as Data from "./data";
 
-import { ActionDispatch, createContext, ReactElement, ReactNode, useContext, useReducer } from "react";
+import { ActionDispatch, createContext } from "react";
 
 /**
  * Constants describing the various actions that can be performed on team data via the reducer

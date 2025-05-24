@@ -60,53 +60,38 @@ export function App(): ReactElement
 			</div>
 		);
 
+	// Set the current view component based on the view state
+	let view: ReactElement = <div className="panel">Error</div>;
 	switch (data.view)
 	{
 		// Display the landing page
 		case View.home: {
-			return (
-				<DispatchContext.Provider value={dispatch}>
-					<ModalWrapper>
-						<SelectorView teams={data.teams} selectedTeam={data.current_team} />
-					</ModalWrapper>
-				</DispatchContext.Provider>
-			);
+			view = <SelectorView teams={data.teams} selectedTeam={data.current_team} />;
+			break;
 		};
 
 		// Display the team planner
 		case View.planner: {
 			if (data.current_team)
-				return (
-					<GameContext.Provider value={data.game}>
-						<DispatchContext.Provider value={dispatch}>
-							<ModalWrapper>
-								<PlannerView team={data.current_team}/>
-							</ModalWrapper>
-						</DispatchContext.Provider>
-					</GameContext.Provider>
-				);
+				view = <GameContext.Provider value={data.game}><PlannerView team={data.current_team}/></GameContext.Provider>;
+			break;
 		};
 
 		// Display the team comparison page
 		case View.compare: {
 			if (data.current_team)
-				return (
-					<GameContext.Provider value={data.game}>
-						<DispatchContext.Provider value={dispatch}>
-							<ModalWrapper>
-								<CompareView teams={data.teams} selectedTeam={data.current_team} />
-							</ModalWrapper>
-						</DispatchContext.Provider>
-					</GameContext.Provider>
-				);
+				view = <GameContext.Provider value={data.game}><CompareView teams={data.teams} selectedTeam={data.current_team} /></GameContext.Provider>;
+			break;
 		};
 	}
 
-	// Fallback if anything goes wrong
+	// Display the app components
 	return (
-		<div className="panel">
-			Error, try again later.
-		</div>
+		<DispatchContext.Provider value={dispatch}>
+			<ModalWrapper>
+				{view}
+			</ModalWrapper>
+		</DispatchContext.Provider>
 	);
 }
 
