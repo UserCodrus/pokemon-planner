@@ -7,6 +7,7 @@ import * as Containers from "./containers";
 import * as Data from "./data";
 import { DispatchContext, teamReducer, GameContext, Task, View } from "./reducer";
 import { ModalWrapper } from "./modal";
+import GameData from "../data/games.json";
 
 // Start the app without team data to avoid issues with invalid team data
 const debug = false;
@@ -173,12 +174,12 @@ function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null
 		if (i === 0)
 		{
 			// Put the national dex at the top
-			inner_components.push(<Components.PokedexSelector game={Data.game_list[0]} key={0} />);
+			inner_components.push(<Components.PokedexSelector game={GameData[0]} key={0} />);
 		}
 		else
 		{
 			let key = 0;
-			for (const game of Data.game_list)
+			for (const game of GameData)
 			{
 				if (game.generation === i && game.id !== "nat")
 				{

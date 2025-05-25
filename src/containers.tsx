@@ -42,15 +42,7 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 	const openModal = useContext(ModalContext);
 
 	// Get the game data for the game the party was made for
-	let game: Data.Game | null = null;
-	for (const game_data of Data.game_list)
-	{
-		if (game_data.id === props.party.game)
-		{
-			game = game_data;
-			break;
-		}
-	}
+	const game = Data.getGame(props.party.game);
 
 	// Select the team when the component is left clicked
 	function handleLeftClick(event: ReactMouseEvent<HTMLDivElement>) {
@@ -102,10 +94,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], typeFilter: boolean[],
 {
 	const game = useContext(GameContext);
 	const version = props.versionFilter > -1 ? game!.versions[props.versionFilter] : null;
-
-	console.log(version);
 	const limit = (version && version.limit) ? version.limit : props.pokedex.entries.length;
-	console.log(limit);
 
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];

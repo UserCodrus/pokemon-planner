@@ -111,16 +111,7 @@ export function teamReducer(state: AppData, action: Action) {
 					view: View.home
 				}
 
-			let selected_game: Data.Game | undefined;
-			for (const game of Data.game_list)
-			{
-				if (game.id === action.data)
-				{
-					selected_game = game;
-					break;
-				}
-			}
-
+			const selected_game = Data.getGame(action.data);
 			if (selected_game)
 			{
 				window.scrollTo(0, 0);
@@ -231,19 +222,10 @@ export function teamReducer(state: AppData, action: Action) {
 			if (!selected_team)
 				break;
 
-			// Set the game to match the team's required game
-			let selected_game: Data.Game | undefined;
-			for (const game of Data.game_list)
-			{
-				if (game.id === selected_team.game)
-				{
-					selected_game = game;
-					break;
-				}
-			}
-			
+			const selected_game = Data.getGame(selected_team.game);
 			if (selected_game)
 			{
+				console.log(selected_game);
 				window.scrollTo(0, 0);
 				return {
 					...state,
