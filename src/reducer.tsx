@@ -56,7 +56,6 @@ export type Action = {
  */
 export type AppData = {
 	view: View,
-	game: Data.Game | null,
 	current_team: Data.Team | null,
 	teams: Data.Team[] | null
 };
@@ -187,7 +186,7 @@ export function teamReducer(state: AppData, action: Action) {
 			if (!state.teams)
 				break;
 
-			const new_team = newTeam(state.teams, state.game!.id);
+			const new_team = newTeam(state.teams, state.current_team ? state.current_team.game : "nat");
 			return {
 				...state,
 				current_team: new_team
@@ -315,10 +314,11 @@ export function teamReducer(state: AppData, action: Action) {
 
 		// Toggle the ability of a pokemon
 		case Task.swap_ability: {
-			if (!state.game || !state.current_team)
+			if (!state.current_team)
 				return state;
 
 			// Find which pokemon is being targeted by the action
+			const game = Data.getGame(state.current_team.game);
 			const pokemon = state.current_team.pokemon;
 			const abilities = state.current_team.abilities.slice();
 			for (let i = 0; i < pokemon.length; ++i)
@@ -326,8 +326,8 @@ export function teamReducer(state: AppData, action: Action) {
 				if (pokemon[i] === action.data)
 				{
 					// Cycle between ability slots, skipping slots with no ability
-					const ability_data = Data.getPokemonAbilities(state.game.generation, pokemon[i].id, pokemon[i].form);
-					const ability_slots = state.game.generation > 4 ? 2 : 1;
+					const ability_data = Data.getPokemonAbilities(game.generation, pokemon[i].id, pokemon[i].form);
+					const ability_slots = game.generation > 4 ? 2 : 1;
 					do
 					{
 						abilities[i]++;
@@ -354,4 +354,3 @@ export function teamReducer(state: AppData, action: Action) {
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 	console.error("Invalid dispatch function.");
 });
-export const GameContext = createContext<Data.Game | null>(null);

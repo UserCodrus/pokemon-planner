@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, teamReducer, GameContext, Task, View } from "./reducer";
+import { DispatchContext, teamReducer, Task, View } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
 
@@ -19,7 +19,6 @@ export function App(): ReactElement
 {
 	const [data, dispatch] = useReducer(teamReducer, {
 		view: View.home,
-		game: null,
 		current_team: null,
 		teams: null
 	});
@@ -74,14 +73,14 @@ export function App(): ReactElement
 		// Display the team planner
 		case View.planner: {
 			if (data.current_team)
-				view = <GameContext.Provider value={data.game}><PlannerView team={data.current_team}/></GameContext.Provider>;
+				view = <PlannerView team={data.current_team}/>;
 			break;
 		};
 
 		// Display the team comparison page
 		case View.compare: {
 			if (data.current_team)
-				view = <GameContext.Provider value={data.game}><CompareView teams={data.teams} selectedTeam={data.current_team} /></GameContext.Provider>;
+				view = <CompareView teams={data.teams} selectedTeam={data.current_team} />;
 			break;
 		};
 	}
@@ -104,6 +103,8 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
 	const [nameFilter, setNameFilter] = useState<string>("");
 	const [versionFilter, setVersionFilter] = useState<number>(-1);
+
+	const game = Data.getGame(props.team.game);
 
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number, whitelist?: boolean)
@@ -145,10 +146,10 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 		<div className="flex flex-col min-w-4/5 max-w-[90%] py-8 gap-4 items-stretch">
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
-			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} />
-			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} />
-			<Containers.FilterBar typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
-			<Containers.PokedexDisplay typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
+			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
+			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
+			<Containers.FilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
+			<Containers.PokedexDisplay game={game} typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
 	);
 }
@@ -232,12 +233,15 @@ function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): Reac
 		}
 	}
 
+	const primary_game = Data.getGame(props.selectedTeam.game);
+	const secondary_game = compareTeam ? Data.getGame(compareTeam.game) : null;
+
 	return (
 		<div className="flex flex-col py-8 gap-4 items-stretch w-4/5">
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.selectedTeam.name} />
-			<Containers.PartyDisplay pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} />
-			<Containers.PartyAnalysis pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} />
+			<Containers.PartyDisplay pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} game={primary_game} />
+			<Containers.PartyAnalysis pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} game={primary_game} />
 
 			<div className="flex items-center justify-center">
 				<Containers.PopupBox text={compareTeam ? compareTeam.name : "Select a team"} >
@@ -246,8 +250,8 @@ function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): Reac
 			</div>
 
 			{compareTeam && <div className="flex flex-col gap-4">
-				<Containers.PartyAnalysis pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} />
-				<Containers.PartyDisplay pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} />
+				<Containers.PartyAnalysis pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} game={secondary_game!} />
+				<Containers.PartyDisplay pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} game={secondary_game!} />
 			</div>}
 
 		</div>
