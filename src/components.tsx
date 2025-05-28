@@ -6,6 +6,7 @@ import Image from 'next/image'
 import * as Data from "./data";
 import Link from "next/link";
 import { DispatchContext, Task } from "./reducer";
+import { ModalContext } from "./modal";
 
 export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
@@ -13,6 +14,8 @@ export type GameCallback = (game: Data.Game) => void;
 export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 export type VersionFilterCallback = (version: number) => void;
+
+const icon_source = "/icons.svg";
 
 const enum CoverageStyle {
 	neutral,
@@ -256,7 +259,6 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
 /**
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
-const icon_source = "/icons.svg";
 const icon_size = 16;
 export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
 {
@@ -418,4 +420,24 @@ export function VersionSelector(props: {game: Data.Game, version: number, onSele
 	return (
 			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
 		);
+}
+
+/**
+ * A tutorial button that opens a modal explaining a feature
+ */
+const tutorial_button_size = 16;
+export function TutorialButton(props: {message: string}): ReactElement
+{
+	const openModal = useContext(ModalContext);
+
+	return (
+		<button className="cursor-pointer rounded-2xl" onClick={() => {
+			openModal({
+				message: props.message,
+				buttons: [{ label: "Close" }]
+			});
+		}}>
+			<svg width={tutorial_button_size} height={tutorial_button_size}><use href={icon_source + "#solar--question-circle-bold"} /></svg>
+		</button>
+	);
 }

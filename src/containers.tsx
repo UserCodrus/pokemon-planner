@@ -7,6 +7,7 @@ import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
 import { DispatchContext, Task } from "./reducer";
 import { ModalContext } from "./modal";
+import Tutorials from "./tutorials";
 
 const party_size = 6;
 
@@ -224,6 +225,7 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 			</div>
+			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
 		</div>
 	);
 }
@@ -297,6 +299,7 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 	return (
 		<div className="panel flex flex-row flex-wrap justify-center gap-2">
 			{components}
+			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.analysis} /></div>
 		</div>
 	);
 }
