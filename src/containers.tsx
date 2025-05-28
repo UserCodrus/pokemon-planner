@@ -235,35 +235,39 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
  */
 export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: number[], game: Data.Game}): ReactElement
 {
-	// Calculate the type advantages and disadvantages of the team
-	const coverage: Data.TeamSlot[][] = [];
-	const advantages: Data.TeamSlot[][] = [];
-	const weaknesses: Data.TeamSlot[][] = [];
+	const offense_advantages: Data.TeamSlot[][] = [];
+	const offense_weaknesses: Data.TeamSlot[][] = [];
+	const defense_advantages: Data.TeamSlot[][] = [];
+	const defense_weaknesses: Data.TeamSlot[][] = [];
 
 	for (let type_id = 0; type_id < Data.getNumTypes(); ++type_id)
 	{
-		coverage.push([]);
-		advantages.push([]);
-		weaknesses.push([]);
+		offense_advantages.push([]);
+		offense_weaknesses.push([]);
+		defense_advantages.push([]);
+		defense_weaknesses.push([]);
 
+		// Check each party pokemon against the current type
 		for (let i = 0; i < props.pokemon.length; ++i)
 		{
 			const pokemon = Data.getPokemon(props.game.generation, props.pokemon[i].id, props.pokemon[i].form);
 			const ability = Data.getAbility(Data.getPokemonAbilities(props.game.generation, props.pokemon[i].id, props.pokemon[i].form)[props.abilities[i]]);
 
-			// Calculate offensive advantages for the pokemon
-			let stab_advantage = false;
+			// Calculate the maximum damage multiplier for the pokemon's same type attacks against the current type
+			let stab_multiplier = 0.5;
 			for (const type of pokemon.types)
 			{
-				if (Data.getTypeAdvantage(props.game.generation, type, [type_id]) > 1)
-					stab_advantage = true;
-			}
-			if (stab_advantage)
-			{
-				coverage[coverage.length-1].push(props.pokemon[i]);
+				const multiplier = Data.getTypeAdvantage(props.game.generation, type, [type_id]);
+				if (multiplier > stab_multiplier)
+					stab_multiplier = multiplier;
 			}
 
-			// Check for defensive strengths or weaknesses for the pokemon
+			if (stab_multiplier > 1)
+				offense_advantages[offense_advantages.length-1].push(props.pokemon[i]);
+			else if (stab_multiplier < 1)
+				offense_weaknesses[offense_weaknesses.length-1].push(props.pokemon[i]);
+
+			// Calculate the pokemon's defensive multiplier against the current type
 			let defense_multiplier = Data.getTypeAdvantage(props.game.generation, type_id, pokemon.types);
 
 			// Apply ability bonuses
@@ -278,13 +282,9 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 			}
 
 			if (defense_multiplier > 1)
-			{
-				weaknesses[weaknesses.length-1].push(props.pokemon[i]);
-			}
+				defense_weaknesses[defense_weaknesses.length-1].push(props.pokemon[i]);
 			else if (defense_multiplier < 1)
-			{
-				advantages[advantages.length-1].push(props.pokemon[i]);
-			}
+				defense_advantages[defense_advantages.length-1].push(props.pokemon[i]);
 		}
 	}
 	
@@ -293,7 +293,9 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 	for (let i = 0; i < Data.getNumTypes(); ++i)
 	{
 		if (Data.validType(props.game.generation, i))
-			components.push(<Components.Coverage type={i} coverage={coverage[i]} advantages={advantages[i]} weaknesses={weaknesses[i]} key={i} />)
+			components.push(<Components.Coverage type={i} key={i}
+				offense={{advantage: offense_advantages[i], disadvantage: offense_weaknesses[i]}}
+				defense={{advantage: defense_advantages[i], disadvantage: defense_weaknesses[i]}} />);
 	}
 
 	return (

@@ -19,7 +19,6 @@ const icon_source = "/icons.svg";
 
 const enum CoverageStyle {
 	neutral,
-	coverage,
 	advantage,
 	weakness
 }
@@ -275,11 +274,11 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot
 		src += "#solar--round-alt-arrow-down-bold";
 		style += " text-disadvantage";
 	}
-	else if (props.type === CoverageStyle.coverage)
+	/*else if (props.type === CoverageStyle.coverage)
 	{
 		src += "#solar--round-alt-arrow-up-bold";
 		style += " text-advantage";
-	}
+	}*/
 	else
 	{
 		src += "#solar--record-bold";
@@ -296,29 +295,33 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot
 /**
  * A component that displays the type advantages and disadvantages the user's team has against a particular type
  */
-export function Coverage(props: {type: number, coverage: Data.TeamSlot[], advantages: Data.TeamSlot[], weaknesses: Data.TeamSlot[]}): ReactElement
+export function Coverage(props: {type: number, offense: {advantage: Data.TeamSlot[], disadvantage: Data.TeamSlot[]}, defense: {advantage: Data.TeamSlot[], disadvantage: Data.TeamSlot[]}}): ReactElement
 {
 	// Create icons to show the team's strengths and weaknesses
 	const top_components: ReactElement[] = [];
 	const bottom_components: ReactElement[] = [];
 	for (let i=0; i<Data.party_size; ++i)
 	{
-		if (i < props.coverage.length)
+		if (i < props.offense.advantage.length)
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.coverage} source={props.coverage[i]} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
+		}
+		else if (i < props.offense.advantage.length + props.offense.disadvantage.length)
+		{
+			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
 		}
 		else
 		{
 			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 
-		if (i < props.advantages.length)
+		if (i < props.defense.advantage.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.advantages[i]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
 		}
-		else if (i < props.advantages.length + props.weaknesses.length)
+		else if (i < props.defense.advantage.length + props.defense.disadvantage.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.weaknesses[i-props.advantages.length]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
 		}
 		else
 		{
