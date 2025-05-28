@@ -30,7 +30,10 @@ function ModalBox(props: {modalData: ModalData}): ReactElement
 
 	// Create divs for each line of message text
 	const messages: ReactElement[] = props.modalData.message.split('\n').map((value, i) => {
-		return <div key={i}>{value}</div>
+		if (value.length > 0)
+			return <div key={i}>{value}</div>
+		else
+			return <br key={i} />
 	});
 
 	// Create the buttons for the modal box
