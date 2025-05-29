@@ -21,7 +21,7 @@ export type VersionFilterCallback = (version: number) => void;
 export type TypeCoverage = {
 	advantage: Data.TeamSlot[],
 	disadvantage: Data.TeamSlot[],
-	highlight: boolean
+	highlight: number
 }
 
 const icon_source = "/icons.svg";
@@ -268,7 +268,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
 const icon_size = 16;
-export function CoverageIcon(props: {type: CoverageStyle, highlight: boolean, source?: Data.TeamSlot}): ReactElement
+export function CoverageIcon(props: {type: CoverageStyle, highlight: number, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
 	let src = icon_source;
@@ -295,7 +295,7 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: boolean, so
 	}
 
 	// Add a glow effect if needed
-	const highlight_style = props.highlight ? "rounded-xl glow" : "";
+	const highlight_style = props.highlight > 0 ? "rounded-xl glow-pos" : (props.highlight < 0 ? "rounded-xl glow-neg" : "");
 
 	return (
 		<div className={style}>

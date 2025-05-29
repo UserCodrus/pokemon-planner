@@ -286,7 +286,7 @@ function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: numbe
 /**
  * A component that displays the party's advantages and disadvantages
  */
-export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: number[], game: Data.Game}): ReactElement
+export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.TeamSlot[], abilities: number[], compareAbilities?: number[], game: Data.Game}): ReactElement
 {
 	// Create a component to display the team's comparison to each type
 	const components: ReactElement[] = [];
@@ -295,15 +295,25 @@ export function PartyAnalysis(props: {pokemon: Data.TeamSlot[], abilities: numbe
 		if (Data.validType(props.game.generation, type_id))
 		{
 			// Calculate the team's advantages and disadvantages against the type
-			const [offense_advantages, offense_weaknesses, defense_advantages, defense_weaknesses] = partyCoverage(type_id, props.pokemon, props.abilities, props.game);
-			
-			// Make a rough assessment of how strong the team is against the type
-			const offense_strength = offense_advantages.length - offense_weaknesses.length;
-			const defense_strength = defense_advantages.length - defense_weaknesses.length;
+			const [offense_advantages, offense_weaknesses, defense_advantages, defense_weaknesses] = partyCoverage(type_id, props.team, props.abilities, props.game);
+
+			// Apply negative highlights if the team is weak against the type
+			let offense_highlight = Math.min(offense_advantages.length - offense_weaknesses.length, 0);
+			let defense_highlight = Math.min(defense_advantages.length - defense_weaknesses.length, 0);
+
+			// Calculate the compared team's stats
+			if (props.compareTeam && props.compareAbilities)
+			{
+				const [compare_offense_advantages, compare_offense_weaknesses, compare_defense_advantages, compare_defense_weaknesses] = partyCoverage(type_id, props.compareTeam, props.compareAbilities, props.game);
+
+				// Replace highlights with positive highlights if the team is better than the compared team
+				offense_highlight = (compare_offense_advantages.length - compare_offense_weaknesses.length) > (offense_advantages.length - offense_weaknesses.length) ? 0 : 1;
+				defense_highlight = (compare_defense_advantages.length - compare_defense_weaknesses.length) > (defense_advantages.length - defense_weaknesses.length) ? 0 : 1;
+			}
 			
 			components.push(<Components.Coverage type={type_id} key={type_id}
-				offense={{advantage: offense_advantages, disadvantage: offense_weaknesses, highlight: offense_strength < -2 ? true : false}}
-				defense={{advantage: defense_advantages, disadvantage: defense_weaknesses, highlight: defense_strength < -2 ? true : false}} />);
+				offense={{advantage: offense_advantages, disadvantage: offense_weaknesses, highlight: offense_highlight}}
+				defense={{advantage: defense_advantages, disadvantage: defense_weaknesses, highlight: defense_highlight}} />);
 		}
 	}
 

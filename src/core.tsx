@@ -147,7 +147,7 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
-			<Containers.PartyAnalysis pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
+			<Containers.PartyAnalysis team={props.team.pokemon} abilities={props.team.abilities} game={game} />
 			<Containers.FilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
 			<Containers.PokedexDisplay game={game} typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
@@ -241,7 +241,7 @@ function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): Reac
 			<Containers.PopupMenu />
 			<Components.TeamName name={props.selectedTeam.name} />
 			<Containers.PartyDisplay pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} game={primary_game} />
-			<Containers.PartyAnalysis pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} game={primary_game} />
+			<Containers.PartyAnalysis team={props.selectedTeam.pokemon} compareTeam={compareTeam?.pokemon} abilities={props.selectedTeam.abilities} compareAbilities={compareTeam?.abilities} game={primary_game} />
 
 			<div className="flex items-center justify-center">
 				<Containers.PopupBox text={compareTeam ? compareTeam.name : "Select a team"} >
@@ -250,7 +250,7 @@ function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): Reac
 			</div>
 
 			{compareTeam && <div className="flex flex-col gap-4">
-				<Containers.PartyAnalysis pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} game={secondary_game!} />
+				<Containers.PartyAnalysis team={compareTeam.pokemon} compareTeam={props.selectedTeam.pokemon} abilities={compareTeam.abilities} compareAbilities={props.selectedTeam.abilities} game={secondary_game!} />
 				<Containers.PartyDisplay pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} game={secondary_game!} />
 			</div>}
 

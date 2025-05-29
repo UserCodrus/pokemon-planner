@@ -16,6 +16,9 @@
 
 	--color-advantage: #fb406a;
 	--color-disadvantage: #007efe;
+
+	--color-glow-bad: #222222;
+	--color-glow-good: #F2F2F2;
 }
 
 body {
@@ -71,8 +74,13 @@ footer {
 		padding: 0.5rem;
 	}
 
-	.glow {
-		box-shadow: 0 0 4px red inset;
+	.glow-pos {
+		background-color: var(--color-glow-good);
+		box-shadow: 0 0 2px var(--color-glow-good);
+	}
+	.glow-neg {
+		background-color: var(--color-glow-bad);
+		box-shadow: 0 0 2px var(--color-glow-bad);
 	}
 
 	.sidemenu {
