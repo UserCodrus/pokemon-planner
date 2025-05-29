@@ -71,6 +71,10 @@ footer {
 		padding: 0.5rem;
 	}
 
+	.glow {
+		box-shadow: 0 0 4px red inset;
+	}
+
 	.sidemenu {
 		position: fixed;
 		z-index: 2;

@@ -15,6 +15,15 @@ export type TypeFilterCallback = (type: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 export type VersionFilterCallback = (version: number) => void;
 
+/**
+ * Specify which party members in a team are strong or weak against a type
+ */
+export type TypeCoverage = {
+	advantage: Data.TeamSlot[],
+	disadvantage: Data.TeamSlot[],
+	highlight: boolean
+}
+
 const icon_source = "/icons.svg";
 
 const enum CoverageStyle {
@@ -259,7 +268,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
 const icon_size = 16;
-export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
+export function CoverageIcon(props: {type: CoverageStyle, highlight: boolean, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
 	let src = icon_source;
@@ -285,9 +294,12 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot
 		style += " text-foreground";
 	}
 
+	// Add a glow effect if needed
+	const highlight_style = props.highlight ? "rounded-xl glow" : "";
+
 	return (
 		<div className={style}>
-			<svg width={icon_size} height={icon_size}><use href={src} /></svg>
+			<svg width={icon_size} height={icon_size} className={highlight_style}><use href={src} /></svg>
 		</div>
 	);
 }
@@ -295,7 +307,7 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot
 /**
  * A component that displays the type advantages and disadvantages the user's team has against a particular type
  */
-export function Coverage(props: {type: number, offense: {advantage: Data.TeamSlot[], disadvantage: Data.TeamSlot[]}, defense: {advantage: Data.TeamSlot[], disadvantage: Data.TeamSlot[]}}): ReactElement
+export function Coverage(props: {type: number, offense: TypeCoverage, defense: TypeCoverage}): ReactElement
 {
 	// Create icons to show the team's strengths and weaknesses
 	const top_components: ReactElement[] = [];
@@ -304,36 +316,36 @@ export function Coverage(props: {type: number, offense: {advantage: Data.TeamSlo
 	{
 		if (i < props.offense.advantage.length)
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
+			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
 		}
 		else if (i < props.offense.advantage.length + props.offense.disadvantage.length)
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
+			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
 		}
 		else
 		{
-			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
+			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.neutral} key={i} />);
 		}
 
 		if (i < props.defense.advantage.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
+			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
 		}
 		else if (i < props.defense.advantage.length + props.defense.disadvantage.length)
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
+			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
 		}
 		else
 		{
-			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
+			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.neutral} key={i} />);
 		}
 	}
 
 	return (
 		<div className="flex flex-col items-center gap-0.5 basis-[10%]">
 			<Image src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
-			<div className="flex flex-row">{top_components}</div>
-			<div className="flex flex-row">{bottom_components}</div>
+			<div className={"flex flex-row"}>{top_components}</div>
+			<div className={"flex flex-row"}>{bottom_components}</div>
 		</div>
 	);
 }
