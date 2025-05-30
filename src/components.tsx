@@ -456,3 +456,15 @@ export function TutorialButton(props: {message: string}): ReactElement
 		</button>
 	);
 }
+
+/**
+ * A sticky button that scrolls back to the top of the page
+ */
+export function ScrollButton(): ReactElement
+{
+	return (
+		<button className="panel clickable fixed right-2 bottom-2" onClick={() => {window.scroll({top: 0, behavior: "smooth"})}}>
+			<svg width={24} height={24}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+		</button>
+	)
+}
