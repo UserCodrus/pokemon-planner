@@ -83,6 +83,11 @@ footer {
 		box-shadow: 0 0 2px var(--color-glow-bad);
 	}
 
+	.center-absolute {
+		left: 50%;
+		translate: -50% 0;
+	}
+
 	.sidemenu {
 		position: fixed;
 		z-index: 2;

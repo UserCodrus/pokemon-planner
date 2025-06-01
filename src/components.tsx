@@ -126,7 +126,7 @@ export function PartyMemberSmall(props: {generation: number, pokemon: Data.TeamS
 /**
  * A context menu that sits above a pokemon selector after right clicking
  */
-export function PokemonSelectorPopup(props: {pokemon: Data.Pokemon, closeCallback: Function}): ReactElement
+export function PokemonSelectorContextMenu(props: {pokemon: Data.Pokemon, closeCallback: Function}): ReactElement
 {
 	// Add a global listener to run the close callback when a clicking anywhere on the page
 	useEffect(() => {
@@ -152,9 +152,9 @@ export function PokemonSelectorPopup(props: {pokemon: Data.Pokemon, closeCallbac
 
 	return (
 		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon.id} target="_blank" rel="noopener noreferrer">
-			<div className="popup anim-grow left-[-6px] bottom-full">
+			<div className="popup anim-grow center-absolute bottom-full whitespace-nowrap">
 				<div>{props.pokemon.name}</div>
-				<div className="flex flex-col min-w-[100px] justify-center">
+				<div className="flex flex-col min-w-[100px] justify-center items-center">
 					{type_images}
 				</div>
 			</div>
@@ -196,7 +196,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
-			{contextMenu && <PokemonSelectorPopup pokemon={pokemon} closeCallback={()=>{setContextMenu(false)}} />}
+			{contextMenu && <PokemonSelectorContextMenu pokemon={pokemon} closeCallback={()=>{setContextMenu(false)}} />}
 		</div>
 	);
 }

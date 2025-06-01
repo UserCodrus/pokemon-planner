@@ -130,10 +130,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 				for (const form of version.formlist)
 				{
 					if (form[0] === props.pokedex.entries[i][0] && form[1] === props.pokedex.entries[i][1])
-					{
-						console.log("blocked pokemon " + pokemon.name) 
 						continue pokemon;
-					}
 				}
 			}
 		}
