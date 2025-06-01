@@ -53,9 +53,10 @@ export type Pokemon = {
  * Information about a single version of a pokemon game
  */
 export type Version = {
-	name: string,			// The name of the game
-	blacklist?: number[],	// Pokemon that shouldn't appear in the game
-	limit?: number			// A cutoff for pokedex entries - entries higher than this number will be blacklisted
+	name: string,				// The name of the game
+	blacklist?: number[],		// Pokemon that shouldn't appear in the version
+	formlist?: number[][],		// Pokemon forms that shouldn't appear in the version
+	limit?: number				// A cutoff for pokedex entries - entries higher than this number will be blacklisted
 }
 
 /**
@@ -280,10 +281,8 @@ export function getRomanNumeral(number: number): string
  */
 export function getGame(id: string): Game
 {
-	console.log(id);
 	for (const game of GameData)
 	{
-		console.log(game);
 		if (game.id === id)
 			return game;
 	}

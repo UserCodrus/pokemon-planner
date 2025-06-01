@@ -224,7 +224,6 @@ export function teamReducer(state: AppData, action: Action) {
 			const selected_game = Data.getGame(selected_team.game);
 			if (selected_game)
 			{
-				console.log(selected_game);
 				window.scrollTo(0, 0);
 				return {
 					...state,
