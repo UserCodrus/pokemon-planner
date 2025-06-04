@@ -139,7 +139,8 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 		if (props.nameFilter)
 		{
 			const name = pokemon.name.toLowerCase();
-			if (!name.includes(props.nameFilter))
+			const form = pokemon.form.toLowerCase();
+			if (!name.includes(props.nameFilter) && !form.includes(props.nameFilter))
 				continue;
 		}
 
@@ -188,7 +189,7 @@ export function PokedexDisplay(props: {game: Data.Game, typeFilter: boolean[], n
 
 		if (pokedex_data)
 		{
-			components.push(<PokedexGroup pokedex={pokedex_data} game={props.game} typeFilter={props.typeFilter} nameFilter={props.nameFilter} versionFilter={props.versionFilter} pokemon={props.pokemon} key={i} />)
+			components.push(<PokedexGroup pokedex={pokedex_data} game={props.game} typeFilter={props.typeFilter} nameFilter={props.nameFilter.toLowerCase()} versionFilter={props.versionFilter} pokemon={props.pokemon} key={i} />)
 		}
 	}
 
