@@ -37,7 +37,7 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot, ability?: number}): ReactElement
+export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ability?: number}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const size = 200;
@@ -54,7 +54,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 	if (props.pokemon)
 	{
 		// Retrieve pokemon data
-		const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
+		const pokemon = Data.getPokemon(props.game.generation, props.pokemon.id, props.pokemon.form);
 		name_text = pokemon.name;
 		form_text = pokemon.form;
 
@@ -68,9 +68,9 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 		art_alt = pokemon.name;
 
 		// Set the text for the ability line
-		if (props.ability !== undefined && props.generation > 2)
+		if (props.ability !== undefined && props.game.abilities)
 		{
-			const ability_set = Data.getPokemonAbilities(props.generation, props.pokemon.id, props.pokemon.form);
+			const ability_set = Data.getPokemonAbilities(props.game.generation, props.pokemon.id, props.pokemon.form);
 			const ability = Data.getAbility(ability_set[props.ability]);
 	
 			ability_text = ability.name;

@@ -3,6 +3,7 @@
 		"id": "nat",
 		"pokedexes": ["national"],
 		"generation": 9,
+		"abilities": true,
 		"name": "National Pokédex",
 		"versions": []
 	},
@@ -10,6 +11,7 @@
 		"id": "rby",
 		"pokedexes": ["kanto"],
 		"generation": 1,
+		"abilities": false,
 		"name": "Red, Blue, and Yellow",
 		"versions": [
 			{
@@ -36,6 +38,7 @@
 		"id": "gsc",
 		"pokedexes": ["original-johto"],
 		"generation": 2,
+		"abilities": false,
 		"name": "Gold, Silver, and Crystal",
 		"versions": [
 			{
@@ -62,6 +65,7 @@
 		"id": "rse",
 		"pokedexes": ["hoenn"],
 		"generation": 3,
+		"abilities": true,
 		"name": "Ruby, Sapphire, and Emerald",
 		"versions": [
 			{
@@ -88,6 +92,7 @@
 		"id": "frlg",
 		"pokedexes": ["kanto"],
 		"generation": 3,
+		"abilities": true,
 		"name": "Fire Red and Leaf Green",
 		"versions": [
 			{
@@ -108,6 +113,7 @@
 		"id": "dppt",
 		"pokedexes": ["extended-sinnoh"],
 		"generation": 4,
+		"abilities": true,
 		"name": "Diamond, Pearl, and Platinum",
 		"versions": [
 			{
@@ -136,6 +142,7 @@
 		"id": "hgss",
 		"pokedexes": ["updated-johto"],
 		"generation": 4,
+		"abilities": true,
 		"name": "HeartGold and SoulSilver",
 		"versions": [
 			{
@@ -156,6 +163,7 @@
 		"id": "bw",
 		"pokedexes": ["original-unova"],
 		"generation": 5,
+		"abilities": true,
 		"name": "Black and White",
 		"versions": [
 			{
@@ -176,6 +184,7 @@
 		"id": "b2w2",
 		"pokedexes": ["updated-unova"],
 		"generation": 5,
+		"abilities": true,
 		"name": "Black 2 and White 2",
 		"versions": [
 			{
@@ -202,6 +211,7 @@
 		"id": "xy",
 		"pokedexes": ["kalos-central", "kalos-coastal", "kalos-mountain"],
 		"generation": 6,
+		"abilities": true,
 		"name": "X and Y",
 		"versions": [
 			{
@@ -230,6 +240,7 @@
 		"id": "oras",
 		"pokedexes": ["updated-hoenn"],
 		"generation": 6,
+		"abilities": true,
 		"name": "Omega Ruby and Alpha Sapphire",
 		"versions": [
 			{
@@ -250,6 +261,7 @@
 		"id": "sm",
 		"pokedexes": ["original-alola"],
 		"generation": 7,
+		"abilities": true,
 		"name": "Sun and Moon",
 		"versions": [
 			{
@@ -270,6 +282,7 @@
 		"id": "usum",
 		"pokedexes": ["updated-alola"],
 		"generation": 7,
+		"abilities": true,
 		"name": "Ultra Sun and Ultra Moon",
 		"versions": [
 			{
@@ -296,6 +309,7 @@
 		"id": "lg",
 		"pokedexes": ["letsgo-kanto"],
 		"generation": 7,
+		"abilities": false,
 		"name": "Let's Go, Pikachu! and Let's Go, Eevee!",
 		"versions": [
 			{
@@ -316,6 +330,7 @@
 		"id": "ss",
 		"pokedexes": ["galar", "isle-of-armor", "crown-tundra"],
 		"generation": 8,
+		"abilities": true,
 		"name": "Sword and Shield",
 		"versions": [
 			{
@@ -346,6 +361,7 @@
 		"id": "la",
 		"pokedexes": ["hisui"],
 		"generation": 8,
+		"abilities": false,
 		"name": "Legends Arceus",
 		"versions": []
 	},
@@ -353,6 +369,7 @@
 		"id": "bdsp",
 		"pokedexes": ["original-sinnoh"],
 		"generation": 8,
+		"abilities": true,
 		"name": "Brilliant Diamond and Shining Pearl",
 		"versions": [{
 				"name": "Brilliant Diamond",
@@ -373,6 +390,7 @@
 		"id": "sv",
 		"pokedexes": ["paldea", "kitakami", "blueberry"],
 		"generation": 9,
+		"abilities": true,
 		"name": "Scarlet and Violet",
 		"versions": [{
 				"name": "Scarlet",

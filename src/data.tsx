@@ -68,7 +68,8 @@ export type Game = {
 	pokedexes: string[],
 	generation: number,
 	name: string,
-	versions: Version[]
+	versions: Version[],
+	abilities: boolean
 }
 
 /**

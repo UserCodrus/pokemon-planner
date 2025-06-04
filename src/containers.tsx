@@ -20,9 +20,9 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	for (let i = 0; i < party_size; ++i)
 	{
 		if (i < props.pokemon.length)
-			components.push(<Components.PartyMember generation={props.game.generation} pokemon={props.pokemon[i]} ability={props.abilities[i]} key={i} />);
+			components.push(<Components.PartyMember game={props.game} pokemon={props.pokemon[i]} ability={props.abilities[i]} key={i} />);
 		else
-			components.push(<Components.PartyMember generation={props.game.generation} key={i} />);
+			components.push(<Components.PartyMember game={props.game} key={i} />);
 	}
 
 	return (
