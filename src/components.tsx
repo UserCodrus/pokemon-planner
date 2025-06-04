@@ -157,6 +157,7 @@ export function PokemonSelectorContextMenu(props: {pokemon: Data.Pokemon, closeC
 		<Link href={"https://pokemondb.net/pokedex/" + props.pokemon.id} target="_blank" rel="noopener noreferrer">
 			<div className="popup anim-grow center-absolute bottom-full whitespace-nowrap">
 				<div>{props.pokemon.name}</div>
+				<div className="text-sm text-secondary mb-2">{props.pokemon.form}</div>
 				<div className="flex flex-col min-w-[100px] justify-center items-center">
 					{type_images}
 				</div>
