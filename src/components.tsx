@@ -44,6 +44,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 
 	// Create images for the type displays and artwork, with fallbacks for empty party slots
 	let name_text = "";
+	let form_text = "";
 	let ability_text = "";
 
 	let art_alt = "Empty";
@@ -55,6 +56,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 		// Retrieve pokemon data
 		const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 		name_text = pokemon.name;
+		form_text = pokemon.form;
 
 		for (let i=0; i < pokemon.types.length; ++i)
 		{
@@ -99,6 +101,7 @@ export function PartyMember(props: {generation: number, pokemon?: Data.TeamSlot,
 	return (
 		<div tabIndex={0} className="panel clickable p-4 max-w-[30%] flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 			<div className="text-center min-h-6">{name_text}</div>
+			<div className="text-center text-secondary text-sm min-h-5">{form_text}</div>
 			<Image src={art_src} width={size} height={size} alt={art_alt} />
 			<div className="text-center min-h-6">{ability_text}</div>
 			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">

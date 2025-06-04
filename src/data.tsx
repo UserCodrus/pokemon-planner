@@ -43,6 +43,7 @@ export type Ability = {
 export type Pokemon = {
 	id: number,
 	name: string,
+	form: string,
 	types: number[],
 
 	sprite: string,
@@ -166,7 +167,8 @@ export function getPokemon(generation: number, id: number, form?: number): Pokem
 
 	return {
 		id: id,
-		name: selected_form.name,
+		name: pokemon.name,
+		form: selected_form.name,
 		types: current_type.types,
 		sprite: pokemon_sprite_location + selected_form.sprite,
 		art: pokemon_art_location + selected_form.art
