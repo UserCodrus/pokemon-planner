@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent as ReactMouseEvent, ReactElement, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { MouseEvent as ReactMouseEvent, ReactElement, ReactNode, memo, useContext, useEffect, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
@@ -171,7 +171,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 /**
  * A component that contains a set of pokedex displays
  */
-export function PokedexDisplay(props: {game: Data.Game, typeFilter: boolean[], nameFilter: string, versionFilter: number, pokemon: Data.TeamSlot[]}): ReactElement
+export const PokedexDisplay = memo(function PokedexDisplay(props: {game: Data.Game, typeFilter: boolean[], nameFilter: string, versionFilter: number, pokemon: Data.TeamSlot[]}): ReactElement
 {
 	const components: ReactElement[] = [];
 	for (let i = 0; i < props.game.pokedexes.length; ++i)
@@ -198,7 +198,7 @@ export function PokedexDisplay(props: {game: Data.Game, typeFilter: boolean[], n
 			{components}
 		</div>
 	);
-}
+})
 
 /**
  * A component containing filters toggles for selectable pokemon
