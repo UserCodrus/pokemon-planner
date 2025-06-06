@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent as ReactMouseEvent, ReactElement, ReactNode, memo, useContext, useEffect, useRef, useState } from "react";
+import { MouseEvent as ReactMouseEvent, DragEvent as ReactDragEvent, ReactElement, ReactNode, memo, useContext, useEffect, useRef, useState } from "react";
 
 import * as Components from "./components";
 import * as Data from "./data";
@@ -10,17 +10,71 @@ import { ModalContext } from "./modal";
 import Tutorials from "./tutorials";
 
 const party_size = 6;
+const draw_order = [0, 1, 2, 3, 4, 5];
 
 /**
  * A component that contains the user's currently selected party
  */
 export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number[], game: Data.Game}): ReactElement
 {
+	const dispatch = useContext(DispatchContext);
+	const [dragData, setDragData] = useState({
+		target: 0,
+		order: draw_order.slice()
+	});
+
+	function dragStart(index: number) {
+		// Set the targeted component
+		setDragData({
+			...dragData,
+			target: index
+		});
+	}
+
+	function dragOver(event: ReactDragEvent<Element>, index: number) {
+		event.preventDefault();
+
+		// Reorder the draw array based on the location of the dragged component
+		const draw_array = draw_order.slice();
+		draw_array.splice(dragData.target, 1);
+		draw_array.splice(index, 0, dragData.target);
+
+		setDragData({
+			...dragData,
+			order: draw_array
+		});
+	}
+
+	function dragEnd() {
+		// Reorder the party based on the drag and drop ordering
+		dispatch({
+			type: Task.reorder,
+			data: dragData.order
+		});
+		
+		setDragData({
+			target: 0,
+			order: draw_order.slice()
+		});
+	}
+
+	function dragLeave() {
+		// Reset drag and drop ordering when the user isn't dragging over a component
+		setDragData({
+			...dragData,
+			order: draw_order.slice()
+		});
+	}
+
+	// Generate the party components
 	const components: ReactElement[] = [];
 	for (let i = 0; i < party_size; ++i)
 	{
-		if (i < props.pokemon.length)
-			components.push(<Components.PartyMember game={props.game} pokemon={props.pokemon[i]} ability={props.abilities[i]} key={i} />);
+		if (dragData.order[i] < props.pokemon.length)
+			components.push(<Components.PartyMember
+				game={props.game} pokemon={props.pokemon[dragData.order[i]]} ability={props.abilities[dragData.order[i]]} key={i}
+				onDragStart={() => dragStart(dragData.order[i])} onDragOver={(e) => dragOver(e, i)} onDrop={() => dragEnd()} onDragLeave={() => dragLeave()}
+			/>);
 		else
 			components.push(<Components.PartyMember game={props.game} key={i} />);
 	}

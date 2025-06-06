@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent, ReactElement, useContext, useState, useEffect } from "react";
+import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -37,7 +37,7 @@ const enum CoverageStyle {
  * @param props.id The national dex id of the pokemon that the panel will display
  * @param props.form The id of the form that the pokemon will use
  */
-export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ability?: number}): ReactElement
+export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ability?: number, onDragStart?: DragEventHandler, onDragOver?: DragEventHandler, onDragEnd?: DragEventHandler, onDragLeave?: DragEventHandler, onDrop?: DragEventHandler}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const size = 200;
@@ -61,7 +61,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 		for (let i=0; i < pokemon.types.length; ++i)
 		{
 			const src = Data.typeSpriteURL(pokemon.types[i]);
-			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
+			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} draggable={false} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
 		}
 
 		art_src = pokemon.art;
@@ -78,6 +78,11 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 				ability_text += " [Hidden]";
 		}
 	}
+
+	// Set styling for the outer div
+	let component_style = "panel p-4 max-w-[30%] flex flex-col items-center";
+	if (props.pokemon)
+		component_style += " clickable anim-pulse"
 
 	// Handle mouse clicks
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
@@ -99,14 +104,17 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	return (
-		<div tabIndex={0} className="panel clickable p-4 max-w-[30%] flex flex-col items-center anim-pulse" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
-			<div className="text-center min-h-6">{name_text}</div>
-			<div className="text-center text-secondary text-sm min-h-5">{form_text}</div>
-			<Image src={art_src} width={size} height={size} alt={art_alt} />
-			<div className="text-center min-h-6">{ability_text}</div>
-			<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
-				{type_images}
-			</div>
+		<div tabIndex={0} className={component_style} draggable={true}
+			onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}
+			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop}
+			>
+				<div className="text-center min-h-6">{name_text}</div>
+				<div className="text-center text-secondary text-sm min-h-5">{form_text}</div>
+				<Image src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
+				<div className="text-center min-h-6">{ability_text}</div>
+				<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
+					{type_images}
+				</div>
 		</div>
 	);
 }
