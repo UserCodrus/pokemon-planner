@@ -480,3 +480,15 @@ export function ScrollButton(): ReactElement
 		</button>
 	)
 }
+
+/**
+ * The component displayed when the app is loading
+ */
+export function LoadingScreen(): ReactElement
+{
+	return (
+		<div className="panel">
+			Loading...
+		</div>
+	);
+}

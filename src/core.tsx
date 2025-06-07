@@ -54,11 +54,7 @@ export function App(): ReactElement
 
 	// Display a loading screen if team data has not been loaded yet
 	if (!data.teams)
-		return (
-			<div className="panel">
-				Loading...
-			</div>
-		);
+		return <Components.LoadingScreen />;
 
 	// Set the current view component based on the view state
 	let view: ReactElement = <div className="panel">Error</div>;
