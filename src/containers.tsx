@@ -48,7 +48,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	function dragEnd() {
 		// Reorder the party based on the drag and drop ordering
 		dispatch({
-			type: Task.reorder,
+			type: Task.reorder_team,
 			data: dragData.order
 		});
 		

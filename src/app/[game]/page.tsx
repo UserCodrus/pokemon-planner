@@ -10,11 +10,10 @@ export async function generateStaticParams() {
 
 export default async function Page(props: {params: Promise<{ game: string }>}) {
 	const params = await props.params;
-	console.log("set game to " + params.game);
 
 	return (
 		<Suspense fallback={<LoadingScreen />}>
-			<App />
+			<App game={params.game} />
 		</Suspense>
 	);
 }

@@ -15,7 +15,7 @@ const debug = false;
 /**
  * The core component of the app, responsible for routing between different views
  */
-export function App(): ReactElement
+export function App(props: {game?: string}): ReactElement
 {
 	const [data, dispatch] = useReducer(teamReducer, {
 		view: View.home,
@@ -23,8 +23,8 @@ export function App(): ReactElement
 		teams: null
 	});
 
-	// Load teams from storage after the app starts
 	useEffect(() => {
+		// Load teams from storage after the app starts
 		const storage = localStorage.getItem("teams");
 		if (storage && !debug)
 		{
@@ -40,6 +40,16 @@ export function App(): ReactElement
 				type: Task.load_teams,
 				data: []
 			});
+		}
+
+		// Set the selected game if one was provided in the URL
+		if (props.game)
+		{
+			dispatch({
+				type: Task.change_game,
+				data: props.game
+			});
+			console.log("Loaded planner for " + props.game);
 		}
 	}, []);
 
@@ -102,6 +112,11 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 
 	const game = Data.getGame(props.team.game);
 
+	// Set the browser history whenever the planner is loaded
+	useEffect(() => {
+		history.pushState(null, "", window.location.origin + "/" + props.team.game);
+	}, []);
+
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number, whitelist?: boolean)
 	{
@@ -156,6 +171,11 @@ function PlannerView(props: {team: Data.Team}): ReactElement
  */
 function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
+	// Set the browser history whenever the planner is loaded
+	useEffect(() => {
+		history.pushState(null, "", window.location.origin);
+	}, []);
+
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < props.teams.length; ++i)

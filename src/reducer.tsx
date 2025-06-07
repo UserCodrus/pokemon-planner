@@ -15,7 +15,7 @@ import { ActionDispatch, createContext } from "react";
  * @param delete_team Delete a team from the team list. Data should be the team id of the team being deleted.
  * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
  * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
- * @param reorder Change the order of the current party. Data should be an array containing the indices of each team member in the current party.
+ * @param reorder_team Change the order of the current party. Data should be an array containing the indices of each team member in the current party.
  * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
  */
 export const enum Task {
@@ -32,7 +32,7 @@ export const enum Task {
 
 	change_name,
 	select_pokemon,
-	reorder,
+	reorder_team,
 	swap_ability
 }
 
@@ -314,7 +314,7 @@ export function teamReducer(state: AppData, action: Action) {
 		};
 
 		// Reorder team members
-		case Task.reorder: {
+		case Task.reorder_team: {
 			if (!state.current_team)
 				return state;
 
