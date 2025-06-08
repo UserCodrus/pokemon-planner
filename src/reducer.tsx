@@ -89,14 +89,21 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
  * @param state The current state of the app
  * @param page The url segment of the current page
  */
-function saveHistory(state: AppData, page?: string)
+function saveHistory(current_state: AppData, new_state: AppData, page?: string)
 {
+	// Update the current state of the app before pushing a new state
+	const update_state = {
+		view: current_state.view,
+		team: structuredClone(current_state.current_team)
+	};
+	history.replaceState(update_state, "");
+
+	// Add the new state to browser history
 	const url = window.location.origin + (page ? "/" + page : "");
 	const app_state = {
-		view: state.view,
-		team: structuredClone(state.current_team)
+		view: new_state.view,
+		team: structuredClone(new_state.current_team)
 	};
-
 	history.pushState(app_state, "", url);
 }
 
@@ -112,7 +119,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				view: View.home
 			};
-			saveHistory(new_state);
+			saveHistory(state, new_state);
 			return new_state;
 		};
 
@@ -144,7 +151,7 @@ export function teamReducer(state: AppData, action: Action) {
 					game: selected_game,
 					view: View.planner
 				};
-				saveHistory(new_state, selected_game.id);
+				saveHistory(state, new_state, selected_game.id);
 
 				return new_state;
 			}
@@ -278,7 +285,7 @@ export function teamReducer(state: AppData, action: Action) {
 					current_team: selected_team,
 					view: View.planner
 				}
-				saveHistory(new_state, selected_game.id);
+				saveHistory(state, new_state, selected_game.id);
 
 				return new_state;
 			}
