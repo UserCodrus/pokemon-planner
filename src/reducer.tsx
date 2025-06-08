@@ -4,25 +4,29 @@ import { ActionDispatch, createContext } from "react";
 
 /**
  * Constants describing the various actions that can be performed on team data via the reducer
- * @param home Returns the app to the landing page. Data is not used.
- * @param compare Switches to the comparison view. Data is not used.
- * @param change_game Change the selected game. Data should be a game id matching a game in Data.game_list
- * @param load_teams Store a set of teams. Data should be an array of Data.Team.
+ * @param home_view Returns the app to the landing page. Data is not used.
+ * @param compare_view Switches to the comparison view. Data is not used.
+ * @param planner_view Change the selected game. Data should be a game id matching a game in Data.game_list
+ * @param restory_history_state Reset the app's state to match a historic state provided by a popstate event. Data should be an object containing the view and party states.
+ * @param load_team_data Store a set of teams. Data should be an array of Data.Team.
+ * 
  * @param save_current_team Overwrite changes made to the current team. Data is not used.
  * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
  * @param new_team Delete the existing team in the current_team slot and create a new one. Data is not used.
  * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id.
  * @param delete_team Delete a team from the team list. Data should be the team id of the team being deleted.
+ * 
  * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
  * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
  * @param reorder_team Change the order of the current party. Data should be an array containing the indices of each team member in the current party.
  * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
  */
 export const enum Task {
-	home,
-	compare,
-	change_game,
-	load_teams, 
+	home_view,
+	compare_view,
+	planner_view,
+	restory_history_state,
+	load_team_data,
 
 	save_current_team,
 	save_new_team,
@@ -81,21 +85,39 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
 }
 
 /**
+ * A function that saves the state of the app when the view is switched
+ * @param state The current state of the app
+ * @param page The url segment of the current page
+ */
+function saveHistory(state: AppData, page?: string)
+{
+	const url = window.location.origin + (page ? "/" + page : "");
+	const app_state = {
+		view: state.view,
+		team: structuredClone(state.current_team)
+	};
+
+	history.pushState(app_state, "", url);
+}
+
+/**
  * The reducer that modifies global team data
  */
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
 		// Switch to the home view
-		case Task.home: {
+		case Task.home_view: {
 			window.scrollTo(0, 0);
-			return {
+			const new_state = {
 				...state,
 				view: View.home
-			}
+			};
+			saveHistory(new_state);
+			return new_state;
 		};
 
 		// Switch to the compare view
-		case Task.compare: {
+		case Task.compare_view: {
 			window.scrollTo(0, 0);
 			return {
 				...state,
@@ -104,7 +126,7 @@ export function teamReducer(state: AppData, action: Action) {
 		};
 
 		// Find a game matching the provided id and set the planner view
-		case Task.change_game: {
+		case Task.planner_view: {
 			if (!action.data)
 				return {
 					...state,
@@ -116,17 +138,40 @@ export function teamReducer(state: AppData, action: Action) {
 			if (selected_game)
 			{
 				window.scrollTo(0, 0);
-				return {
+				const new_state = {
 					...state,
 					current_team: newTeam(state.teams!, selected_game.id),
 					game: selected_game,
 					view: View.planner
-				}
+				};
+				saveHistory(new_state, selected_game.id);
+
+				return new_state;
 			}
 		};
 
+		// Restore the state provided by the popstate event
+		case Task.restory_history_state: {
+			if (action.data.view !== undefined)
+			{
+				return {
+					...state,
+					view: action.data.view,
+					current_team: structuredClone(action.data.team)
+				};
+			}
+			else
+			{
+				return {
+					...state,
+					view: View.home,
+					current_team: null
+				};
+			}
+		}
+
 		// Overwrite the current team data with the provided teams
-		case Task.load_teams: {
+		case Task.load_team_data: {
 			return {
 				...state,
 				teams: action.data as Data.Team[]
@@ -227,12 +272,15 @@ export function teamReducer(state: AppData, action: Action) {
 			if (selected_game)
 			{
 				window.scrollTo(0, 0);
-				return {
+				const new_state = {
 					...state,
 					game: selected_game,
 					current_team: selected_team,
 					view: View.planner
 				}
+				saveHistory(new_state, selected_game.id);
+
+				return new_state;
 			}
 		};
 

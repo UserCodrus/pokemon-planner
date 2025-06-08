@@ -29,7 +29,7 @@ export function App(props: {game?: string}): ReactElement
 		if (storage && !debug)
 		{
 			dispatch({
-				type: Task.load_teams,
+				type: Task.load_team_data,
 				data: JSON.parse(storage)
 			});
 			console.log("Loaded team data from storage");
@@ -37,7 +37,7 @@ export function App(props: {game?: string}): ReactElement
 		else
 		{
 			dispatch({
-				type: Task.load_teams,
+				type: Task.load_team_data,
 				data: []
 			});
 		}
@@ -46,11 +46,20 @@ export function App(props: {game?: string}): ReactElement
 		if (props.game)
 		{
 			dispatch({
-				type: Task.change_game,
+				type: Task.planner_view,
 				data: props.game
 			});
 			console.log("Loaded planner for " + props.game);
 		}
+
+		// Add an event listener for popstate to manage history
+		window.addEventListener("popstate", (event) => {
+			dispatch({
+				type: Task.restory_history_state,
+				data: event.state
+			});
+			console.log(event.state);
+		});
 	}, []);
 
 	// Push any changes to team data to storage
@@ -79,7 +88,7 @@ export function App(props: {game?: string}): ReactElement
 		// Display the team planner
 		case View.planner: {
 			if (data.current_team)
-				view = <PlannerView team={data.current_team}/>;
+				view = <PlannerView team={data.current_team} />;
 			break;
 		};
 
@@ -111,11 +120,6 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 	const [versionFilter, setVersionFilter] = useState<number>(-1);
 
 	const game = Data.getGame(props.team.game);
-
-	// Set the browser history whenever the planner is loaded
-	useEffect(() => {
-		history.pushState(null, "", window.location.origin + "/" + props.team.game);
-	}, []);
 
 	// Activate or deactivate a type filter option
 	function toggleTypeFilter(type: number, whitelist?: boolean)
@@ -171,11 +175,6 @@ function PlannerView(props: {team: Data.Team}): ReactElement
  */
 function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
-	// Set the browser history whenever the planner is loaded
-	useEffect(() => {
-		history.pushState(null, "", window.location.origin);
-	}, []);
-
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < props.teams.length; ++i)

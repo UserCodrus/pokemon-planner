@@ -371,7 +371,7 @@ export function PokedexSelector(props: {game: Data.Game}): ReactElement
 
 	function handleClick() {
 		dispatch({
-			type: Task.change_game,
+			type: Task.planner_view,
 			data: props.game.id
 		});
 	}

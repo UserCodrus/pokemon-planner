@@ -433,7 +433,7 @@ export function PopupMenu(): ReactElement
 				<div className="flex flex-col gap-2">
 					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
 						onClick={() => {
-							dispatch({type: Task.home});
+							dispatch({type: Task.home_view});
 							setMenuOpen(false);
 						}}
 					/>
@@ -445,7 +445,7 @@ export function PopupMenu(): ReactElement
 					/>
 					<Components.SidebarButton label="Compare Teams" icon="solar--tuning-square-2-bold"
 						onClick={() => {
-							dispatch({type: Task.compare});
+							dispatch({type: Task.compare_view});
 							setMenuOpen(false);
 						}}
 					/>
