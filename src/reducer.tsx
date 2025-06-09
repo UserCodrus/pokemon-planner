@@ -41,6 +41,11 @@ export const enum Task {
 }
 
 /**
+ * The page name for the compare view
+ */
+export const compare_page = "compare";
+
+/**
  * An enum describing all of the views available in the app
  */
 export const enum View {
@@ -126,10 +131,12 @@ export function teamReducer(state: AppData, action: Action) {
 		// Switch to the compare view
 		case Task.compare_view: {
 			window.scrollTo(0, 0);
-			return {
+			const new_state = {
 				...state,
 				view: View.compare
-			}
+			};
+			saveHistory(state, new_state, compare_page);
+			return new_state;
 		};
 
 		// Find a game matching the provided id and set the planner view

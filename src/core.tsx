@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, teamReducer, Task, View } from "./reducer";
+import { DispatchContext, teamReducer, Task, View, compare_page } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
 
@@ -15,7 +15,7 @@ const debug = false;
 /**
  * The core component of the app, responsible for routing between different views
  */
-export function App(props: {game?: string}): ReactElement
+export function App(props: {page?: string}): ReactElement
 {
 	const [data, dispatch] = useReducer(teamReducer, {
 		view: View.home,
@@ -43,13 +43,14 @@ export function App(props: {game?: string}): ReactElement
 		}
 
 		// Set the selected game if one was provided in the URL
-		if (props.game)
+		if (props.page)
 		{
+			if (props.page === compare_page)
 			dispatch({
 				type: Task.planner_view,
-				data: props.game
+				data: props.page
 			});
-			console.log("Loaded planner for " + props.game);
+			console.log("Loaded planner for " + props.page);
 		}
 
 		// Add an event listener for popstate to manage history

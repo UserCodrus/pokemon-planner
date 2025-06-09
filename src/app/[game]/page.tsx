@@ -13,7 +13,7 @@ export default async function Page(props: {params: Promise<{ game: string }>}) {
 
 	return (
 		<Suspense fallback={<LoadingScreen />}>
-			<App game={params.game} />
+			<App page={params.game} />
 		</Suspense>
 	);
 }
