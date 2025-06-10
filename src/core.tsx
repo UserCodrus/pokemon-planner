@@ -46,11 +46,15 @@ export function App(props: {page?: string}): ReactElement
 		if (props.page)
 		{
 			if (props.page === compare_page)
-			dispatch({
-				type: Task.planner_view,
-				data: props.page
-			});
-			console.log("Loaded planner for " + props.page);
+				dispatch({
+					type: Task.compare_view
+				});
+			else
+				dispatch({
+					type: Task.planner_view,
+					data: props.page
+				});
+			console.log("Loaded page for for " + props.page);
 		}
 
 		// Add an event listener for popstate to manage history
@@ -95,8 +99,7 @@ export function App(props: {page?: string}): ReactElement
 
 		// Display the team comparison page
 		case View.compare: {
-			if (data.current_team)
-				view = <CompareView teams={data.teams} selectedTeam={data.current_team} />;
+			view = <CompareView teams={data.teams} defaultTeam={data.current_team} />;
 			break;
 		};
 	}
@@ -231,44 +234,66 @@ function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null
 /**
  * A view that compares the current team to a different team
  */
-function CompareView(props: {teams: Data.Team[], selectedTeam: Data.Team}): ReactElement
+function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): ReactElement
 {
-	const [compareTeam, setCompareTeam] = useState<Data.Team>();
+	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | undefined>(props.defaultTeam);
+	const [secondaryTeam, setSecondaryTeam] = useState<Data.Team | undefined>();
+
+	const primary_game = primaryTeam ? Data.getGame(primaryTeam.game) : null;
+	const secondary_game = secondaryTeam ? Data.getGame(secondaryTeam.game) : null;
 
 	// Create a list of selectable teams
-	const team_components: ReactElement[] = [];
-	let key = 0;
+	const primary_selector: ReactElement[] = [];
+	const secondary_selector: ReactElement[] = [];
+	let primary_key = 0;
+	let secondary_key = 0;
+	
 	for (const team of props.teams)
 	{
-		const game = Data.getGame(team.game);
-		const current_game = Data.getGame(props.selectedTeam.game);
+		// Add each team to the primary team selector
+		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
+			setPrimaryTeam(team);
+			setSecondaryTeam(undefined);
+		}}>{team.name}</li>);
+		primary_key++;
 
-		if (game.generation === current_game.generation)
+		// Add secondary teams if a primary team is selected
+		if (primaryTeam && primary_game)
 		{
-			team_components.push(<li className="clickable" key={key} onClick={() => setCompareTeam(team)}>{team.name}</li>);
-			key++;
+			const game = Data.getGame(team.game);
+			if (game.generation === primary_game.generation)
+			{
+				secondary_selector.push(<li className="clickable" key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
+				secondary_key++;
+			}
 		}
 	}
-
-	const primary_game = Data.getGame(props.selectedTeam.game);
-	const secondary_game = compareTeam ? Data.getGame(compareTeam.game) : null;
 
 	return (
 		<div className="flex flex-col py-8 gap-4 items-stretch w-4/5">
 			<Containers.PopupMenu />
-			<Components.TeamName name={props.selectedTeam.name} />
-			<Containers.PartyDisplay pokemon={props.selectedTeam.pokemon} abilities={props.selectedTeam.abilities} game={primary_game} />
-			<Containers.PartyAnalysis team={props.selectedTeam.pokemon} compareTeam={compareTeam?.pokemon} abilities={props.selectedTeam.abilities} compareAbilities={compareTeam?.abilities} game={primary_game} />
 
-			<div className="flex items-center justify-center">
-				<Containers.PopupBox text={compareTeam ? compareTeam.name : "Select a team"} >
-					<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{team_components}</ul>
-				</Containers.PopupBox>
+			<div className="flex flex-row gap-4 justify-center">
+				<div className="flex items-center justify-center">
+					<Containers.PopupBox text={primaryTeam ? primaryTeam.name : "Select a team"} >
+						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{primary_selector}</ul>
+					</Containers.PopupBox>
+				</div>
+				<div className="flex items-center justify-center">
+					<Containers.PopupBox text={secondaryTeam ? secondaryTeam.name : "Select a team"} disabled={!primaryTeam} >
+						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{secondary_selector}</ul>
+					</Containers.PopupBox>
+				</div>
 			</div>
 
-			{compareTeam && <div className="flex flex-col gap-4">
-				<Containers.PartyAnalysis team={compareTeam.pokemon} compareTeam={props.selectedTeam.pokemon} abilities={compareTeam.abilities} compareAbilities={props.selectedTeam.abilities} game={secondary_game!} />
-				<Containers.PartyDisplay pokemon={compareTeam.pokemon} abilities={compareTeam.abilities} game={secondary_game!} />
+			{primaryTeam && <div className="flex flex-col gap-4">
+				<Containers.PartyDisplay pokemon={primaryTeam.pokemon} abilities={primaryTeam.abilities} game={primary_game!} />
+				<Containers.PartyAnalysis team={primaryTeam.pokemon} compareTeam={secondaryTeam?.pokemon} abilities={primaryTeam.abilities} compareAbilities={secondaryTeam?.abilities} game={primary_game!} />
+			</div>}
+			
+			{secondaryTeam && <div className="flex flex-col gap-4">
+				<Containers.PartyAnalysis team={secondaryTeam.pokemon} compareTeam={primaryTeam?.pokemon} abilities={secondaryTeam.abilities} compareAbilities={primaryTeam?.abilities} game={secondary_game!} />
+				<Containers.PartyDisplay pokemon={secondaryTeam.pokemon} abilities={secondaryTeam.abilities} game={secondary_game!} />
 			</div>}
 
 		</div>

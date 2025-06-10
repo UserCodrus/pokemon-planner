@@ -489,7 +489,7 @@ const icon_source = "/icons.svg";
 /**
  * A component that displays a pop-up when clicked
  */
-export function PopupBox(props: {text: string, children: ReactNode}): ReactElement
+export function PopupBox(props: {text: string, disabled?: boolean, children: ReactNode}): ReactElement
 {
 	const [open, setOpen] = useState(false);
 
@@ -509,13 +509,23 @@ export function PopupBox(props: {text: string, children: ReactNode}): ReactEleme
 		}
 	}, [open]);
 
+	if (props.disabled)
+		return (
+			<div className="relative text-disabled">
+				<div className="inner-panel select-none flex flex-row gap-1 items-center px-2 max-h-8" >
+					<div className="min-w-32">{props.text}</div>
+					<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
+				</div>
+			</div>
+		);
+
 	return (
 		<div className="relative">
-			<div tabIndex={0} className="inner-panel cursor-pointer flex flex-row gap-1 items-center px-2 max-h-8" onClick={() => {setOpen(true)}}>
+			<div tabIndex={0} className="inner-panel cursor-pointer select-none flex flex-row gap-1 items-center px-2 max-h-8" onClick={() => {setOpen(true)}}>
 				<div className="min-w-32">{props.text}</div>
 				<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
 			</div>
 			{open && props.children}
 		</div>
-	)
+	);
 }

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import GameData from "../../../data/games.json";
-import { App } from "../../core";
+import GameData from "@/../data/games.json";
+import { App } from "@/core";
 import { LoadingScreen } from "@/components";
 
 export async function generateStaticParams() {
