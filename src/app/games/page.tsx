@@ -1,5 +1,5 @@
 import { App } from "@/core";
 
 export default function Page() {
-	return <App page="compare" />
+	return <App page="games" />
 }

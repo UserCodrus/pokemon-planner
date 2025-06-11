@@ -23,6 +23,7 @@ import { ActionDispatch, createContext } from "react";
  */
 export const enum Task {
 	home_view,
+	game_view,
 	compare_view,
 	planner_view,
 	restory_history_state,
@@ -44,6 +45,7 @@ export const enum Task {
  * The page name for the compare view
  */
 export const compare_page = "compare";
+export const selector_page = "games";
 
 /**
  * An enum describing all of the views available in the app
@@ -51,7 +53,8 @@ export const compare_page = "compare";
 export const enum View {
 	home,
 	planner,
-	compare
+	compare,
+	games
 }
 
 /**
@@ -127,6 +130,17 @@ export function teamReducer(state: AppData, action: Action) {
 			saveHistory(state, new_state);
 			return new_state;
 		};
+
+		// Switch to the game selector view
+		case Task.game_view: {
+			window.scrollTo(0, 0);
+			const new_state = {
+				...state,
+				view: View.games
+			};
+			saveHistory(state, new_state, selector_page);
+			return new_state;
+		}
 
 		// Switch to the compare view
 		case Task.compare_view: {

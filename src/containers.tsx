@@ -411,7 +411,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 	
 	return (
 		<div className="sidemenu" ref={ref}>
-			<div className="text-center text-lg p-2">Menu</div>
+			
 			{props.children}
 		</div>
 	);
@@ -420,7 +420,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 /**
  * The sidebar menu
  */
-export function PopupMenu(): ReactElement
+export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
@@ -430,6 +430,7 @@ export function PopupMenu(): ReactElement
 	{
 		return (
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
+				<div className="text-center text-lg p-2">Navigation</div>
 				<div className="flex flex-col gap-2">
 					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
 						onClick={() => {
@@ -437,11 +438,18 @@ export function PopupMenu(): ReactElement
 							setMenuOpen(false);
 						}}
 					/>
-					<Components.SidebarButton label="Planner" icon="solar--notebook-square-bold"
+					<Components.SidebarButton label="Select a Game" icon="solar--square-sort-horizontal-bold"
+						onClick={() => {
+							dispatch({type: Task.game_view});
+							setMenuOpen(false);
+						}}
+					/>
+					<Components.SidebarButton label="Build a Team" icon="solar--notebook-square-bold"
 						onClick={() => {
 							dispatch({type: Task.select_team});
 							setMenuOpen(false);
 						}}
+						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
 					<Components.SidebarButton label="Compare Teams" icon="solar--tuning-square-2-bold"
 						onClick={() => {
@@ -449,6 +457,7 @@ export function PopupMenu(): ReactElement
 							setMenuOpen(false);
 						}}
 					/>
+					<div className="text-center text-lg p-2">Team</div>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
 							openModal({
@@ -461,6 +470,7 @@ export function PopupMenu(): ReactElement
 							});
 							setMenuOpen(false);
 						}}
+						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
@@ -473,6 +483,7 @@ export function PopupMenu(): ReactElement
 							});
 							setMenuOpen(false);
 						}}
+						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
 				</div>
 			</MenuBox>

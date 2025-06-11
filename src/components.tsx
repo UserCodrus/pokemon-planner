@@ -420,10 +420,11 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 /**
  * A button for the main side menu
  */
-export function SidebarButton(props: {label: string, icon: string, onClick:Function}): ReactElement
+export function SidebarButton(props: {label: string, icon: string, disabled?: boolean, onClick:Function}): ReactElement
 {
+	const style = props.disabled ? " text-disabled" : "";
 	return (
-		<button className="panel clickable flex flex-row items-center" onClick={()=>props.onClick()}>
+		<button className={"panel clickable flex flex-row items-center" + style} onClick={()=>{ if (!props.disabled) props.onClick() }}>
 			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
 			<div className="mx-4 flex-grow">{props.label}</div>
 		</button>

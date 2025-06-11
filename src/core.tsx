@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, teamReducer, Task, View, compare_page } from "./reducer";
+import { DispatchContext, teamReducer, Task, View, compare_page, selector_page as games_page } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
 
@@ -49,6 +49,10 @@ export function App(props: {page?: string}): ReactElement
 				dispatch({
 					type: Task.compare_view
 				});
+			else if (props.page === games_page)
+				dispatch({
+					type: Task.game_view
+				});
 			else
 				dispatch({
 					type: Task.planner_view,
@@ -81,12 +85,18 @@ export function App(props: {page?: string}): ReactElement
 		return <Components.LoadingScreen />;
 
 	// Set the current view component based on the view state
-	let view: ReactElement = <div className="panel">Error</div>;
+	let view: ReactElement = <div className="panel">Error: Invalid View</div>;
 	switch (data.view)
 	{
 		// Display the landing page
 		case View.home: {
-			view = <SelectorView teams={data.teams} selectedTeam={data.current_team} />;
+			view = <TeamView teams={data.teams} selectedTeam={data.current_team} />;
+			break;
+		};
+
+		// Display the game selector
+		case View.games: {
+			view = <GameSelectorView />;
 			break;
 		};
 
@@ -108,6 +118,7 @@ export function App(props: {page?: string}): ReactElement
 	return (
 		<DispatchContext.Provider value={dispatch}>
 			<ModalWrapper>
+				<Containers.PopupMenu team={data.current_team} />
 				{view}
 			</ModalWrapper>
 		</DispatchContext.Provider>
@@ -163,7 +174,6 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 
 	return (
 		<div className="flex flex-col min-w-4/5 max-w-[90%] py-8 gap-4 items-stretch">
-			<Containers.PopupMenu />
 			<Components.ScrollButton />
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
@@ -177,15 +187,8 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 /**
  * The view that lets the player select a game to use
  */
-function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
+function GameSelectorView(): ReactElement
 {
-	// Create a set of party selector components
-	const party_components: ReactElement[] = [];
-	for (let i = 0; i < props.teams.length; ++i)
-	{
-		party_components.push(<Containers.PartySelector party={props.teams[i]} key={i} />);
-	}
-
 	// Create a set of pokedex selector components
 	const pokedex_components: ReactElement[] = [];
 	for (let i = 0; i <= 9; ++i)
@@ -220,10 +223,6 @@ function SelectorView(props: {teams: Data.Team[], selectedTeam: Data.Team | null
 
 	return (
 		<div>
-			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} /></div>}
-			<div className="flex flex-col flex-wrap gap-2 justify-evenly py-4">
-				{party_components}
-			</div>
 			<div className="flex flex-col flex-wrap gap-2 justify-evenly">
 				{pokedex_components}
 			</div>
@@ -271,8 +270,6 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
 
 	return (
 		<div className="flex flex-col py-8 gap-4 items-stretch w-4/5">
-			<Containers.PopupMenu />
-
 			<div className="flex flex-row gap-4 justify-center">
 				<div className="flex items-center justify-center">
 					<Containers.PopupBox text={primaryTeam ? primaryTeam.name : "Select a team"} >
@@ -296,6 +293,29 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
 				<Containers.PartyDisplay pokemon={secondaryTeam.pokemon} abilities={secondaryTeam.abilities} game={secondary_game!} />
 			</div>}
 
+		</div>
+	);
+}
+
+/**
+ * The view that lets the player select an existing team to edit
+ */
+function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
+{
+	console.log(props.selectedTeam);
+	// Create a set of party selector components
+	const party_components: ReactElement[] = [];
+	for (let i = 0; i < props.teams.length; ++i)
+	{
+		party_components.push(<Containers.PartySelector party={props.teams[i]} key={i} />);
+	}
+
+	return (
+		<div>
+			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} /></div>}
+			<div className="flex flex-col flex-wrap gap-2 justify-evenly py-4">
+				{party_components}
+			</div>
 		</div>
 	);
 }
