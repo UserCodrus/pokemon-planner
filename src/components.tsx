@@ -375,11 +375,25 @@ export function PokedexSelector(props: {game: Data.Game}): ReactElement
 			data: props.game.id
 		});
 	}
+
+	// Create a list of all the games in the pokedex
+	const game_list: ReactElement[] =[];
+	if (props.game.versions.length > 0)
+	{
+		for (let i = 0; i < props.game.versions.length; ++i)
+		{
+			game_list.push(<div className="text-sm" key={i}>{props.game.versions[i].name}</div>);
+		}
+	}
+	else
+	{
+		game_list.push(<div className="text-sm" key={0}>{props.game.name}</div>);
+	}
 	
 	return (
-		<div tabIndex={0} className="panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
-			<div>Generation {props.game.generation}</div>
-			<div>{props.game.name}</div>
+		<div tabIndex={0} className="flex flex-col panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
+			<div className="font-bold">Generation {props.game.generation}</div>
+			{game_list}
 		</div>
 	);
 }

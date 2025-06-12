@@ -189,42 +189,19 @@ function PlannerView(props: {team: Data.Team}): ReactElement
  */
 function GameSelectorView(): ReactElement
 {
-	// Create a set of pokedex selector components
-	const pokedex_components: ReactElement[] = [];
-	for (let i = 0; i <= 9; ++i)
+	// Create a set of pokedex selectors for each available pokedex
+	let key = 0;
+	const inner_components: ReactElement[] = [];
+	for (const game of GameData)
 	{
-		// Create a single row for each generation
-		const inner_components: ReactElement[] = [];
-		if (i === 0)
-		{
-			// Put the national dex at the top
-			inner_components.push(<Components.PokedexSelector game={GameData[0]} key={0} />);
-		}
-		else
-		{
-			let key = 0;
-			for (const game of GameData)
-			{
-				if (game.generation === i && game.id !== "nat")
-				{
-					inner_components.push(<Components.PokedexSelector game={game} key={key} />);
-					++key;
-					continue;
-				}
-			}
-		}
-
-		pokedex_components.push(
-			<div key={i} className="flex flex-row gap-2 justify-center">
-				{inner_components}
-			</div>
-		);
+		inner_components.push(<Components.PokedexSelector game={game} key={key} />);
+		++key;
 	}
 
 	return (
 		<div>
-			<div className="flex flex-col flex-wrap gap-2 justify-evenly">
-				{pokedex_components}
+			<div className="grid grid-cols-6 gap-2 justify-evenly">
+				{inner_components}
 			</div>
 		</div>
 	);
