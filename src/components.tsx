@@ -61,7 +61,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 		for (let i=0; i < pokemon.types.length; ++i)
 		{
 			const src = Data.typeSpriteURL(pokemon.types[i]);
-			type_images.push(<Image className="inline-flex" src={src} width={100} height={20} draggable={false} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
+			type_images.push(<Image className="inline-flex min-w-[75px] lg:min-w-[100px]" src={src} width={100} height={20} draggable={false} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
 		}
 
 		art_src = pokemon.art;
@@ -112,7 +112,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 				<div className="text-center text-secondary text-sm min-h-5">{form_text}</div>
 				<Image src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
 				<div className="text-center min-h-6">{ability_text}</div>
-				<div className="flex flex-col min-h-[40px] min-w-[100px] justify-center">
+				<div className="flex flex-col items-center min-h-[30px] lg:min-h-[40px] justify-center">
 					{type_images}
 				</div>
 		</div>
@@ -307,11 +307,11 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: number, sou
 	}
 
 	// Add a glow effect if needed
-	const highlight_style = props.highlight > 0 ? "rounded-xl glow-pos" : (props.highlight < 0 ? "rounded-xl glow-neg" : "");
+	const highlight_style = props.highlight > 0 ? " glow-pos" : (props.highlight < 0 ? " glow-neg" : "");
 
 	return (
 		<div className={style}>
-			<svg width={icon_size} height={icon_size} className={highlight_style}><use href={src} /></svg>
+			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl" + highlight_style}><use href={src} /></svg>
 		</div>
 	);
 }
@@ -355,7 +355,7 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 
 	return (
 		<div className="flex flex-col items-center gap-0.5 basis-[10%]">
-			<Image src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
+			<Image className="w-[75px] lg:w-[100px]" src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
 			<div className={"flex flex-row"}>{top_components}</div>
 			<div className={"flex flex-row"}>{bottom_components}</div>
 		</div>

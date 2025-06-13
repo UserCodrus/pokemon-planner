@@ -246,7 +246,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
 
 	return (
 		<div className="flex flex-col py-8 gap-4 items-stretch w-4/5">
-			<div className="flex flex-row gap-4 justify-center">
+			<div className="flex flex-col lg:flex-row gap-4 justify-center">
 				<div className="flex items-center justify-center">
 					<Containers.PopupBox text={primaryTeam ? primaryTeam.name : "Select a team"} >
 						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{primary_selector}</ul>
