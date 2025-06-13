@@ -280,8 +280,8 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
 	}
 
 	return (
-		<div className="panel flex flex-row flex-grow gap-1 justify-evenly items-center">
-			<div className="flex flex-row gap-1 flex-wrap justify-evenly">{type_buttons}</div>
+		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
+			<div className="flex flex-row gap-1 flex-wrap justify-center">{type_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
 				<PopupBox text={props.version > -1 ? props.game.versions[props.version].name : "All"}>
 					<Components.VersionSelector game={props.game} version={props.version} onSelect={props.onSelectVersion} />

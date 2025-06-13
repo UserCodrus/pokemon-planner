@@ -251,7 +251,7 @@ export function AllFilterButton(props: {active: boolean, onClick: TypeFilterCall
 
 	return (
 		<button
-			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer" + filter_style}
+			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold" + filter_style}
 			onClick={()=>props.onClick(-1, true)}
 			onContextMenu={(e)=>{
 				e.preventDefault();
@@ -425,8 +425,8 @@ export function TeamName(props: {name: string}): ReactElement
 export function MenuButton(props: {openCallback: Function}): ReactElement
 {
 	return (
-		<div tabIndex={0} className="fixed left-2 top-2 z-1 text-black cursor-pointer" onClick={()=>props.openCallback()}>
-			<svg width={40} height={40}><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
+		<div tabIndex={0} className="panel clickable p-1 fixed left-2 top-2 z-1" onClick={()=>props.openCallback()}>
+			<svg className="w-[20px] h-[20px] lg:w-[32px] lg:h-[32px]"><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
 		</div>
 	);
 }
@@ -491,7 +491,7 @@ export function ScrollButton(): ReactElement
 {
 	return (
 		<button className="panel clickable fixed right-2 bottom-2" onClick={() => {window.scroll({top: 0, behavior: "smooth"})}}>
-			<svg width={24} height={24}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+			<svg className="w-[12px] h-[12px] lg:w-[24px] lg:h-[24px]"><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
 		</button>
 	)
 }
