@@ -525,8 +525,8 @@ export function PopupBox(props: {text: string, disabled?: boolean, children: Rea
 
 	return (
 		<div className={"relative" + outer_style}>
-			<div tabIndex={0} className={"inner-panel select-none flex flex-row gap-1 items-center px-2 max-h-8" + inner_style} onClick={() => {if (!props.disabled) setOpen(true)}}>
-				<div className="min-w-32">{props.text}</div>
+			<div tabIndex={0} className={"inner-panel select-none flex flex-row gap-1 items-center justify-between px-2 max-h-8 w-48" + inner_style} onClick={() => {if (!props.disabled) setOpen(true)}}>
+				<div>{props.text}</div>
 				<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
 			</div>
 			{open && props.children}

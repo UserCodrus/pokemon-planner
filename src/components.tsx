@@ -271,7 +271,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
 			type="text" value={props.text}
 			placeholder="Type a name to filter"
 			onChange={(event)=>props.onChange(event.target.value)}
-			className="inner-panel px-2 max-h-8"
+			className="inner-panel px-2 max-h-8 w-48"
 		/>
 	)
 }
