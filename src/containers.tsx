@@ -283,7 +283,7 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
 		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{type_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-				<PopupBox text={props.version > -1 ? props.game.versions[props.version].name : "All"}>
+				<PopupBox text={props.version > -1 ? props.game.versions[props.version].name : "All"} disabled={!(props.game.versions.length > 0)}>
 					<Components.VersionSelector game={props.game} version={props.version} onSelect={props.onSelectVersion} />
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
@@ -520,19 +520,12 @@ export function PopupBox(props: {text: string, disabled?: boolean, children: Rea
 		}
 	}, [open]);
 
-	if (props.disabled)
-		return (
-			<div className="relative text-disabled">
-				<div className="inner-panel select-none flex flex-row gap-1 items-center px-2 max-h-8" >
-					<div className="min-w-32">{props.text}</div>
-					<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
-				</div>
-			</div>
-		);
+	const outer_style = props.disabled ? " text-disabled" : "";
+	const inner_style = props.disabled ? "" : " cursor-pointer";
 
 	return (
-		<div className="relative">
-			<div tabIndex={0} className="inner-panel cursor-pointer select-none flex flex-row gap-1 items-center px-2 max-h-8" onClick={() => {setOpen(true)}}>
+		<div className={"relative" + outer_style}>
+			<div tabIndex={0} className={"inner-panel select-none flex flex-row gap-1 items-center px-2 max-h-8" + inner_style} onClick={() => {if (!props.disabled) setOpen(true)}}>
 				<div className="min-w-32">{props.text}</div>
 				<svg width={16} height={16}><use href={icon_source + "#solar--alt-arrow-down-outline"} /></svg>
 			</div>

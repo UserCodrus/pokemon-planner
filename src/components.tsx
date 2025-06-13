@@ -204,7 +204,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 
 	return (
 		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div tabIndex={0} className="panel clickable p-1 min-w-[96px] min-h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+			<div tabIndex={0} className="panel clickable p-1 w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
@@ -436,9 +436,9 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
  */
 export function SidebarButton(props: {label: string, icon: string, disabled?: boolean, onClick:Function}): ReactElement
 {
-	const style = props.disabled ? " text-disabled" : "";
+	const style = props.disabled ? " text-disabled" : " clickable";
 	return (
-		<button className={"panel clickable flex flex-row items-center" + style} onClick={()=>{ if (!props.disabled) props.onClick() }}>
+		<button className={"panel flex flex-row items-center" + style} onClick={()=>{ if (!props.disabled) props.onClick() }}>
 			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
 			<div className="mx-4 flex-grow">{props.label}</div>
 		</button>
