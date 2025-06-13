@@ -106,13 +106,16 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string)
 	};
 	history.replaceState(update_state, "");
 
-	// Add the new state to browser history
+	// Add the new state to browser history if the URL has changed
 	const url = window.location.origin + (page ? "/" + page : "");
-	const app_state = {
-		view: new_state.view,
-		team: structuredClone(new_state.current_team)
-	};
-	history.pushState(app_state, "", url);
+	if (url != window.location.href)
+	{
+		const app_state = {
+			view: new_state.view,
+			team: structuredClone(new_state.current_team)
+		};
+		history.pushState(app_state, "", url);
+	}
 }
 
 /**

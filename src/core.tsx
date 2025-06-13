@@ -58,7 +58,6 @@ export function App(props: {page?: string}): ReactElement
 					type: Task.planner_view,
 					data: props.page
 				});
-			console.log("Loaded page for for " + props.page);
 		}
 
 		// Add an event listener for popstate to manage history
@@ -279,7 +278,6 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
  */
 function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
-	console.log(props.selectedTeam);
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < props.teams.length; ++i)
