@@ -279,11 +279,16 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
 			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i+1} />)
 	}
 
+	// Set the currently selected version for the version filter box
+	let version_text = props.version > -1 ? props.game.versions[props.version].name : "All";
+	if (props.game.versions.length == 1)
+		version_text = props.game.versions[0].name;
+
 	return (
 		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{type_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-				<PopupBox text={props.version > -1 ? props.game.versions[props.version].name : "All"} disabled={!(props.game.versions.length > 0)}>
+				<PopupBox text={version_text} disabled={!(props.game.versions.length > 1)}>
 					<Components.VersionSelector game={props.game} version={props.version} onSelect={props.onSelectVersion} />
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />

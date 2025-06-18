@@ -5,7 +5,12 @@
 		"generation": 9,
 		"abilities": true,
 		"name": "National Pokédex",
-		"versions": []
+		"versions": [
+			{
+				"name": "National",
+				"blacklist": []
+			}
+		]
 	},
 	{
 		"id": "rby",
@@ -363,7 +368,12 @@
 		"generation": 8,
 		"abilities": false,
 		"name": "Legends Arceus",
-		"versions": []
+		"versions": [
+			{
+				"name": "Legends Arceus",
+				"blacklist": []
+			}
+		]
 	},
 	{
 		"id": "bdsp",
