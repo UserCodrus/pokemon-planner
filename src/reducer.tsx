@@ -74,7 +74,8 @@ export type AppData = {
 	teams: Data.Team[] | null
 };
 
-export function newTeam(teams: Data.Team[], game: string): Data.Team {
+// Create a new team for the app
+function newTeam(teams: Data.Team[], game: string): Data.Team {
 	// Get the last team id used by existing teams
 	let team_id = 0;
 	for (const team of teams)
@@ -92,12 +93,25 @@ export function newTeam(teams: Data.Team[], game: string): Data.Team {
 	}
 }
 
+// Get the url segment of the current view
+function getURLSegment(view: View, game?: string): string
+{
+	switch (view) {
+		case View.home: return "";
+		case View.compare: return "compare";
+		case View.games: return "games";
+		case View.planner:  return (game ? game : "nat");
+	}
+}
+
 /**
- * A function that saves the state of the app when the view is switched
- * @param state The current state of the app
+ * A function that saves the state of the app when the view is switched and the url changes
+ * @param current_state The current state of the app
+ * @param new_state The state that the app is switching to
  * @param page The url segment of the current page
+ * @param force If set to true, the app will push to history even if the url hasn't changed
  */
-function saveHistory(current_state: AppData, new_state: AppData, page?: string)
+function saveHistory(current_state: AppData, new_state: AppData, page?: string, force?: boolean)
 {
 	// Update the current state of the app before pushing a new state
 	const update_state = {
@@ -108,7 +122,7 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string)
 
 	// Add the new state to browser history if the URL has changed
 	const url = window.location.origin + (page ? "/" + page : "");
-	if (url != window.location.href)
+	if (url != window.location.href || force)
 	{
 		const app_state = {
 			view: new_state.view,
@@ -130,7 +144,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				view: View.home
 			};
-			saveHistory(state, new_state);
+			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		};
 
@@ -141,7 +155,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				view: View.games
 			};
-			saveHistory(state, new_state, selector_page);
+			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		}
 
@@ -152,7 +166,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				view: View.compare
 			};
-			saveHistory(state, new_state, compare_page);
+			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		};
 
@@ -175,7 +189,7 @@ export function teamReducer(state: AppData, action: Action) {
 					game: selected_game,
 					view: View.planner
 				};
-				saveHistory(state, new_state, selected_game.id);
+				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 
 				return new_state;
 			}
@@ -265,10 +279,13 @@ export function teamReducer(state: AppData, action: Action) {
 				break;
 
 			const new_team = newTeam(state.teams, state.current_team ? state.current_team.game : "nat");
-			return {
+			const new_state = {
 				...state,
 				current_team: new_team
 			}
+			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game), true);
+
+			return new_state;
 		};
 
 		// Set the team with the given id as the active team and load the planner
@@ -309,7 +326,7 @@ export function teamReducer(state: AppData, action: Action) {
 					current_team: selected_team,
 					view: View.planner
 				}
-				saveHistory(state, new_state, selected_game.id);
+				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 
 				return new_state;
 			}
