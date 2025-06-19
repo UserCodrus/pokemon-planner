@@ -196,7 +196,6 @@ function GameSelectorView(): ReactElement
 		inner_components.push(<Components.GameSelector game={game} key={key} />);
 		++key;
 	}
-
 	return (
 		<div className="max-w-[85%] lg:max-w-[75%]">
 			<div className="flex flex-row flex-wrap gap-2 justify-evenly items-center">

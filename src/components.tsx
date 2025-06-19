@@ -370,6 +370,7 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 export function GameSelector(props: {game: Data.Game}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
+	const [index, setIndex] = useState(0);
 
 	function handleClick() {
 		dispatch({
@@ -378,38 +379,24 @@ export function GameSelector(props: {game: Data.Game}): ReactElement
 		});
 	}
 
-	// Set the size of images based on the number of versions
-	let image_style = "w-[130px] lg:w-[150px]"
-	if (props.game.versions.length === 2)
-	{
-		image_style = "w-[65px] lg:w-[100px]";
-	}
-	else if (props.game.versions.length === 3)
-	{
-		image_style = "w-[50px] lg:w-[80px]"
-	}
+	// Set an interval to cycle the index state between each possible version in the game
+	useEffect(() => {
+		const interval_id = setInterval(() => {
+			setIndex((value) => {
+				value++;
+				if (value >= props.game.versions.length)
+					value = 0;
 
-	// Create icons for each game in the pokedex
-	const game_versions: ReactElement[] = [];
-	if (props.game.versions.length > 0)
-	{
-		for (let i = 0; i < props.game.versions.length; ++i)
-		{
-			game_versions.push(<img
-					src={logo_source + props.game.versions[i].logo} alt={props.game.versions[i].name}
-					className={image_style}
-					key={i}
-				/>);
-		}
-	}
-	else
-	{
-		game_versions.push(<div className="text-sm" key={0}>{props.game.name}</div>);
-	}
+				return value
+			});
+		}, 1000);
+
+		return () => clearInterval(interval_id);
+	}, []);
 	
 	return (
-		<div tabIndex={0} className="flex flex-row flex-wrap justify-center items-center panel clickable p-2 gap-2 text-center w-[160px] lg:w-[230px] h-[100px] lg:h-[150px]" onClick={()=>handleClick()}>
-			{game_versions}
+		<div tabIndex={0} className="flex flex-row flex-wrap justify-center items-center panel clickable p-2 gap-2 text-center w-[130px] lg:w-[230px] h-[130px] lg:h-[170px]" onClick={()=>handleClick()}>
+			<img src={logo_source + props.game.versions[index].logo} alt={props.game.versions[index].name} className="w-[100px] lg:w-[150px]" />
 		</div>
 	);
 }
