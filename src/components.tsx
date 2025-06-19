@@ -206,7 +206,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	return (
 		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
 			<div tabIndex={0} className="panel clickable p-1 w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
-				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute fade" + hidden} />
+				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute pop" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>
 			{contextMenu && <PokemonSelectorContextMenu pokemon={pokemon} closeCallback={()=>{setContextMenu(false)}} />}
@@ -372,6 +372,7 @@ export function GameSelector(props: {game: Data.Game}): ReactElement
 	const dispatch = useContext(DispatchContext);
 	const [index, setIndex] = useState(0);
 
+	// Dispatch a action to switch to the corresponding game when the selector is clicked
 	function handleClick() {
 		dispatch({
 			type: Task.planner_view,
@@ -387,16 +388,27 @@ export function GameSelector(props: {game: Data.Game}): ReactElement
 				if (value >= props.game.versions.length)
 					value = 0;
 
-				return value
+				return value;
 			});
-		}, 1000);
+		}, 2000);
 
 		return () => clearInterval(interval_id);
 	}, []);
+
+	// Create image tags for each game version
+	const images: ReactElement[] = [];
+	for (let i = 0; i < props.game.versions.length; ++i)
+	{
+		const image_style = (i === index ? "" : " hide");
+		images.push(<img
+				src={logo_source + props.game.versions[i].logo} alt={props.game.versions[i].name}
+				className={"absolute w-[100px] lg:w-[150px] fade" + image_style}
+			/>);
+	}
 	
 	return (
 		<div tabIndex={0} className="flex flex-row flex-wrap justify-center items-center panel clickable p-2 gap-2 text-center w-[130px] lg:w-[230px] h-[130px] lg:h-[170px]" onClick={()=>handleClick()}>
-			<img src={logo_source + props.game.versions[index].logo} alt={props.game.versions[index].name} className="w-[100px] lg:w-[150px]" />
+			{images}
 		</div>
 	);
 }

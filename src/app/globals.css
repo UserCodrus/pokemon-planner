@@ -108,12 +108,20 @@ footer {
 		animation: animation-slide-right 0.05s linear;
 	}
 
-	.fade {
+	.pop {
 		transition: scale 0.2s ease-in-out;
 		scale: 1;
 	}
-	.fade.hide {
+	.pop.hide {
 		scale: 0;
+	}
+
+	.fade {
+		transition: opacity 0.5s ease-in-out;
+		opacity: 1;
+	}
+	.fade.hide {
+		opacity: 0;
 	}
 
 	.anim-pulse {
