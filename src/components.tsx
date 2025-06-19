@@ -25,6 +25,7 @@ export type TypeCoverage = {
 }
 
 const icon_source = "/icons.svg";
+const logo_source = "/images/logos/";
 
 const enum CoverageStyle {
 	neutral,
@@ -362,10 +363,11 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 	);
 }
 
+
 /**
  * A component used to select a set of pokemon from a given game
  */
-export function PokedexSelector(props: {game: Data.Game}): ReactElement
+export function GameSelector(props: {game: Data.Game}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 
@@ -376,24 +378,38 @@ export function PokedexSelector(props: {game: Data.Game}): ReactElement
 		});
 	}
 
-	// Create a list of all the games in the pokedex
-	const game_list: ReactElement[] =[];
+	// Set the size of images based on the number of versions
+	let image_style = "w-[130px] lg:w-[150px]"
+	if (props.game.versions.length === 2)
+	{
+		image_style = "w-[65px] lg:w-[100px]";
+	}
+	else if (props.game.versions.length === 3)
+	{
+		image_style = "w-[50px] lg:w-[80px]"
+	}
+
+	// Create icons for each game in the pokedex
+	const game_versions: ReactElement[] = [];
 	if (props.game.versions.length > 0)
 	{
 		for (let i = 0; i < props.game.versions.length; ++i)
 		{
-			game_list.push(<div className="text-sm" key={i}>{props.game.versions[i].name}</div>);
+			game_versions.push(<img
+					src={logo_source + props.game.versions[i].logo} alt={props.game.versions[i].name}
+					className={image_style}
+					key={i}
+				/>);
 		}
 	}
 	else
 	{
-		game_list.push(<div className="text-sm" key={0}>{props.game.name}</div>);
+		game_versions.push(<div className="text-sm" key={0}>{props.game.name}</div>);
 	}
 	
 	return (
-		<div tabIndex={0} className="flex flex-col panel p-1 px-2 select-none cursor-pointer text-center" onClick={()=>handleClick()}>
-			<div className="font-bold">Generation {props.game.generation}</div>
-			{game_list}
+		<div tabIndex={0} className="flex flex-row flex-wrap justify-center items-center panel clickable p-2 gap-2 text-center w-[160px] lg:w-[230px] h-[100px] lg:h-[150px]" onClick={()=>handleClick()}>
+			{game_versions}
 		</div>
 	);
 }

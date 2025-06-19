@@ -55,6 +55,7 @@ export type Pokemon = {
  */
 export type Version = {
 	name: string,				// The name of the game
+	logo: string,				// The name of the game's logo image
 	blacklist?: number[],		// Pokemon that shouldn't appear in the version
 	formlist?: number[][],		// Pokemon forms that shouldn't appear in the version
 	limit?: number				// A cutoff for pokedex entries - entries higher than this number will be blacklisted

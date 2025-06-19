@@ -193,13 +193,13 @@ function GameSelectorView(): ReactElement
 	const inner_components: ReactElement[] = [];
 	for (const game of GameData)
 	{
-		inner_components.push(<Components.PokedexSelector game={game} key={key} />);
+		inner_components.push(<Components.GameSelector game={game} key={key} />);
 		++key;
 	}
 
 	return (
-		<div>
-			<div className="grid grid-cols-6 gap-2 justify-evenly">
+		<div className="max-w-[85%] lg:max-w-[75%]">
+			<div className="flex flex-row flex-wrap gap-2 justify-evenly items-center">
 				{inner_components}
 			</div>
 		</div>
