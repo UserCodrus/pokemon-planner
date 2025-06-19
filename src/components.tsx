@@ -81,9 +81,9 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel p-4 max-w-[30%] flex flex-col items-center";
+	let component_style = "panel p-4 max-w-[30%] flex flex-col items-center anim-pulse";
 	if (props.pokemon)
-		component_style += " clickable anim-pulse"
+		component_style += " clickable"
 
 	// Handle mouse clicks
 	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
@@ -104,8 +104,11 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 			});
 	}
 
+	// Create a key to force css animations to replay when the pokemon changes
+	const component_key = props.pokemon ? props.pokemon.id * 100 + props.pokemon.form : 0;
+
 	return (
-		<div tabIndex={0} className={component_style} draggable={true}
+		<div tabIndex={0} className={component_style} draggable={true} key={component_key}
 			onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}
 			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop}
 			>

@@ -78,7 +78,7 @@ export type Game = {
  */
 export type TeamSlot = {
 	id: number,
-	form?: number
+	form: number
 };
 
 /**
