@@ -367,10 +367,9 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 /**
  * A component used to select a set of pokemon from a given game
  */
-export function GameSelector(props: {game: Data.Game}): ReactElement
+export function GameSelector(props: {game: Data.Game, logoCycle: number}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
-	const [index, setIndex] = useState(0);
 
 	// Dispatch a action to switch to the corresponding game when the selector is clicked
 	function handleClick() {
@@ -380,29 +379,16 @@ export function GameSelector(props: {game: Data.Game}): ReactElement
 		});
 	}
 
-	// Set an interval to cycle the index state between each possible version in the game
-	useEffect(() => {
-		const interval_id = setInterval(() => {
-			setIndex((value) => {
-				value++;
-				if (value >= props.game.versions.length)
-					value = 0;
-
-				return value;
-			});
-		}, 2000);
-
-		return () => clearInterval(interval_id);
-	}, []);
-
 	// Create image tags for each game version
 	const images: ReactElement[] = [];
 	for (let i = 0; i < props.game.versions.length; ++i)
 	{
-		const image_style = (i === index ? "" : " hide");
+		const image_style = (i === (props.logoCycle % props.game.versions.length) ? "" : " hide");
 		images.push(<img
-				src={logo_source + props.game.versions[i].logo} alt={props.game.versions[i].name}
+				src={logo_source + props.game.versions[i].logo}
+				alt={props.game.versions[i].name}
 				className={"absolute w-[100px] lg:w-[150px] fade" + image_style}
+				key={i}
 			/>);
 	}
 	

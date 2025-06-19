@@ -188,17 +188,29 @@ function PlannerView(props: {team: Data.Team}): ReactElement
  */
 function GameSelectorView(): ReactElement
 {
-	// Create a set of pokedex selectors for each available pokedex
+	const [index, setIndex] = useState(0);
+
+	// Set an interval function to control the logo animations for game selector components
+	useEffect(() => {
+		const interval_id = setInterval(() => {
+			setIndex(value => value + 1);
+		}, 2000);
+
+		return () => clearInterval(interval_id);
+	}, []);
+
+	// Create a set of selector buttons for each available game
 	let key = 0;
 	const inner_components: ReactElement[] = [];
 	for (const game of GameData)
 	{
-		inner_components.push(<Components.GameSelector game={game} key={key} />);
+		inner_components.push(<Components.GameSelector game={game} logoCycle={index} key={key} />);
 		++key;
 	}
+
 	return (
 		<div className="max-w-[85%] lg:max-w-[75%]">
-			<div className="flex flex-row flex-wrap gap-2 justify-evenly items-center">
+			<div className="flex flex-row flex-wrap gap-2 justify-center items-center">
 				{inner_components}
 			</div>
 		</div>
