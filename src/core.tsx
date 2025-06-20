@@ -209,7 +209,8 @@ function GameSelectorView(): ReactElement
 	}
 
 	return (
-		<div className="max-w-[85%] lg:max-w-[75%]">
+		<div className="flex flex-col items-center gap-2 max-w-[85%] lg:max-w-[75%]">
+			<div className="panel text-lg text-center min-w-1/4">Select a Game</div>
 			<div className="flex flex-row flex-wrap gap-2 justify-center items-center">
 				{inner_components}
 			</div>

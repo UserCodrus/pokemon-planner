@@ -437,19 +437,19 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="text-center text-lg p-2">Navigation</div>
 				<div className="flex flex-col gap-2">
-					<Components.SidebarButton label="Home" icon="solar--home-2-bold"
+					<Components.SidebarButton label="Change Teams" icon="solar--home-2-bold"
 						onClick={() => {
 							dispatch({type: Task.home_view});
 							setMenuOpen(false);
 						}}
 					/>
-					<Components.SidebarButton label="Select a Game" icon="solar--square-sort-horizontal-bold"
+					<Components.SidebarButton label="Change Games" icon="solar--square-sort-horizontal-bold"
 						onClick={() => {
 							dispatch({type: Task.game_view});
 							setMenuOpen(false);
 						}}
 					/>
-					<Components.SidebarButton label="Build a Team" icon="solar--notebook-square-bold"
+					<Components.SidebarButton label="Team Planner" icon="solar--notebook-square-bold"
 						onClick={() => {
 							dispatch({type: Task.select_team});
 							setMenuOpen(false);

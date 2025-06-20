@@ -175,7 +175,6 @@ export function teamReducer(state: AppData, action: Action) {
 			if (!action.data)
 				return {
 					...state,
-					game: null,
 					view: View.home
 				}
 
@@ -186,7 +185,6 @@ export function teamReducer(state: AppData, action: Action) {
 				const new_state = {
 					...state,
 					current_team: newTeam(state.teams!, selected_game.id),
-					game: selected_game,
 					view: View.planner
 				};
 				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
