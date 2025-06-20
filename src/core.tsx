@@ -294,12 +294,12 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < props.teams.length; ++i)
 	{
-		party_components.push(<Containers.PartySelector party={props.teams[i]} key={i} />);
+		party_components.push(<Containers.PartySelector party={props.teams[i]} currentParty={false} key={i} />);
 	}
 
 	return (
 		<div>
-			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} /></div>}
+			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} currentParty={true} /></div>}
 			<div className="flex flex-col flex-wrap gap-2 justify-evenly py-4">
 				{party_components}
 			</div>

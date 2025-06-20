@@ -13,7 +13,7 @@ import { ActionDispatch, createContext } from "react";
  * @param save_current_team Overwrite changes made to the current team. Data is not used.
  * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
  * @param new_team Delete the existing team in the current_team slot and create a new one. Data is not used.
- * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id.
+ * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id. If data is not provided, the current team will be reloaded.
  * @param delete_team Delete a team from the team list. Data should be the team id of the team being deleted.
  * 
  * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
@@ -292,7 +292,7 @@ export function teamReducer(state: AppData, action: Action) {
 				break;
 			
 			let selected_team: Data.Team | null = null;
-			if (state.current_team && (state.current_team.id === action.data || !action.data))
+			if (state.current_team && !action.data)
 			{
 				// If the selected team is the same as the current team, skip searching for teams
 				selected_team = state.current_team;

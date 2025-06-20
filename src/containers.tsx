@@ -89,7 +89,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 /**
  * A container that displays a saved party and selects it by clicking
  */
-export function PartySelector(props: {party: Data.Team}): ReactElement
+export function PartySelector(props: {party: Data.Team, currentParty: boolean}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
@@ -99,29 +99,55 @@ export function PartySelector(props: {party: Data.Team}): ReactElement
 
 	// Select the team when the component is left clicked
 	function handleLeftClick(event: ReactMouseEvent<HTMLDivElement>) {
-		dispatch({
-			type: Task.select_team,
-			data: props.party.id
-		});
+		if (props.currentParty)
+		{
+			dispatch({
+				type: Task.select_team
+			});
+		}
+		else
+		{
+			dispatch({
+				type: Task.select_team,
+				data: props.party.id
+			});
+		}
 	}
 	// Delete the team when the component is right clicked and the user confirms the modal popup
 	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
 		event.preventDefault();
-		openModal({
-			message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
-			buttons: [
-				{
-					label: "Confirm",
-					callback: () => {
-						dispatch({
-							type: Task.delete_team,
-							data: props.party.id
-						});
-					}
-				},
-				{ label: "Cancel" }
-			]
-		});
+		if (props.currentParty)
+		{
+			openModal({
+					message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+					buttons: [
+						{
+							label: "Confirm",
+							callback: () => dispatch({
+									type: Task.planner_view,
+									data: props.party.game
+								})
+						},
+						{ label: "Cancel" }
+					]
+				});
+		}
+		else
+		{
+			openModal({
+				message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
+				buttons: [
+					{
+						label: "Confirm",
+						callback: () => dispatch({
+								type: Task.delete_team,
+								data: props.party.id
+							})
+					},
+					{ label: "Cancel" }
+				]
+			});
+		}
 	}
 
 	// Create a set of party components
