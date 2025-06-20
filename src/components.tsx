@@ -132,7 +132,7 @@ export function PartyMemberSmall(props: {generation: number, pokemon: Data.TeamS
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 
 	return (
-		<div className="p-1 min-w-[96px] min-h-[96px]">
+		<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]">
 			<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 		</div>
 	);
@@ -208,7 +208,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 
 	return (
 		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div tabIndex={0} className="panel clickable p-1 w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+			<div tabIndex={0} className="panel clickable p-[4px] w-[72px] h-[72px] lg:w-[100px] lg:h-[100px]" onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute pop" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 			</div>

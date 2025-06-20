@@ -158,10 +158,11 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 	}
 
 	return (
-		<div tabIndex={0} className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
+		<div tabIndex={0} className="panel clickable text-center w-[280px] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
-			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1) + ": " + game!.name}</div>
-			<div className="flex flex-row">{components}</div>
+			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1)}</div>
+			<div className="text-sm lg:text-base">{game!.name}</div>
+			<div className="inline-grid grid-cols-3 grid-rows-2 gap-4 lg:gap-2">{components}</div>
 		</div>
 	);
 }
