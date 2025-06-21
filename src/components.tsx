@@ -11,7 +11,7 @@ import { ModalContext } from "./modal";
 export type SelectionCallback = (id: number, form?: number) => void;
 export type AbilityCallback = (selectedPokemon: Data.TeamSlot) => void;
 export type GameCallback = (game: Data.Game) => void;
-export type TypeFilterCallback = (type: number, single?: boolean) => void;
+export type BooleanFilterCallback = (index: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 export type VersionFilterCallback = (version: number) => void;
 
@@ -223,7 +223,7 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
  * @param props.active A flag that determines if the button will be rendered in its active or inactive state
  * @param props.onClick The function called when the filter button is clicked
  */
-export function TypeFilterButton(props: {type: number, active: boolean, onClick: TypeFilterCallback}): ReactElement
+export function TypeFilterButton(props: {type: number, active: boolean, onClick: BooleanFilterCallback}): ReactElement
 {
 	const size = 32;
 	const filter_style = props.active ? "" : " inactive";
@@ -245,11 +245,30 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 }
 
 /**
+ * A button that enables or disables filtering of teams by generation
+ */
+export function GenerationFilterButton(props: {generation: number, active: boolean, onClick: BooleanFilterCallback}): ReactElement
+{
+	const filter_style = props.active ? "" : " inactive";
+
+	return (
+		<button
+			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold" + filter_style}
+			onClick={()=>props.onClick(props.generation - 1)}
+			onContextMenu={(e)=>{
+				e.preventDefault();
+				props.onClick(props.generation - 1, true);
+			}}
+		>{Data.getRomanNumeral(props.generation)}</button>
+	);
+}
+
+/**
  * A button that enables or disables filtering of all pokemon types
  * @param props.active A flag that determines if the button will be rendered in its active or inactive state
  * @param props.onClick The function called when the filter button is clicked
  */
-export function AllFilterButton(props: {active: boolean, onClick: TypeFilterCallback}): ReactElement
+export function AllFilterButton(props: {active: boolean, onClick: BooleanFilterCallback}): ReactElement
 {
 	const filter_style = props.active ? "" : " inactive";
 

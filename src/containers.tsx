@@ -12,6 +12,13 @@ import Tutorials from "./tutorials";
 const party_size = 6;
 const draw_order = [0, 1, 2, 3, 4, 5];
 
+// Sorting options for the team planner view
+export const enum TeamSort {
+	updated,
+	created,
+	alphabet
+}
+
 /**
  * A component that contains the user's currently selected party
  */
@@ -160,7 +167,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 	return (
 		<div tabIndex={0} className="panel clickable text-center w-[280px] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
-			<div>{"Generation " + Data.getRomanNumeral(game!.generation - 1)}</div>
+			<div>{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
 			<div className="text-sm lg:text-base">{game!.name}</div>
 			<div className="inline-grid grid-cols-3 grid-rows-2 gap-4 lg:gap-2">{components}</div>
 		</div>
@@ -282,9 +289,9 @@ export const PokedexDisplay = memo(function PokedexDisplay(props: {game: Data.Ga
 })
 
 /**
- * A component containing filters toggles for selectable pokemon
+ * A component containing filter toggles for selectable pokemon
  */
-export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: string, version: number, onClickType: Components.TypeFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
+export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[], name: string, version: number, onClickType: Components.BooleanFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -319,6 +326,43 @@ export function FilterBar(props: {game: Data.Game, typeFilter: boolean[], name: 
 					<Components.VersionSelector game={props.game} version={props.version} onSelect={props.onSelectVersion} />
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
+			</div>
+			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
+		</div>
+	);
+}
+
+/**
+ * A component containing filter toggles for selectable teams
+ */
+export function TeamFilterBar(props: {generationFilter: boolean[], sortType: TeamSort, sortAscending: boolean, onSelectGeneration: Components.BooleanFilterCallback, onChangeSorting?: Components.NameFilterCallback}): ReactElement
+{
+	// Determine if any filters are disabled for the all filter button
+	let all_filter = true;
+	for (const filter of props.generationFilter)
+	{
+		if (!filter)
+		{
+			all_filter = false;
+			break;
+		}
+	}
+
+	// Create a full set of filter buttons for selecting generations
+	const generation_buttons: ReactElement[] = [];
+	generation_buttons.push(<Components.AllFilterButton active={all_filter} onClick={props.onSelectGeneration} key={0} />);
+	for (let i = 0; i < Data.generations; ++i)
+	{
+			generation_buttons.push(<Components.GenerationFilterButton generation={i + 1} active={props.generationFilter[i]} onClick={props.onSelectGeneration} key={i + 1} />)
+	}
+
+	return (
+		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
+			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
+			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
+				<PopupBox text={"hi"}>
+					<div>Hello!</div>
+				</PopupBox>
 			</div>
 			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
 		</div>

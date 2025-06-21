@@ -136,17 +136,17 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 	const game = Data.getGame(props.team.game);
 
 	// Activate or deactivate a type filter option
-	function toggleTypeFilter(type: number, whitelist?: boolean)
+	function toggleTypeFilter(type: number, invert?: boolean)
 	{
-		// Toggle all the types on or off based on the whitelist flag if the type is set to -1
+		// Toggle all the types on or off based on the invert flag if the type is set to -1
 		if (type === -1)
 		{
-			setTypeFilter(Array(Data.getNumTypes()).fill(Boolean(whitelist)));
+			setTypeFilter(Array(Data.getNumTypes()).fill(Boolean(invert)));
 			return;
 		}
 
-		// Enable a single type if the whitelist flag is enabled
-		if (whitelist)
+		// Enable a single type if the invert flag is enabled
+		if (invert)
 		{
 			const filter = Array(Data.getNumTypes()).fill(false);
 			filter[type] = true;
@@ -177,7 +177,7 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 			<Components.TeamName name={props.team.name} />
 			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
 			<Containers.PartyAnalysis team={props.team.pokemon} abilities={props.team.abilities} game={game} />
-			<Containers.FilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
+			<Containers.PokedexFilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
 			<Containers.PokedexDisplay game={game} typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
 	);
@@ -290,17 +290,51 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
  */
 function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
+	const [generationFilter, setGenerationFilter] = useState(Array(9).fill(true));
+	const [teamOrder, setTeamOrder] = useState<Containers.TeamSort>(Containers.TeamSort.created);
+	const [sortAscending, setSortAscending] = useState(true);
+
+	// Change the generation filter when a filter button is clicked
+	function selectGeneration(generation: number, invert?: boolean)
+	{
+		// Toggle all the types on or off based on the invert flag if the type is set to -1
+		if (generation === -1)
+		{
+			setGenerationFilter(Array(Data.getNumTypes()).fill(Boolean(invert)));
+			return;
+		}
+
+		// Enable a single type if the invert flag is enabled
+		if (invert)
+		{
+			const filter = Array(Data.getNumTypes()).fill(false);
+			filter[generation] = true;
+			setGenerationFilter(filter);
+			return;
+		}
+
+		// Toggle the state of the specified type filter
+		const filter = generationFilter.slice();
+		filter[generation] = !filter[generation];
+		setGenerationFilter(filter);
+	}
+
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < props.teams.length; ++i)
 	{
-		party_components.push(<Containers.PartySelector party={props.teams[i]} currentParty={false} key={i} />);
+		if (generationFilter[Data.getGame(props.teams[i].game).generation - 1])
+			party_components.push(<Containers.PartySelector party={props.teams[i]} currentParty={false} key={i} />);
 	}
 
 	return (
-		<div>
-			{props.selectedTeam && <div><div className="text-center panel m-2">Current Party:</div><Containers.PartySelector party={props.selectedTeam} currentParty={true} /></div>}
-			<div className="flex flex-col flex-wrap gap-2 justify-evenly items-center py-4">
+		<div className="flex flex-col min-w-4/5 max-w-[80%] lg:max-w-[90%] py-8 gap-4 justify-center items-stretch">
+			{props.selectedTeam &&<div className="flex flex-col gap-4 items-center">
+				{<div className="text-center panel inline-block grow-0">Current Party</div>}
+				<Containers.PartySelector party={props.selectedTeam} currentParty={true} />
+			</div>}
+			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={teamOrder} sortAscending={sortAscending} onSelectGeneration={selectGeneration} />
+			<div className="flex flex-row flex-wrap gap-2 justify-center items-center">
 				{party_components}
 			</div>
 		</div>

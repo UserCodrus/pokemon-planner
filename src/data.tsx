@@ -12,6 +12,8 @@ const pokemon_sprite_location = "/images/pokemon/sprites/";
 const misc_location = "/images/";
 
 export const party_size = 6;
+export const generations = 9;
+
 const roman_numerals = [
 	"I",
 	"II",
@@ -274,8 +276,8 @@ export function getTypeAdvantage(generation: number, offensive_type: number, def
  */
 export function getRomanNumeral(number: number): string
 {
-	if (number >= 0 && number <= 10)
-		return roman_numerals[number];
+	if (number > 0 && number <= roman_numerals.length)
+		return roman_numerals[number - 1];
 
 	return "?";
 }
