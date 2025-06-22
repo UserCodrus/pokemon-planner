@@ -124,6 +124,13 @@ footer {
 		opacity: 0;
 	}
 
+	.wiggle:hover {
+		animation: animation-shake 0.25s linear infinite;
+	}
+	.slow-wiggle:hover {
+		animation: animation-shake 0.5s linear infinite;
+	}
+
 	.anim-pulse {
 		animation: animation-pulse 0.3s linear;
 	}
@@ -160,4 +167,10 @@ footer {
 @keyframes animation-slide-right {
 	from { transform: translate(-100%, 0); }
 	to { transform: translate(0, 0); }
+}
+
+@keyframes animation-shake {
+	0% { transform: translate(0, 0); }
+	50% { transform: translate(0, -5%); }
+	100% { transform: translate(0, 0); }
 }
