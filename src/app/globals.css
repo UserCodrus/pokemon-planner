@@ -124,10 +124,10 @@ footer {
 		opacity: 0;
 	}
 
-	.wiggle:hover {
+	.wiggle:hover > .wiggle-target {
 		animation: animation-shake 0.25s linear infinite;
 	}
-	.slow-wiggle:hover {
+	.slow-wiggle:hover > .wiggle-target {
 		animation: animation-shake 0.5s linear infinite;
 	}
 
