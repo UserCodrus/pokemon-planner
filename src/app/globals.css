@@ -63,7 +63,10 @@ footer {
 		cursor: pointer;
 	}
 
-	.inactive {
+	.filter-button {
+		transition: filter 0.2s ease-in-out;
+	}
+	.filter-button.inactive {
 		filter: grayscale(100%) contrast(30%);
 	}
 

@@ -239,7 +239,7 @@ export function TypeFilterButton(props: {type: number, active: boolean, onClick:
 				e.preventDefault();
 				props.onClick(props.type, true);
 			}}
-			className={"rounded-2xl cursor-pointer" + filter_style}
+			className={"rounded-2xl cursor-pointer filter-button" + filter_style}
 		/>
 	);
 }
@@ -253,7 +253,7 @@ export function GenerationFilterButton(props: {generation: number, active: boole
 
 	return (
 		<button
-			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold" + filter_style}
+			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold filter-button" + filter_style}
 			onClick={()=>props.onClick(props.generation - 1)}
 			onContextMenu={(e)=>{
 				e.preventDefault();
@@ -274,7 +274,7 @@ export function AllFilterButton(props: {active: boolean, onClick: BooleanFilterC
 
 	return (
 		<button
-			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold" + filter_style}
+			className={"min-w-[32px] min-h-[32px] rounded-2xl cursor-pointer bg-panel text-xs font-bold filter-button" + filter_style}
 			onClick={()=>props.onClick(-1, true)}
 			onContextMenu={(e)=>{
 				e.preventDefault();
