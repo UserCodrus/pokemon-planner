@@ -249,7 +249,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 	return (
 		<div className="text-center">
 			<div className="panel text-lg mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
-			<div className="flex flex-row flex-wrap justify-center gap-2">
+			<div className="flex flex-row flex-wrap justify-between gap-2">
 				{components}
 			</div>
 		</div>
@@ -319,7 +319,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 		version_text = props.game.versions[0].name;
 
 	return (
-		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
+		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{type_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
 				<PopupBox text={version_text} disabled={!(props.game.versions.length > 1)}>
@@ -357,7 +357,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Tea
 	}
 
 	return (
-		<div className="panel flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
+		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
 				<PopupBox text={"hi"}>

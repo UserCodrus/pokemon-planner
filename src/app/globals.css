@@ -48,6 +48,13 @@ footer {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
 	}
+	.panel.float {
+		position: sticky;
+		z-index: 1;
+		top: 0.5rem;
+
+		backdrop-filter: blur(10px);
+	}
 	.inner-panel {
 		background-color: var(--color-panel);
 		border-radius: 0.5rem;
