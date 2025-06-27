@@ -125,6 +125,13 @@ footer {
 	.pop.hide {
 		scale: 0;
 	}
+	.pop-fast {
+		transition: scale 0.1s ease-in-out;
+		scale: 1;
+	}
+	.pop-fast.hide {
+		scale: 0;
+	}
 
 	.fade {
 		transition: opacity 0.5s ease-in-out;

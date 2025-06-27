@@ -512,8 +512,28 @@ export function TutorialButton(props: {message: string}): ReactElement
  */
 export function ScrollButton(): ReactElement
 {
+	const [hidden, setHidden] = useState(true);
+
+	// Hide the button when the window scrolls below the top
+	function onScroll() {
+		if (window.scrollY > 12)
+		{
+			setHidden(false);
+		}
+		else
+		{
+			setHidden(true);
+		}
+	}
+
+	// Attach the scroll listener when the component renders
+	useEffect(() => {
+		window.addEventListener("scroll", onScroll);
+		return () => {window.removeEventListener("scroll", onScroll)}
+	}, []);
+
 	return (
-		<button className="panel clickable fixed right-2 bottom-2" onClick={() => {window.scroll({top: 0, behavior: "smooth"})}}>
+		<button className={"panel fixed right-2 bottom-2 pop-fast" + (hidden ? " hide" : " clickable")} onClick={() => {if (!hidden) window.scroll({top: 0, behavior: "smooth"})}}>
 			<svg className="w-[12px] h-[12px] lg:w-[24px] lg:h-[24px]"><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
 		</button>
 	)
