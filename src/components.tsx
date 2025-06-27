@@ -47,6 +47,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	let name_text = "";
 	let form_text = "";
 	let ability_text = "";
+	let hidden_ability = false;
 
 	let art_alt = "Empty";
 	let art_src = Data.default_image;
@@ -76,12 +77,12 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	
 			ability_text = ability.name;
 			if (props.ability === 2)
-				ability_text += " [Hidden]";
+				hidden_ability = true;
 		}
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel p-4 max-w-[30%] flex flex-col items-center anim-pulse";
+	let component_style = "panel max-w-[47%] flex flex-col items-center anim-pulse";
 	if (props.pokemon)
 		component_style += " clickable"
 
@@ -113,9 +114,9 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop}
 			>
 				<div className="text-center min-h-6">{name_text}</div>
-				<div className="text-center text-secondary text-sm min-h-5">{form_text}</div>
+				<div className="text-center text-secondary text-sm min-h-6">{form_text}</div>
 				<Image src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
-				<div className="text-center min-h-6">{ability_text}</div>
+				<div className={"text-center text-sm lg:text-base min-h-6" + (hidden_ability ? " text-special" : "")}>{ability_text}</div>
 				<div className="flex flex-col items-center min-h-[30px] lg:min-h-[40px] justify-center">
 					{type_images}
 				</div>
