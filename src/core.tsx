@@ -291,7 +291,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): Reac
 function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): ReactElement
 {
 	const [generationFilter, setGenerationFilter] = useState(Array(9).fill(true));
-	const [teamOrder, setTeamOrder] = useState<Containers.TeamSort>(Containers.TeamSort.created);
+	const [sortAction, setSortAction] = useState<Components.PartySort>(Components.sort_options[0]);
 	const [sortAscending, setSortAscending] = useState(true);
 
 	// Change the generation filter when a filter button is clicked
@@ -319,12 +319,23 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 		setGenerationFilter(filter);
 	}
 
+	// Sort team data according to the selected filter
+	let team_data = props.teams.slice();
+	if (sortAction) {
+		team_data.sort((a, b) => {
+			if (sortAscending)
+				return sortAction.sort(a, b);
+			else
+				return -sortAction.sort(a, b);
+		});
+	}
+
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
-	for (let i = 0; i < props.teams.length; ++i)
+	for (let i = 0; i < team_data.length; ++i)
 	{
-		if (generationFilter[Data.getGame(props.teams[i].game).generation - 1])
-			party_components.push(<Containers.PartySelector party={props.teams[i]} currentParty={false} key={i} />);
+		if (generationFilter[Data.getGame(team_data[i].game).generation - 1])
+			party_components.push(<Containers.PartySelector party={team_data[i]} currentParty={false} key={i} />);
 	}
 
 	return (
@@ -333,7 +344,7 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 				{<div className="text-center panel inline-block grow-0">Current Party</div>}
 				<Containers.PartySelector party={props.selectedTeam} currentParty={true} />
 			</div>}
-			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={teamOrder} sortAscending={sortAscending} onSelectGeneration={selectGeneration} />
+			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending} onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} />
 			<div className="flex flex-row flex-wrap gap-2 justify-between items-center">
 				{party_components}
 			</div>

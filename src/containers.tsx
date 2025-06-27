@@ -12,13 +12,6 @@ import Tutorials from "./tutorials";
 const party_size = 6;
 const draw_order = [0, 1, 2, 3, 4, 5];
 
-// Sorting options for the team planner view
-export const enum TeamSort {
-	updated,
-	created,
-	alphabet
-}
-
 /**
  * A component that contains the user's currently selected party
  */
@@ -335,7 +328,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 /**
  * A component containing filter toggles for selectable teams
  */
-export function TeamFilterBar(props: {generationFilter: boolean[], sortType: TeamSort, sortAscending: boolean, onSelectGeneration: Components.BooleanFilterCallback, onChangeSorting?: Components.NameFilterCallback}): ReactElement
+export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -353,15 +346,15 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Tea
 	generation_buttons.push(<Components.AllFilterButton active={all_filter} onClick={props.onSelectGeneration} key={0} />);
 	for (let i = 0; i < Data.generations; ++i)
 	{
-			generation_buttons.push(<Components.GenerationFilterButton generation={i + 1} active={props.generationFilter[i]} onClick={props.onSelectGeneration} key={i + 1} />)
+		generation_buttons.push(<Components.GenerationFilterButton generation={i + 1} active={props.generationFilter[i]} onClick={props.onSelectGeneration} key={i + 1} />)
 	}
 
 	return (
 		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
 			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-				<PopupBox text={"hi"}>
-					<div>Hello!</div>
+				<PopupBox text={props.sortType.label}>
+					<Components.SortSelector onSelect={props.onSelectPartySort} />
 				</PopupBox>
 			</div>
 			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>

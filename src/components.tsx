@@ -14,6 +14,7 @@ export type GameCallback = (game: Data.Game) => void;
 export type BooleanFilterCallback = (index: number, single?: boolean) => void;
 export type NameFilterCallback = (text: string) => void;
 export type VersionFilterCallback = (version: number) => void;
+export type PartySortCallback = (sort_option: PartySort) => void;
 
 /**
  * Specify which party members in a team are strong or weak against a type
@@ -24,6 +25,14 @@ export type TypeCoverage = {
 	highlight: number
 }
 
+/**
+ * A set of sorting data for saved parties
+ */
+export type PartySort = {
+	label: string,
+	sort: (a: Data.Team, b: Data.Team) => number
+}
+
 const icon_source = "/icons.svg";
 const logo_source = "/images/logos/";
 
@@ -32,6 +41,27 @@ const enum CoverageStyle {
 	advantage,
 	weakness
 }
+
+export const sort_options: PartySort[] = [
+	{
+		label: "Date Updated",
+		sort: (a, b) => a.name.localeCompare(b.name)
+	},
+	{
+		label: "Date Created",
+		sort: (a, b) => a.name.localeCompare(b.name)
+	},
+	{
+		label: "Alphabetical",
+		sort: (a, b) => a.name.localeCompare(b.name)
+	},
+	{
+		label: "Game Version",
+		sort: (a, b) => {
+			return 0;
+		}
+	}
+];
 
 /**
  * A component that displays a pokemon the user has selected for their party
@@ -470,7 +500,7 @@ export function SidebarButton(props: {label: string, icon: string, disabled?: bo
 }
 
 /**
- * A dropdown with a list of selectable vewrsions
+ * A dropdown with a list of selectable versions
  */
 export function VersionSelector(props: {game: Data.Game, version: number, onSelect: Function}): ReactElement
 {
@@ -482,6 +512,23 @@ export function VersionSelector(props: {game: Data.Game, version: number, onSele
 	}
 
 	options.unshift(<li tabIndex={0} className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
+
+	return (
+			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
+		);
+}
+
+/**
+ * A dropdown with a list of sorting options
+ */
+export function SortSelector(props: {onSelect: PartySortCallback}): ReactElement
+{
+	// Create a set of options for the selector box
+	const options: ReactElement[] = [];
+	for (let i = 0; i < sort_options.length; ++i)
+	{
+		options.push(<li tabIndex={0} className="clickable" key={i+1} onClick={()=>props.onSelect(sort_options[i])}>{sort_options[i].label}</li>);
+	}
 
 	return (
 			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
