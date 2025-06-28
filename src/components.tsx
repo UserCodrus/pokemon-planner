@@ -608,3 +608,18 @@ export function LoadingScreen(): ReactElement
 		</div>
 	);
 }
+
+/**
+ * A Button that switches the sorting order for filtered components
+ */
+export function SortOrderButton(props: {sortAscending: boolean, onClick: Function}): ReactElement
+{
+	// Set the button's style to flip it vertically depending on the selected sorting order
+	let image_style = "w-[24px] h-[24px] scale-transition";
+	if (props.sortAscending)
+		image_style += " flip";
+
+	return (<button className="panel clickable w-[32px] h-[32px] rounded-2xl p-0 flex justify-center items-center" onClick={() => {props.onClick()}}>
+		<svg className={image_style}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+	</button>);
+}

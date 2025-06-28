@@ -142,6 +142,13 @@ footer {
 		opacity: 0;
 	}
 
+	.scale-transition {
+		transition: scale 0.2s ease-in-out;
+	}
+	.flip {
+		scale: 1 -1;
+	}
+
 	.wiggle:hover > .wiggle-target {
 		animation: animation-shake 0.25s linear infinite;
 	}

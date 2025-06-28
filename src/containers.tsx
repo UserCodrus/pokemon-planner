@@ -339,7 +339,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 /**
  * A component containing filter toggles for selectable teams
  */
-export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback}): ReactElement
+export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback, onSwitchSortOrder: Function}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -363,10 +363,13 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 	return (
 		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
-			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-				<PopupBox text={props.sortType.label}>
-					<Components.SortSelector onSelect={props.onSelectPartySort} />
-				</PopupBox>
+			<div className="flex flex-row gap-2">
+				<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
+					<PopupBox text={props.sortType.label}>
+						<Components.SortSelector onSelect={props.onSelectPartySort} />
+					</PopupBox>
+				</div>
+				<Components.SortOrderButton sortAscending={props.sortAscending} onClick={props.onSwitchSortOrder} />
 			</div>
 			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
 		</div>

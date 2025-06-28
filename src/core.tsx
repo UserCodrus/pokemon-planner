@@ -352,7 +352,8 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 				{<div className="text-center panel inline-block grow-0">Current Party</div>}
 				<Containers.PartySelector party={props.selectedTeam} currentParty={true} />
 			</div>}
-			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending} onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} />
+			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending}
+				onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} onSwitchSortOrder={() => setSortAscending(!sortAscending)} />
 			<div className="flex flex-row flex-wrap gap-2 justify-between items-center">
 				{party_components}
 			</div>
