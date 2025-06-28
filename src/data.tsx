@@ -297,3 +297,17 @@ export function getGame(id: string): Game
 
 	return GameData[0];
 }
+
+/**
+ * Get the release order of a game
+ */
+export function getGameOrder(id: string): number
+{
+	for (let i = 0; i < GameData.length; ++i)
+	{
+		if (GameData[i].id === id)
+			return i;
+	}
+
+	return -1;
+}

@@ -45,11 +45,15 @@ const enum CoverageStyle {
 export const sort_options: PartySort[] = [
 	{
 		label: "Date Updated",
-		sort: (a, b) => a.name.localeCompare(b.name)
+		sort: (a, b) => {
+			return b.updated.valueOf() - a.updated.valueOf();
+		}
 	},
 	{
 		label: "Date Created",
-		sort: (a, b) => a.name.localeCompare(b.name)
+		sort: (a, b) => {
+			return b.created.valueOf() - a.created.valueOf();
+		}
 	},
 	{
 		label: "Alphabetical",
@@ -58,7 +62,7 @@ export const sort_options: PartySort[] = [
 	{
 		label: "Game Version",
 		sort: (a, b) => {
-			return 0;
+			return Data.getGameOrder(a.game) - Data.getGameOrder(b.game);
 		}
 	}
 ];
