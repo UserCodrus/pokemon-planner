@@ -91,7 +91,9 @@ export type Team = {
 	game: string,
 	name: string,
 	pokemon: TeamSlot[],
-	abilities: number[]
+	abilities: number[],
+	created: Date,
+	updated: Date
 }
 
 /**

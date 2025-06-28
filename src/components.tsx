@@ -157,13 +157,19 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 /**
  * A more compact party member component
  */
-export function PartyMemberSmall(props: {generation: number, pokemon: Data.TeamSlot}): ReactElement
+export function PartyMemberSmall(props: {generation: number, pokemon?: Data.TeamSlot}): ReactElement
 {
+	const component_style = "w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]";
+
+	// Return a placeholder div if no pokemon is provided
+	if (!props.pokemon)
+		return <div className={component_style + " flex flex-col justify-center align-middle text-secondary"}>Empty</div>
+
 	const size = 96;
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
 
 	return (
-		<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]">
+		<div className={component_style}>
 			<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} />
 		</div>
 	);

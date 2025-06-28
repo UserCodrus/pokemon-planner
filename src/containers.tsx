@@ -157,12 +157,23 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		components.push(<Components.PartyMemberSmall generation={game!.generation} pokemon={props.party.pokemon[i]} key={i} />);
 	}
 
+	// Add some dummy components if the party is empty so it fills out space properly
+	if (components.length === 0)
+	{
+		components.push(<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]"></div>);
+		components.push(<Components.PartyMemberSmall generation={game!.generation} />)
+	}
+
 	return (
 		<div tabIndex={0} className="panel clickable text-center w-[280px] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
-			<div>{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
+			<div className="text-sm lg:text-base">{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
 			<div className="text-sm lg:text-base">{game!.name}</div>
 			<div className="inline-grid grid-cols-3 grid-rows-2 gap-4 lg:gap-2">{components}</div>
+			{!props.currentParty && <div>
+				<div className="text-sm">{"Created on " + props.party.created.toLocaleString()}</div>
+				<div className="text-sm">{"Last saved " + props.party.updated.toLocaleString()}</div>
+			</div>}
 		</div>
 	);
 }

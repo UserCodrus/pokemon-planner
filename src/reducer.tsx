@@ -89,7 +89,9 @@ function newTeam(teams: Data.Team[], game: string): Data.Team {
 		game: game,
 		name: "New Team",
 		pokemon: [],
-		abilities: []
+		abilities: [],
+		created: new Date(),
+		updated: new Date()
 	}
 }
 
@@ -237,8 +239,11 @@ export function teamReducer(state: AppData, action: Action) {
 				}
 			}
 
-			// Add the team data back into the team list
-			team_list.push(structuredClone(state.current_team));
+			// Add the team data back into the team list after updating the updated timestamp
+			const new_team = structuredClone(state.current_team);
+			new_team.updated = new Date();
+			team_list.push(new_team);
+
 			return {
 				...state,
 				teams: team_list
@@ -262,7 +267,8 @@ export function teamReducer(state: AppData, action: Action) {
 			// Copy the team data and add it to the team list
 			const new_team = structuredClone(state.current_team);
 			new_team.id = team_id + 1;
-
+			new_team.created = new Date();
+			new_team.updated = new Date();
 			team_list.push(new_team);
 			return {
 				...state,

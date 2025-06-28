@@ -28,9 +28,17 @@ export function App(props: {page?: string}): ReactElement
 		const storage = localStorage.getItem("teams");
 		if (storage && !debug)
 		{
+			// Restore date objects for loaded team data
+			const team_data: Data.Team[] = JSON.parse(storage);
+			for (const team of team_data)
+			{
+				team.created = new Date(team.created);
+				team.updated = new Date(team.updated);
+			}
+
 			dispatch({
 				type: Task.load_team_data,
-				data: JSON.parse(storage)
+				data: team_data
 			});
 			console.log("Loaded team data from storage");
 		}
