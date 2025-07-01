@@ -165,14 +165,13 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 	}
 
 	return (
-		<div tabIndex={0} className="panel clickable text-center w-[280px] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
+		<div tabIndex={0} className="panel clickable text-center w-[48%] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div>{props.party.name}</div>
 			<div className="text-sm lg:text-base">{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
-			<div className="text-sm lg:text-base">{game!.name}</div>
-			<div className="inline-grid grid-cols-3 grid-rows-2 gap-4 lg:gap-2">{components}</div>
+			<div className="text-sm lg:text-base min-h-12 lg:min-h-6">{game!.name}</div>
+			<div className="inline-grid grid-cols-2 lg:grid-cols-3 grid-rows-3 lg:grid-rows-2 gap-0 lg:gap-2">{components}</div>
 			{!props.currentParty && <div>
-				<div className="text-sm">{"Created on " + props.party.created.toLocaleString()}</div>
-				<div className="text-sm">{"Last saved " + props.party.updated.toLocaleString()}</div>
+				<div className="text-sm">{props.party.updated.toLocaleString()}</div>
 			</div>}
 		</div>
 	);
@@ -331,7 +330,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 			</div>
-			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
+			<div className="absolute right-[8px] bottom-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
 		</div>
 	);
 }
@@ -371,7 +370,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 				</div>
 				<Components.SortOrderButton sortAscending={props.sortAscending} onClick={props.onSwitchSortOrder} />
 			</div>
-			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
+			<div className="absolute right-[8px] bottom-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
 		</div>
 	);
 }
