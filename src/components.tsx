@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 import * as Data from "./data";
 import Link from "next/link";
-import { DispatchContext, Task } from "./reducer";
+import { DispatchContext, UnsafeDataContext, Task } from "./reducer";
 import { ModalContext } from "./modal";
 
 export type SelectionCallback = (id: number, form?: number) => void;
@@ -433,13 +433,34 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 export function GameSelector(props: {game: Data.Game, logoCycle: number}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
+	const openModal = useContext(ModalContext);
+	const unsafe = useContext(UnsafeDataContext);
 
 	// Dispatch a action to switch to the corresponding game when the selector is clicked
 	function handleClick() {
-		dispatch({
-			type: Task.planner_view,
-			data: props.game.id
-		});
+		if (unsafe)
+		{
+			openModal({
+					message: "Your current party is not saved.\n\nDo you wish to switch to the selected game?\nUnsaved changes to the current team will be lost.",
+					buttons: [
+						{
+							label: "Confirm",
+							callback: () => dispatch({
+									type: Task.planner_view,
+									data: props.game.id
+								})
+						},
+						{ label: "Cancel" }
+					]
+				});
+		}
+		else
+		{
+			dispatch({
+				type: Task.planner_view,
+				data: props.game.id
+			});
+		}
 	}
 
 	// Create image tags for each game version

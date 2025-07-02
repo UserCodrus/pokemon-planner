@@ -67,11 +67,16 @@ export type Action = {
 
 /**
  * Global data for the app
+ * @param view The currently visible view
+ * @param current_team The team the user is currently editing
+ * @param teams The teams the user has saved to storage
+ * @param updated A flag that determines if the app has unsaved changes
  */
 export type AppData = {
 	view: View,
 	current_team: Data.Team | null,
-	teams: Data.Team[] | null
+	teams: Data.Team[] | null,
+	team_updated: boolean
 };
 
 // Create a new team for the app
@@ -187,7 +192,8 @@ export function teamReducer(state: AppData, action: Action) {
 				const new_state = {
 					...state,
 					current_team: newTeam(state.teams!, selected_game.id),
-					view: View.planner
+					view: View.planner,
+					updated: false
 				};
 				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 
@@ -202,7 +208,8 @@ export function teamReducer(state: AppData, action: Action) {
 				return {
 					...state,
 					view: action.data.view,
-					current_team: structuredClone(action.data.team)
+					current_team: structuredClone(action.data.team),
+					team_updated: action.data.updated
 				};
 			}
 			else
@@ -210,7 +217,8 @@ export function teamReducer(state: AppData, action: Action) {
 				return {
 					...state,
 					view: View.home,
-					current_team: null
+					current_team: null,
+					updated: action.data.updated
 				};
 			}
 		}
@@ -219,7 +227,8 @@ export function teamReducer(state: AppData, action: Action) {
 		case Task.load_team_data: {
 			return {
 				...state,
-				teams: action.data as Data.Team[]
+				teams: action.data as Data.Team[],
+				updated: false
 			}
 		};
 
@@ -246,7 +255,8 @@ export function teamReducer(state: AppData, action: Action) {
 
 			return {
 				...state,
-				teams: team_list
+				teams: team_list,
+				updated: false
 			};
 		};
 
@@ -273,7 +283,8 @@ export function teamReducer(state: AppData, action: Action) {
 			return {
 				...state,
 				current_team: new_team,
-				teams: team_list
+				teams: team_list,
+				updated: false
 			};
 		};
 
@@ -285,7 +296,8 @@ export function teamReducer(state: AppData, action: Action) {
 			const new_team = newTeam(state.teams, state.current_team ? state.current_team.game : "nat");
 			const new_state = {
 				...state,
-				current_team: new_team
+				current_team: new_team,
+				updated: false
 			}
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game), true);
 
@@ -328,7 +340,8 @@ export function teamReducer(state: AppData, action: Action) {
 					...state,
 					game: selected_game,
 					current_team: selected_team,
-					view: View.planner
+					view: View.planner,
+					updated: false
 				}
 				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 
@@ -364,6 +377,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 			return {
 				...state,
+				updated: true,
 				current_team: {
 					...state.current_team,
 					name: action.data as string
@@ -388,6 +402,7 @@ export function teamReducer(state: AppData, action: Action) {
 					abilities.splice(i, 1);
 					return {
 						...state,
+						updated: true,
 						current_team: {
 							...state.current_team,
 							pokemon: pokemon,
@@ -404,6 +419,7 @@ export function teamReducer(state: AppData, action: Action) {
 				abilities.push(0);
 				return {
 					...state,
+					updated: true,
 					current_team: {
 						...state.current_team,
 						pokemon: pokemon,
@@ -422,6 +438,7 @@ export function teamReducer(state: AppData, action: Action) {
 			const new_abilities = action.data.map((value: any) => state.current_team?.abilities[value]);
 			return {
 				...state,
+				updated: true,
 				current_team: {
 					...state.current_team,
 					pokemon: new_party.slice(0, state.current_team?.pokemon.length),
@@ -457,6 +474,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 			return {
 				...state,
+				updated: true,
 				current_team: {
 					...state.current_team,
 					abilities: abilities
@@ -469,6 +487,16 @@ export function teamReducer(state: AppData, action: Action) {
 	return state;
 }
 
+/**
+ * The context that handles the main action dispatch for the app
+ */
 export const DispatchContext = createContext<ActionDispatch<[Action]>>(()=>{
 	console.error("Invalid dispatch function.");
 });
+
+/**
+ * This context contains a flag indicating whether or not it is safe to overwrite user data.
+ * If the flag is set to true, a prompt should be used before dispatching any action that deletes the user's current party,
+ * e.g. new_team, select_team
+ */
+export const UnsafeDataContext = createContext<boolean>(false);

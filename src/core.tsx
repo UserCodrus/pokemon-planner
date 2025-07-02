@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, teamReducer, Task, View, compare_page, selector_page as games_page } from "./reducer";
+import { DispatchContext, teamReducer, Task, View, compare_page, selector_page as games_page, UnsafeDataContext } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
 
@@ -20,7 +20,8 @@ export function App(props: {page?: string}): ReactElement
 	const [data, dispatch] = useReducer(teamReducer, {
 		view: View.home,
 		current_team: null,
-		teams: null
+		teams: null,
+		team_updated: false
 	});
 
 	useEffect(() => {
@@ -124,10 +125,12 @@ export function App(props: {page?: string}): ReactElement
 	// Display the app components
 	return (
 		<DispatchContext.Provider value={dispatch}>
-			<ModalWrapper>
-				<Containers.PopupMenu team={data.current_team} />
-				{view}
-			</ModalWrapper>
+			<UnsafeDataContext.Provider value={data.team_updated}>
+				<ModalWrapper>
+					<Containers.PopupMenu team={data.current_team} />
+					{view}
+				</ModalWrapper>
+			</UnsafeDataContext.Provider>
 		</DispatchContext.Provider>
 	);
 }

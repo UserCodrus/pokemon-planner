@@ -5,7 +5,7 @@ import { MouseEvent as ReactMouseEvent, DragEvent as ReactDragEvent, ReactElemen
 import * as Components from "./components";
 import * as Data from "./data";
 import Pokedex from "../data/pokedex.json";
-import { DispatchContext, Task } from "./reducer";
+import { DispatchContext, Task, UnsafeDataContext } from "./reducer";
 import { ModalContext } from "./modal";
 import Tutorials from "./tutorials";
 
@@ -93,6 +93,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
+	const unsafe = useContext(UnsafeDataContext);
 
 	// Get the game data for the game the party was made for
 	const game = Data.getGame(props.party.game);
@@ -106,11 +107,30 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 			});
 		}
 		else
-		{
-			dispatch({
-				type: Task.select_team,
-				data: props.party.id
-			});
+		{	
+			if (unsafe)
+			{
+				openModal({
+						message: "Your current party is not saved.\n\nDo you wish to load this saved team?\nUnsaved changes to the current team will be lost.",
+						buttons: [
+							{
+								label: "Confirm",
+								callback: () => dispatch({
+										type: Task.select_team,
+										data: props.party.id
+									})
+							},
+							{ label: "Cancel" }
+						]
+					});
+			}
+			else
+			{
+				dispatch({
+					type: Task.select_team,
+					data: props.party.id
+				});
+			}
 		}
 	}
 	// Delete the team when the component is right clicked and the user confirms the modal popup
@@ -118,19 +138,29 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		event.preventDefault();
 		if (props.currentParty)
 		{
-			openModal({
-					message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
-					buttons: [
-						{
-							label: "Confirm",
-							callback: () => dispatch({
-									type: Task.planner_view,
-									data: props.party.game
-								})
-						},
-						{ label: "Cancel" }
-					]
+			if (unsafe)
+			{
+				openModal({
+						message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+						buttons: [
+							{
+								label: "Confirm",
+								callback: () => dispatch({
+										type: Task.planner_view,
+										data: props.party.game
+									})
+							},
+							{ label: "Cancel" }
+						]
+					});
+			}
+			else
+			{
+				dispatch({
+					type: Task.planner_view,
+					data: props.party.game
 				});
+			}
 		}
 		else
 		{
@@ -160,8 +190,8 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 	// Add some dummy components if the party is empty so it fills out space properly
 	if (components.length === 0)
 	{
-		components.push(<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]"></div>);
-		components.push(<Components.PartyMemberSmall generation={game!.generation} />)
+		components.push(<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" key={0}></div>);
+		components.push(<Components.PartyMemberSmall generation={game!.generation} key={1} />)
 	}
 
 	return (
@@ -506,6 +536,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
+	const unsafe = useContext(UnsafeDataContext);
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	if (menuOpen)
@@ -556,13 +587,20 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
-							openModal({
-								message: "Do you wish to create a new team?\nUnsaved changes to the current team will be lost.",
-								buttons: [
-									{ label: "Confirm", callback: () => dispatch({ type: Task.new_team})},
-									{ label: "Cancel" }
-								]
-							});
+							if (unsafe)
+							{
+								openModal({
+									message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+									buttons: [
+										{ label: "Confirm", callback: () => dispatch({ type: Task.new_team})},
+										{ label: "Cancel" }
+									]
+								});
+							}
+							else
+							{
+								dispatch({ type: Task.new_team});
+							}
 							setMenuOpen(false);
 						}}
 						disabled={ props.team !== undefined && props.team !== null ? false : true }
