@@ -3,41 +3,79 @@ import * as Data from "./data";
 import { ActionDispatch, createContext } from "react";
 
 /**
- * Constants describing the various actions that can be performed on team data via the reducer
- * @param home_view Returns the app to the landing page. Data is not used.
- * @param compare_view Switches to the comparison view. Data is not used.
- * @param planner_view Change the selected game. Data should be a game id matching a game in Data.game_list
- * @param restory_history_state Reset the app's state to match a historic state provided by a popstate event. Data should be an object containing the view and party states.
- * @param load_team_data Store a set of teams. Data should be an array of Data.Team.
- * 
- * @param save_current_team Overwrite changes made to the current team. Data is not used.
- * @param save_new_team Save the current team to a new slot, assigning it a new id. Data is not used.
- * @param new_team Delete the existing team in the current_team slot and create a new one. Data is not used.
- * @param select_team Sets the team with a matching id to the current team. Data should be a number corresponding to a team id. If data is not provided, the current team will be reloaded.
- * @param delete_team Delete a team from the team list. Data should be the team id of the team being deleted.
- * 
- * @param change_name Change the name of the current team. Data should be a string corresponding to the new team name.
- * @param select_pokemon Add a pokemon to the current team, or remove it if it has already been added. Data should be a TeamSlot object corresponding to the new pokemon.
- * @param reorder_team Change the order of the current party. Data should be an array containing the indices of each team member in the current party.
- * @param swap_ability Toggle a team member's ability. Data should be a TeamSlot object with an id and form matching a party member.
+ * Various actions that can be performed in the app via the reducer
  */
 export const enum Task {
-	home_view,
+	/**
+	 * Switch to the view that allows the user to select a saved team to use.
+	 */
+	team_view,
+	/**
+	 * Switches to the view that allows the user to select a game for the team planner.
+	 */
 	game_view,
+	/**
+	 * Switches to the view that allows the user to compare saved teams.
+	 */
 	compare_view,
+	/**
+	 * Change the selected game and move to the team planner view.
+	 * @see Action.data A game id matching a game in Data.game_list.
+	 */
 	planner_view,
+	/**
+	 * Reset the app's state to match a historic state provided by a popstate event.
+	 * @see Action.data An object containing the view and party states.
+	 */
 	restory_history_state,
-	load_team_data,
+	/**
+	 * Store a set of teams.
+	 * @see Action.data An array of Data.Team objects.
+	 */
+	store_team_data,
 
+	/**
+	 * Overwrite changes made to the current team.
+	 */
 	save_current_team,
+	/**
+	 * Save the current team to a new slot, assigning it a new id.
+	 */
 	save_new_team,
+	/**
+	 * Delete the current team and create a new one.
+	 */
 	new_team,
+	/**
+	 * Sets the team with a matching id to the current team.
+	 * @see Action.data A number corresponding to a team id. If data is not provided, the current team will be reloaded.
+	 */
 	select_team,
+	/**
+	 * Delete a team from the team list.
+	 * @see Action.data The team id of the team being deleted.
+	 */
 	delete_team,
 
+	/**
+	 * Change the name of the current team.
+	 * @see Action.data A string corresponding to the new team name.
+	 */
 	change_name,
+	/**
+	 * Add a pokemon to the current team, or remove it if it has already been added.
+	 * @see Action.data A TeamSlot object corresponding to the new pokemon.
+	 */
 	select_pokemon,
+	/**
+	 * Change the order of the current party.
+	 * @see Action.data An array containing the indices of each team member in the current party.
+	 */
 	reorder_team,
+	/**
+	 * Toggle a team member's ability.
+	 * @see Action.data A TeamSlot object with an id and form matching a party member.
+	 */
 	swap_ability
 }
 
@@ -145,7 +183,7 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string, 
 export function teamReducer(state: AppData, action: Action) {
 	switch (action.type) {
 		// Switch to the home view
-		case Task.home_view: {
+		case Task.team_view: {
 			window.scrollTo(0, 0);
 			const new_state = {
 				...state,
@@ -224,7 +262,7 @@ export function teamReducer(state: AppData, action: Action) {
 		}
 
 		// Overwrite the current team data with the provided teams
-		case Task.load_team_data: {
+		case Task.store_team_data: {
 			return {
 				...state,
 				teams: action.data as Data.Team[],

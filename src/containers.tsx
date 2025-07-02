@@ -547,7 +547,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 				<div className="flex flex-col gap-2">
 					<Components.SidebarButton label="Change Teams" icon="solar--home-2-bold"
 						onClick={() => {
-							dispatch({type: Task.home_view});
+							dispatch({type: Task.team_view});
 							setMenuOpen(false);
 						}}
 					/>

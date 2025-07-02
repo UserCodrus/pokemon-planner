@@ -38,7 +38,7 @@ export function App(props: {page?: string}): ReactElement
 			}
 
 			dispatch({
-				type: Task.load_team_data,
+				type: Task.store_team_data,
 				data: team_data
 			});
 			console.log("Loaded team data from storage");
@@ -46,7 +46,7 @@ export function App(props: {page?: string}): ReactElement
 		else
 		{
 			dispatch({
-				type: Task.load_team_data,
+				type: Task.store_team_data,
 				data: []
 			});
 		}
