@@ -232,9 +232,9 @@ function GameSelectorView(): ReactElement
 /**
  * A view that compares the current team to a different team
  */
-function CompareView(props: {teams: Data.Team[], defaultTeam?: Data.Team}): ReactElement
+function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null}): ReactElement
 {
-	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | undefined>(props.defaultTeam);
+	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | null>(props.defaultTeam);
 	const [secondaryTeam, setSecondaryTeam] = useState<Data.Team | undefined>();
 
 	const primary_game = primaryTeam ? Data.getGame(primaryTeam.game) : null;

@@ -108,7 +108,7 @@ export type Action = {
  * @param view The currently visible view
  * @param current_team The team the user is currently editing
  * @param teams The teams the user has saved to storage
- * @param updated A flag that determines if the app has unsaved changes
+ * @param team_updated A flag that determines if the app has unsaved changes
  */
 export type AppData = {
 	view: View,
@@ -180,7 +180,7 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string, 
 /**
  * The reducer that modifies global team data
  */
-export function teamReducer(state: AppData, action: Action) {
+export function teamReducer(state: AppData, action: Action): AppData {
 	switch (action.type) {
 		// Switch to the home view
 		case Task.team_view: {
@@ -256,7 +256,7 @@ export function teamReducer(state: AppData, action: Action) {
 					...state,
 					view: View.home,
 					current_team: null,
-					updated: action.data.updated
+					team_updated: action.data.updated
 				};
 			}
 		}
@@ -266,7 +266,7 @@ export function teamReducer(state: AppData, action: Action) {
 			return {
 				...state,
 				teams: action.data as Data.Team[],
-				updated: false
+				team_updated: false
 			}
 		};
 
@@ -294,7 +294,7 @@ export function teamReducer(state: AppData, action: Action) {
 			return {
 				...state,
 				teams: team_list,
-				updated: false
+				team_updated: false
 			};
 		};
 
@@ -322,7 +322,7 @@ export function teamReducer(state: AppData, action: Action) {
 				...state,
 				current_team: new_team,
 				teams: team_list,
-				updated: false
+				team_updated: false
 			};
 		};
 
@@ -415,7 +415,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 			return {
 				...state,
-				updated: true,
+				team_updated: true,
 				current_team: {
 					...state.current_team,
 					name: action.data as string
@@ -440,7 +440,7 @@ export function teamReducer(state: AppData, action: Action) {
 					abilities.splice(i, 1);
 					return {
 						...state,
-						updated: true,
+						team_updated: true,
 						current_team: {
 							...state.current_team,
 							pokemon: pokemon,
@@ -457,7 +457,7 @@ export function teamReducer(state: AppData, action: Action) {
 				abilities.push(0);
 				return {
 					...state,
-					updated: true,
+					team_updated: true,
 					current_team: {
 						...state.current_team,
 						pokemon: pokemon,
@@ -476,7 +476,7 @@ export function teamReducer(state: AppData, action: Action) {
 			const new_abilities = action.data.map((value: any) => state.current_team?.abilities[value]);
 			return {
 				...state,
-				updated: true,
+				team_updated: true,
 				current_team: {
 					...state.current_team,
 					pokemon: new_party.slice(0, state.current_team?.pokemon.length),
@@ -512,7 +512,7 @@ export function teamReducer(state: AppData, action: Action) {
 
 			return {
 				...state,
-				updated: true,
+				team_updated: true,
 				current_team: {
 					...state.current_team,
 					abilities: abilities
