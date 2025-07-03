@@ -5,7 +5,7 @@ import { ReactElement, useState, useEffect, useReducer, useContext } from "react
 import * as Components from "./components";
 import * as Containers from "./containers";
 import * as Data from "./data";
-import { DispatchContext, teamReducer, Task, View, compare_page, selector_page as games_page, UnsafeDataContext } from "./reducer";
+import { DispatchContext, UnsafeDataContext, teamReducer, Task, View, compare_page, selector_page } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
 
@@ -58,7 +58,7 @@ export function App(props: {page?: string}): ReactElement
 				dispatch({
 					type: Task.compare_view
 				});
-			else if (props.page === games_page)
+			else if (props.page === selector_page)
 				dispatch({
 					type: Task.game_view
 				});
@@ -234,6 +234,7 @@ function GameSelectorView(): ReactElement
  */
 function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null}): ReactElement
 {
+	const unsafe = useContext(UnsafeDataContext);
 	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | null>(props.defaultTeam);
 	const [secondaryTeam, setSecondaryTeam] = useState<Data.Team | undefined>();
 
@@ -245,6 +246,15 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 	const secondary_selector: ReactElement[] = [];
 	let primary_key = 0;
 	let secondary_key = 0;
+
+	// Add the current team to the selector if the user has an unsaved current team
+	if (props.defaultTeam && unsafe)
+	{
+		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
+				setPrimaryTeam(props.defaultTeam);
+				setSecondaryTeam(undefined);
+			}}>{"[Current Team]"}</li>);
+	}
 	
 	for (const team of props.teams)
 	{
