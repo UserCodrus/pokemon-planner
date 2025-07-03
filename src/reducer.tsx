@@ -465,6 +465,8 @@ export function teamReducer(state: AppData, action: Action): AppData {
 					}
 				};
 			}
+
+			return state;
 		};
 
 		// Reorder team members
