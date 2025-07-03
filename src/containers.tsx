@@ -22,7 +22,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 		target: 0,
 		order: draw_order.slice()
 	});
-
+	
 	function dragStart(index: number) {
 		// Set the targeted component
 		setDragData({
@@ -34,10 +34,11 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	function dragOver(event: ReactDragEvent<Element>, index: number) {
 		event.preventDefault();
 
-		// Reorder the draw array based on the location of the dragged component
+		// Swap the dragged component with the drag target
 		const draw_array = draw_order.slice();
-		draw_array.splice(dragData.target, 1);
-		draw_array.splice(index, 0, dragData.target);
+		let temp = draw_array[dragData.target];
+		draw_array[dragData.target] = draw_array[index];
+		draw_array[index] = temp;
 
 		setDragData({
 			...dragData,

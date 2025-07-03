@@ -116,7 +116,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel max-w-[47%] flex flex-col items-center anim-pulse";
+	let component_style = "panel max-w-[47%] flex flex-col items-center";
 	if (props.pokemon)
 		component_style += " clickable"
 
@@ -145,11 +145,11 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	return (
 		<div tabIndex={0} className={component_style} draggable={true} key={component_key}
 			onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}
-			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop}
+			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop} onDragLeave={props.onDragLeave}
 			>
 				<div className="text-center min-h-6">{name_text}</div>
 				<div className="text-center text-secondary text-sm min-h-6">{form_text}</div>
-				<Image src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
+				<Image className="anim-pulse" src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
 				<div className={"text-center text-sm lg:text-base min-h-6" + (hidden_ability ? " text-special" : "")}>{ability_text}</div>
 				<div className="flex flex-col items-center min-h-[30px] lg:min-h-[40px] justify-center">
 					{type_images}
