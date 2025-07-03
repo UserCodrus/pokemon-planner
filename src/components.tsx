@@ -116,7 +116,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel max-w-[47%] flex flex-col items-center";
+	let component_style = "panel max-w-[48%] flex flex-col items-center";
 	if (props.pokemon)
 		component_style += " clickable"
 
@@ -163,7 +163,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
  */
 export function PartyMemberSmall(props: {generation: number, pokemon?: Data.TeamSlot}): ReactElement
 {
-	const component_style = "w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]";
+	const component_style = "w-[72px] h-[72px] lg:w-[96px] lg:h-[96px] max-w-full";
 
 	// Return a placeholder div if no pokemon is provided
 	if (!props.pokemon)
