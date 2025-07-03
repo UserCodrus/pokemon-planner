@@ -540,6 +540,20 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 	const unsafe = useContext(UnsafeDataContext);
 	const [menuOpen, setMenuOpen] = useState(false);
 
+	// Create a set of party components
+	const components: ReactElement[] = [];
+	if (props.team)
+	{
+		const game = Data.getGame(props.team.game);
+		for (let i = 0; i < 6; ++i)
+		{
+			if (i < props.team.pokemon.length)
+				components.push(<div className="panel p-1 flex items-center justify-center"><Components.PartyMemberSmall generation={game!.generation} pokemon={props.team.pokemon[i]} key={i} /></div>);
+			else
+				components.push(<div className="panel p-1 flex items-center justify-center"></div>);
+		}
+	}
+
 	if (menuOpen)
 	{
 		return (
@@ -584,7 +598,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 							});
 							setMenuOpen(false);
 						}}
-						disabled={ props.team !== undefined && props.team !== null ? false : true }
+						disabled={ unsafe && props.team !== undefined && props.team !== null ? false : true }
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
@@ -606,6 +620,9 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 						}}
 						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
+					{props.team && props.team.pokemon.length > 2 && 
+						<div className="inline-grid grid-cols-2 grid-rows-3 gap-2">{components}</div>
+					}
 				</div>
 			</MenuBox>
 		);
