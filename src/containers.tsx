@@ -620,15 +620,14 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 						}}
 						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
-					<Components.SidebarButton label="Export" icon="solar--cloud-download-bold"
+					<Components.SidebarButton label="Export Teams" icon="solar--cloud-download-bold"
 						onClick={() => {
 							dispatch({type: Task.export_teams});
 							setMenuOpen(false);
 						}}
 					/>
-					<Components.SidebarButton label="Import" icon="solar--cloud-upload-bold"
+					<Components.SidebarImportButton
 						onClick={() => {
-							dispatch({type: Task.compare_view});
 							setMenuOpen(false);
 						}}
 					/>

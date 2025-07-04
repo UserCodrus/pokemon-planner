@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler } from "react";
+import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler, useRef, ChangeEvent } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -519,7 +519,7 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 /**
  * A button for the main side menu
  */
-export function SidebarButton(props: {label: string, icon: string, disabled?: boolean, onClick:Function}): ReactElement
+export function SidebarButton(props: {label: string, icon: string, disabled?: boolean, onClick: Function}): ReactElement
 {
 	const style = props.disabled ? " text-disabled" : " clickable";
 	return (
@@ -527,6 +527,71 @@ export function SidebarButton(props: {label: string, icon: string, disabled?: bo
 			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
 			<div className="mx-4 flex-grow">{props.label}</div>
 		</button>
+	);
+}
+
+/**
+ * A button that handles the file loading dialog for importing teams
+ */
+export function SidebarImportButton(props: {disabled?: boolean, onClick?: Function}): ReactElement
+{
+	const dispatch = useContext(DispatchContext);
+	const openModal = useContext(ModalContext);
+	const file_component = useRef<HTMLInputElement>(null);
+
+	// Trigger the file input component when the button is clicked
+	function handleClick() {
+		if (!props.disabled && file_component.current) {
+			file_component.current.click();
+		}
+
+		if (props.onClick)
+			props.onClick();
+	}
+
+	// Load data from the file the user provides when a file is selected
+	async function handleFile(event: ChangeEvent<HTMLInputElement>) {
+		if (event.target.files && event.target.files.item(0)) {
+			// Parse the provided file for team data
+			// @ts-ignore
+			const teams = await Data.loadTeamsFromJSON(event.target.files.item(0));
+			if (teams)
+			{
+				// Load the teams in the file
+				openModal({
+						message: "Loading saved team data will overwrite all currently saved teams.\n\nDo you wish to load team data from this file?",
+						buttons: [
+							{ label: "Yes", callback: () => {
+								dispatch({
+									type: Task.store_team_data,
+									data: teams
+								});
+							}},
+							{ label: "Cancel" }
+						]
+					});
+			}
+			else
+			{
+				openModal({
+						message: "Unable to load team data from the provided file.\nPlease ensure that the corrent file was loaded.",
+						buttons: [
+							{ label: "Okay" }
+						]
+					});
+			}
+		}
+	}
+
+	const style = props.disabled ? " text-disabled" : " clickable";
+	return (
+		<div className="flex items-stretch justify-stretch">
+			<button className={"panel flex flex-row items-center flex-grow" + style} onClick={() => handleClick()}>
+				<svg width={32} height={32}><use href={icon_source + "#solar--cloud-upload-bold"} /></svg>
+				<div className="mx-4 flex-grow">Import Teams</div>
+			</button>
+			<input type="file" className="hidden" ref={file_component} onChange={(e) => handleFile(e)} />
+		</div>
 	);
 }
 

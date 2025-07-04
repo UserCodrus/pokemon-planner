@@ -311,3 +311,14 @@ export function getGameOrder(id: string): number
 
 	return -1;
 }
+
+/**
+ * Convert a json file to a set of teams
+ */
+export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
+{
+	const data = JSON.parse(await file.text());
+	
+
+	return null;
+}
