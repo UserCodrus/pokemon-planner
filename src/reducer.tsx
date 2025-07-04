@@ -56,6 +56,10 @@ export const enum Task {
 	 * @see Action.data The team id of the team being deleted.
 	 */
 	delete_team,
+	/**
+	 * Export saved teams to a JSON file and allow the user to download it
+	 */
+	export_teams,
 
 	/**
 	 * Change the name of the current team.
@@ -406,6 +410,25 @@ export function teamReducer(state: AppData, action: Action): AppData {
 					teams: team_list
 				}
 			}
+		};
+
+		// Export team data
+		case Task.export_teams: {
+			const filename = "Pokémon Teams.json";
+			const type = "application/json;charset=utf-8;";
+
+			// Create a link element and insert team data as a link payload
+			const link = document.createElement('a');
+			link.download = filename;
+			link.href = "data:" + type + "," + encodeURIComponent(JSON.stringify(state.teams));
+			link.target = "_blank";
+
+			// Attach the payload and click it
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+
+			return state;
 		};
 
 		// Set the name of the team to the data payload

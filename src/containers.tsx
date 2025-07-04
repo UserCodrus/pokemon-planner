@@ -620,6 +620,18 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 						}}
 						disabled={ props.team !== undefined && props.team !== null ? false : true }
 					/>
+					<Components.SidebarButton label="Export" icon="solar--cloud-download-bold"
+						onClick={() => {
+							dispatch({type: Task.export_teams});
+							setMenuOpen(false);
+						}}
+					/>
+					<Components.SidebarButton label="Import" icon="solar--cloud-upload-bold"
+						onClick={() => {
+							dispatch({type: Task.compare_view});
+							setMenuOpen(false);
+						}}
+					/>
 					{props.team && props.team.pokemon.length > 2 && 
 						<div className="inline-grid grid-cols-2 grid-rows-3 gap-2">{components}</div>
 					}
