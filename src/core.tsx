@@ -81,7 +81,7 @@ export function App(props: {page?: string}): ReactElement
 
 	// Push any changes to team data to storage
 	useEffect(() => {
-		if (data.teams && data.teams.length > 0)
+		if (data.teams)
 		{
 			localStorage.setItem("teams", JSON.stringify(data.teams));
 			console.log("Saved team data to browser storage");

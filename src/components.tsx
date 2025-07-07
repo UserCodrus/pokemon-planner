@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler, useRef, ChangeEvent } from "react";
+import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler, useRef, ChangeEvent, FormEvent } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -533,25 +533,15 @@ export function SidebarButton(props: {label: string, icon: string, disabled?: bo
 /**
  * A button that handles the file loading dialog for importing teams
  */
-export function SidebarImportButton(props: {disabled?: boolean, onClick?: Function}): ReactElement
+export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
 	const file_component = useRef<HTMLInputElement>(null);
 
-	// Trigger the file input component when the button is clicked
-	function handleClick() {
-		if (!props.disabled && file_component.current) {
-			file_component.current.click();
-		}
-
-		if (props.onClick)
-			props.onClick();
-	}
-
 	// Load data from the file the user provides when a file is selected
-	async function handleFile(event: ChangeEvent<HTMLInputElement>) {
-		if (event.target.files && event.target.files.item(0)) {
+	async function handleFile(event: FormEvent<HTMLInputElement>) {
+		if (event.currentTarget.files && event.currentTarget.files.item(0)) {
 			// Parse the provided file for team data
 			// @ts-ignore
 			const teams = await Data.loadTeamsFromJSON(event.target.files.item(0));
@@ -583,14 +573,11 @@ export function SidebarImportButton(props: {disabled?: boolean, onClick?: Functi
 		}
 	}
 
-	const style = props.disabled ? " text-disabled" : " clickable";
 	return (
-		<div className="flex items-stretch justify-stretch">
-			<button className={"panel flex flex-row items-center flex-grow" + style} onClick={() => handleClick()}>
-				<svg width={32} height={32}><use href={icon_source + "#solar--cloud-upload-bold"} /></svg>
-				<div className="mx-4 flex-grow">Import Teams</div>
-			</button>
-			<input type="file" className="hidden" ref={file_component} onChange={(e) => handleFile(e)} />
+		<div className={"panel clickable flex flex-row items-center flex-grow"}>
+			<input type="file" className="absolute top-0 left-0 rounded-lg w-full h-full opacity-0 cursor-pointer" ref={file_component} onChange={(e) => handleFile(e)} />
+			<svg width={32} height={32}><use href={icon_source + "#solar--cloud-upload-bold"} /></svg>
+			<div className="mx-4 flex-grow text-center">Import Teams</div>
 		</div>
 	);
 }

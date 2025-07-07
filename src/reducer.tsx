@@ -396,14 +396,11 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			if (!state.teams)
 				break;
 
-			console.log("deleting team: " + action.data)
-			console.log(state.teams);
 			const team_list = state.teams.slice();
 			const team_index = team_list.findIndex((value)=>value.id === action.data);
 
 			if (team_index > -1)
 			{
-				console.log("Team delete")
 				team_list.splice(team_index, 1);
 				return {
 					...state,
@@ -414,13 +411,16 @@ export function teamReducer(state: AppData, action: Action): AppData {
 
 		// Export team data
 		case Task.export_teams: {
+			if (!state.teams)
+				break;
+			
 			const filename = "Pokémon Teams.json";
 			const type = "application/json;charset=utf-8;";
 
 			// Create a link element and insert team data as a link payload
 			const link = document.createElement('a');
 			link.download = filename;
-			link.href = "data:" + type + "," + encodeURIComponent(JSON.stringify(state.teams));
+			link.href = "data:" + type + "," + encodeURIComponent(Data.getTeamJSON(state.teams));
 			link.target = "_blank";
 
 			// Attach the payload and click it

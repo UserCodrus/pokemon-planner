@@ -14,6 +14,11 @@ const misc_location = "/images/";
 export const party_size = 6;
 export const generations = 9;
 
+/**
+ * The current version of the app for tracking backwards compatibility
+ */
+export const app_data_version = "1.0";
+
 const roman_numerals = [
 	"I",
 	"II",
@@ -313,12 +318,62 @@ export function getGameOrder(id: string): number
 }
 
 /**
+ * Get a serializable object using team data
+ */
+export function getTeamJSON(teams: Team[]): string
+{
+	// Wrap the team data in an object with some meta data
+	const save_data = {
+		meta: {
+			version: app_data_version,
+			saved: new Date()
+		},
+		teams: teams
+	}
+
+	return JSON.stringify(save_data);
+}
+
+/**
  * Convert a json file to a set of teams
  */
 export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 {
 	const data = JSON.parse(await file.text());
-	
+	const team: Team[] = [];
 
-	return null;
+	// Check the version number of the exported data to ensure it isn't from an old version of the app
+	if (data.meta && data.meta.version) {
+		if (data.meta.version !== app_data_version)
+			throw new Error("JSON file is from a depreciated version of the app.");
+	} else {
+		throw new Error("JSON file is missing metadata.");
+	}
+
+	// Validate each object in the team data array
+	if (data.teams && Array.isArray(data.teams)) {
+		for (const obj of data.teams) {
+			if (typeof obj == "object") {
+				// Check each objects properties to ensure they aren't missing any data
+				// TODO
+
+				// Insert a copy of the JSON data into the team data
+				team.push({
+					id: obj.id,
+					game: obj.game,
+					name: obj.name,
+					pokemon: obj.pokemon.slice(),
+					abilities: obj.abilities.slice(),
+					created: new Date(obj.created),
+					updated: new Date(obj.updated)
+				});
+			} else {
+				throw new Error("Invalid data in team array.");
+			}
+		}
+	} else {
+		throw new Error("JSON file is missing team data.");
+	}
+
+	return team;
 }
