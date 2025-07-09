@@ -335,7 +335,15 @@ export function getTeamJSON(teams: Team[]): string
 }
 
 /**
- * Convert a json file to a set of teams
+ * Throws an exception containing the name of a team and an error type
+ */
+function FormatTeamError(team_name: string, data_error:string)
+{
+	throw new Error("Team '" + team_name + "' contains " + data_error + ".");
+}
+
+/**
+ * Convert a json file to a set of teams after checking for invalid data
  */
 export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 {
@@ -355,7 +363,57 @@ export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 		for (const obj of data.teams) {
 			if (typeof obj == "object") {
 				// Check each objects properties to ensure they aren't missing any data
-				// TODO
+				if (typeof(obj.name) !== "string")
+					throw new Error("JSON file contains team invalid data.");
+				if (typeof(obj.id) !== "number")
+					FormatTeamError(obj.name, "an invalid team ID");
+
+				// Ensure the game ID is valid
+				if (typeof(obj.game) !== "string")
+					FormatTeamError(obj.name, "an invalid game ID");
+				let valid = false;
+				for (const game of GameData)
+				{
+					if (game.id === obj.game) {
+						valid = true;
+						break;
+					}
+				}
+				if (!valid)
+					FormatTeamError(obj.name, "an invalid game ID");
+				
+				// Check for valid date data
+				const created_date = new Date(obj.created);
+				if (isNaN(created_date.valueOf()))
+					FormatTeamError(obj.name, "an invalid creation date");
+				const updated_date = new Date(obj.updated);
+				if (isNaN(updated_date.valueOf()))
+					FormatTeamError(obj.name, "an invalid update date");
+
+				// Check the pokemon array for invalid data
+				if (typeof(obj.pokemon) !== "object" || !Array.isArray(obj.pokemon))
+					FormatTeamError(obj.name, "invalid pokemon data");
+				for (const pokemon of obj.pokemon){
+					if (typeof(pokemon) !== "object")
+						FormatTeamError(obj.name, "invalid pokemon data");
+					if (typeof(pokemon.id) !== "number")
+						FormatTeamError(obj.name, "invalid pokemon data");
+					if (typeof(pokemon.form) !== "number")
+						FormatTeamError(obj.name, "invalid pokemon data");
+
+					if (pokemon.id < 0 || pokemon.id >= PokemonData.length)
+						FormatTeamError(obj.name, "invalid pokemon data");
+					const pokemon_data = PokemonData[pokemon.id];
+					if (pokemon.form < 0 || pokemon.form >= pokemon_data.forms.length)
+						FormatTeamError(obj.name, "invalid pokemon data");
+				}
+
+				if (typeof(obj.abilities) !== "object" || !Array.isArray(obj.abilities))
+					FormatTeamError(obj.name, "invalid ability data");
+				for (const ability of obj.abilities){
+					if (typeof(ability) !== "number")
+						FormatTeamError(obj.name, "invalid ability data");
+				}
 
 				// Insert a copy of the JSON data into the team data
 				team.push({
@@ -364,8 +422,8 @@ export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 					name: obj.name,
 					pokemon: obj.pokemon.slice(),
 					abilities: obj.abilities.slice(),
-					created: new Date(obj.created),
-					updated: new Date(obj.updated)
+					created: created_date,
+					updated: updated_date
 				});
 			} else {
 				throw new Error("Invalid data in team array.");
