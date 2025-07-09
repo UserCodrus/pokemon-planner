@@ -8,6 +8,7 @@ import Pokedex from "../data/pokedex.json";
 import { DispatchContext, Task, UnsafeDataContext } from "./reducer";
 import { ModalContext } from "./modal";
 import Tutorials from "./tutorials";
+import { useRouter } from "next/navigation";
 
 const party_size = 6;
 const draw_order = [0, 1, 2, 3, 4, 5];
@@ -681,4 +682,32 @@ export function PopupBox(props: {text: string, disabled?: boolean, children: Rea
 			{open && props.children}
 		</div>
 	);
+}
+
+/**
+ * A component that resets the user's app data after clicking a button
+ */
+export function ResetPanel(): ReactElement
+{
+	const openModal = useContext(ModalContext);
+	const router = useRouter();
+
+	return (<div className="panel flex flex-col items-center gap-4 p-4">
+		<div>Click the button below to reset your app data.</div>
+		<Components.SidebarButton label="Reset" icon="solar--restart-square-bold"
+				onClick={() => {
+					openModal({
+						message: "Are you sure you wish to reset your app data?\n\nAll of your saved teams will be permanently deleted.",
+						buttons: [
+							{ label: "Confirm", callback: () => {
+								// Set local storage and redirect to the home page
+								localStorage.setItem("teams", JSON.stringify([]));
+								router.push("/");
+							}},
+							{ label: "Cancel" }
+						]
+					});
+				}}
+			/>
+	</div>);
 }

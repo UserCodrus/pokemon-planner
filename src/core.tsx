@@ -373,3 +373,15 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 		</div>
 	);
 }
+
+/**
+ * A page that that prompts the user to reset their team data
+ */
+export function ResetView(): ReactElement
+{
+	return (<div className="flex flex-col min-w-4/5 max-w-[80%] lg:max-w-[90%] py-8 gap-4 justify-center items-center">
+		<ModalWrapper>
+			<Containers.ResetPanel />
+		</ModalWrapper>
+	</div>);
+}
