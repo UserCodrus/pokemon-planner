@@ -110,7 +110,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		} else {	
 			if (unsafe) {
 				openModal({
-					message: "Your current party is not saved.\n\nDo you wish to load this saved team?\nUnsaved changes to the current team will be lost.",
+					child: <div>Your current party is not saved.<br /><br />Do you wish to load this saved team?<br />Unsaved changes to the current team will be lost.</div>,
 					buttons: [{
 							label: "Confirm",
 							callback: () => dispatch({
@@ -136,7 +136,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		if (props.currentParty) {
 			if (unsafe) {
 				openModal({
-					message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+					child: <div>Your current party is not saved.<br /><br />Do you wish to create a new team?<br />Unsaved changes to the current team will be lost.</div>,
 					buttons: [{
 							label: "Confirm",
 							callback: () => dispatch({
@@ -155,7 +155,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 			}
 		} else {
 			openModal({
-				message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
+				child: <div>Are you sure you wish to delete this team?<br />This action cannot be undone.</div>,
 				buttons: [{
 						label: "Confirm",
 						callback: () => dispatch({
@@ -546,7 +546,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
 							openModal({
-								message: "Do you wish to save this team?\nExisting saved data for this team will be overwritten.",
+								child: <div>Do you wish to save this team?<br />Existing saved data for this team will be overwritten.</div>,
 								buttons: [
 									{ label: "Overwrite", callback: () => dispatch({ type: Task.save_current_team})},
 									{ label: "Save as New", callback: () => dispatch({ type: Task.save_new_team})},
@@ -561,7 +561,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 						onClick={() => {
 							if (unsafe) {
 								openModal({
-									message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+									child: <div>Your current party is not saved.<br /><br />Do you wish to create a new team?<br />Unsaved changes to the current team will be lost.</div>,
 									buttons: [
 										{ label: "Confirm", callback: () => dispatch({ type: Task.new_team})},
 										{ label: "Cancel" }
@@ -650,7 +650,7 @@ export function ResetPanel(): ReactElement
 			<Components.SidebarButton label="Reset" icon="solar--restart-square-bold"
 					onClick={() => {
 						openModal({
-							message: "Are you sure you wish to reset your app data?\n\nAll of your saved teams will be permanently deleted.",
+							child: <div>Are you sure you wish to reset your app data?<br /><br />All of your saved teams will be permanently deleted.</div>,
 							buttons: [
 								{ label: "Confirm", callback: () => {
 									// Set local storage and redirect to the home page

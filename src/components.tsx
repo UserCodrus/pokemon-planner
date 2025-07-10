@@ -410,7 +410,7 @@ export function GameSelector(props: {game: Data.Game, logoCycle: number}): React
 	function handleClick() {
 		if (unsafe) {
 			openModal({
-				message: "Your current party is not saved.\n\nDo you wish to switch to the selected game?\nUnsaved changes to the current team will be lost.",
+				child: <div>Your current party is not saved.<br /><br />Do you wish to switch to the selected game?<br />Unsaved changes to the current team will be lost.</div>,
 				buttons: [{
 						label: "Confirm",
 						callback: () => dispatch({
@@ -515,7 +515,7 @@ export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 			if (teams) {
 				// Load the teams in the file
 				openModal({
-					message: "Loading saved team data will overwrite all currently saved teams.\n\nDo you wish to load team data from this file?",
+					child: <div>Loading saved team data will overwrite all currently saved teams.<br /><br />Do you wish to load team data from this file?</div>,
 					buttons: [{
 							label: "Yes", callback: () => {
 								dispatch({
@@ -528,7 +528,7 @@ export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 				});
 			} else {
 				openModal({
-					message: "Unable to load team data from the provided file.\nPlease ensure that the corrent file was loaded.",
+					child: <div>Unable to load team data from the provided file.<br />Please ensure that the corrent file was loaded.</div>,
 					buttons: [
 						{ label: "Okay" }
 					]
@@ -584,14 +584,14 @@ export function SortSelector(props: {onSelect: PartySortCallback}): ReactElement
  * A tutorial button that opens a modal explaining a feature
  */
 const tutorial_button_size = 16;
-export function TutorialButton(props: {message: string}): ReactElement
+export function TutorialButton(props: {message: ReactElement}): ReactElement
 {
 	const openModal = useContext(ModalContext);
 
 	return (
 		<button className="cursor-pointer rounded-2xl" onClick={() => {
 			openModal({
-				message: props.message,
+				child: <div>{props.message}</div>,
 				buttons: [{ label: "Close" }]
 			});
 		}}>

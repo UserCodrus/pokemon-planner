@@ -12,7 +12,7 @@ type ModalButton = {
  * A structure describing a modal pop-up
  */
 type ModalData = {
-	message: string,
+	child: ReactElement,
 	buttons: ModalButton[]
 }
 
@@ -27,14 +27,6 @@ export const ModalContext = createContext<Dispatch<SetStateAction<ModalData | nu
 function ModalBox(props: {modalData: ModalData}): ReactElement
 {
 	const openModal = useContext(ModalContext);
-
-	// Create divs for each line of message text
-	const messages: ReactElement[] = props.modalData.message.split('\n').map((value, i) => {
-		if (value.length > 0)
-			return <div key={i}>{value}</div>
-		else
-			return <br key={i} />
-	});
 
 	// Create the buttons for the modal box
 	const buttons: ReactElement[] = [];
@@ -57,7 +49,7 @@ function ModalBox(props: {modalData: ModalData}): ReactElement
 	return (
 		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
 			<div className="panel flex flex-col gap-4 p-4 z-10 grow-0 text-center">
-				<div>{messages}</div>
+				<div>{props.modalData.child}</div>
 				<div className="flex flex-row justify-evenly">{buttons}</div>
 			</div>
 		</div>

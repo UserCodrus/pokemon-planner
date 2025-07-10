@@ -5,18 +5,25 @@ const Left_click = "Left click";
 const Right_click = "Right click";
 
 const tutorials = {
-	filter: `These controls allow you to filter the selectable pokemon.
-	The buttons on the left side can select which types are available.
-	${Left_click} a button to hide or show that type. ${Right_click} a button to show only that type.`,
+	filter: <div>
+		These controls allow you to filter the selectable pokemon.<br />
+		<br />
+		The buttons on the left side can select which types are available.<br />
+		<strong>{Left_click}</strong> a button to hide or show that type.<br />
+		<strong>{Right_click}</strong> a button to show only that type.
+	</div>,
 
-	analysis: `This panel shows the combat analysis for the current party.
-
-	The first row of icons below each type shows how many pokemon have same-type moves that are effective against that type.
-	Red icons indicate that a party member has a same type move that is super effective against that type.
-	Blue icons indicate that a party member's same type moves are all ineffective against that type.
-
-	The second row shows the party's defenses against that type.
-	Red icons indicate a party member has a defensive advantage against that type.\nBlue icons indicate a party member is weak to that type.`,
+	analysis: <div>
+		This panel shows the combat analysis for the current party.<br />
+		<br />
+		The first row of icons below each type shows how many pokemon have same-type moves that are effective against that type.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicate that a party member has a same type move that is <strong>super effective</strong> against that type.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicate that a party member's same type moves are <strong>not very effective</strong> against that type.<br />
+		<br />
+		The second row shows the party's defenses against that type.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicates that attacks of that type are <strong>not very effective</strong> against a party member.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicates that attacks of that type are <strong>super effective</strong> against a party member.
+	</div>,
 }
 
 export default tutorials;
