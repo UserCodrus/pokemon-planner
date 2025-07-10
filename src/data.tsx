@@ -167,10 +167,9 @@ export function getPokemon(generation: number, id: number, form?: number): Pokem
 		generation: 0,
 		types: [0]
 	};
-	for (let i = 0; i < selected_form.types.length; ++i)
-	{
-		if (selected_form.types[i].generation >= generation)
-		{
+
+	for (let i = 0; i < selected_form.types.length; ++i) {
+		if (selected_form.types[i].generation >= generation) {
 			current_type = selected_form.types[i];
 			break;
 		}
@@ -199,10 +198,8 @@ export function getPokemonAbilities(generation: number, id: number, form?: numbe
 
 	// Reconstruct the pokemon's abilities for the current generation by inserting data for legacy abilities
 	const abilities = selected_form.abilities.slice();
-	if (selected_form.past_abilities)
-	{
-		for (const legacy_ability of selected_form.past_abilities)
-		{
+	if (selected_form.past_abilities) {
+		for (const legacy_ability of selected_form.past_abilities) {
 			if (generation <= legacy_ability.generation)
 				abilities[legacy_ability.slot] = legacy_ability.ability;
 		}
@@ -243,8 +240,7 @@ export function validType(generation: number, type: number): boolean
  */
 export function getTypeName(type: number): string
 {
-	if (type < TypeData.length)
-	{
+	if (type < TypeData.length) {
 		return TypeData[type].name;
 	}
 
@@ -259,20 +255,18 @@ export function getTypeName(type: number): string
 export function getTypeAdvantage(generation: number, offensive_type: number, defensive_types: number[]): number
 {
 	let damage_multipliers: number[] = [];
-	for (const damage_set of TypeData[offensive_type].damage)
-	{
-		if (damage_set.generation >= generation)
-		{
+	for (const damage_set of TypeData[offensive_type].damage) {
+		if (damage_set.generation >= generation) {
 			damage_multipliers = damage_set.multiplier;
 			break;
 		}
 	}
 
 	let final_multiplier = 1;
-	for (const type of defensive_types)
-	{
+	for (const type of defensive_types) {
 		final_multiplier *= damage_multipliers[type];
 	}
+
 	return final_multiplier;
 }
 
@@ -294,8 +288,7 @@ export function getRomanNumeral(number: number): string
  */
 export function getGame(id: string): Game
 {
-	for (const game of GameData)
-	{
+	for (const game of GameData) {
 		if (game.id === id)
 			return game;
 	}
@@ -308,8 +301,7 @@ export function getGame(id: string): Game
  */
 export function getGameOrder(id: string): number
 {
-	for (let i = 0; i < GameData.length; ++i)
-	{
+	for (let i = 0; i < GameData.length; ++i) {
 		if (GameData[i].id === id)
 			return i;
 	}
@@ -371,14 +363,15 @@ export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 				// Ensure the game ID is valid
 				if (typeof(obj.game) !== "string")
 					FormatTeamError(obj.name, "an invalid game ID");
+
 				let valid = false;
-				for (const game of GameData)
-				{
+				for (const game of GameData) {
 					if (game.id === obj.game) {
 						valid = true;
 						break;
 					}
 				}
+
 				if (!valid)
 					FormatTeamError(obj.name, "an invalid game ID");
 				
@@ -400,9 +393,9 @@ export async function loadTeamsFromJSON(file: File): Promise<Team[] | null>
 						FormatTeamError(obj.name, "invalid pokemon data");
 					if (typeof(pokemon.form) !== "number")
 						FormatTeamError(obj.name, "invalid pokemon data");
-
 					if (pokemon.id < 0 || pokemon.id >= PokemonData.length)
 						FormatTeamError(obj.name, "invalid pokemon data");
+
 					const pokemon_data = PokemonData[pokemon.id];
 					if (pokemon.form < 0 || pokemon.form >= pokemon_data.forms.length)
 						FormatTeamError(obj.name, "invalid pokemon data");

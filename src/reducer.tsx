@@ -87,6 +87,9 @@ export const enum Task {
  * The page name for the compare view
  */
 export const compare_page = "compare";
+/**
+ * The page name for the game selector view
+ */
 export const selector_page = "games";
 
 /**
@@ -108,7 +111,7 @@ export type Action = {
 }
 
 /**
- * Global data for the app
+ * Global data for the app, stored in the top level component
  * @param view The currently visible view
  * @param current_team The team the user is currently editing
  * @param teams The teams the user has saved to storage
@@ -125,8 +128,7 @@ export type AppData = {
 function newTeam(teams: Data.Team[], game: string): Data.Team {
 	// Get the last team id used by existing teams
 	let team_id = 0;
-	for (const team of teams)
-	{
+	for (const team of teams) {
 		if (team.id > team_id)
 			team_id = team.id;
 	}
@@ -143,8 +145,7 @@ function newTeam(teams: Data.Team[], game: string): Data.Team {
 }
 
 // Get the url segment of the current view
-function getURLSegment(view: View, game?: string): string
-{
+function getURLSegment(view: View, game?: string): string {
 	switch (view) {
 		case View.home: return "";
 		case View.compare: return "compare";
@@ -171,8 +172,7 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string, 
 
 	// Add the new state to browser history if the URL has changed
 	const url = window.location.origin + (page ? "/" + page : "");
-	if (url != window.location.href || force)
-	{
+	if (url != window.location.href || force) {
 		const app_state = {
 			view: new_state.view,
 			team: structuredClone(new_state.current_team)
@@ -184,7 +184,8 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string, 
 /**
  * The reducer that modifies global team data
  */
-export function teamReducer(state: AppData, action: Action): AppData {
+export function teamReducer(state: AppData, action: Action): AppData
+{
 	switch (action.type) {
 		// Switch to the home view
 		case Task.team_view: {
@@ -193,6 +194,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				...state,
 				view: View.home
 			};
+
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		};
@@ -204,6 +206,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				...state,
 				view: View.games
 			};
+
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		}
@@ -215,6 +218,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				...state,
 				view: View.compare
 			};
+
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
 			return new_state;
 		};
@@ -228,8 +232,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				}
 
 			const selected_game = Data.getGame(action.data);
-			if (selected_game)
-			{
+			if (selected_game) {
 				window.scrollTo(0, 0);
 				const new_state = {
 					...state,
@@ -237,25 +240,22 @@ export function teamReducer(state: AppData, action: Action): AppData {
 					view: View.planner,
 					updated: false
 				};
-				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 
+				saveHistory(state, new_state, getURLSegment(new_state.view, selected_game.id));
 				return new_state;
 			}
 		};
 
 		// Restore the state provided by the popstate event
 		case Task.restory_history_state: {
-			if (action.data.view !== undefined)
-			{
+			if (action.data.view !== undefined) {
 				return {
 					...state,
 					view: action.data.view,
 					current_team: structuredClone(action.data.team),
 					team_updated: action.data.updated
 				};
-			}
-			else
-			{
+			} else {
 				return {
 					...state,
 					view: View.home,
@@ -281,10 +281,8 @@ export function teamReducer(state: AppData, action: Action): AppData {
 
 			// Remove the team from its current spot in the team list if it has already been saved
 			const team_list = state.teams.slice();
-			for (let i = 0; i < team_list.length; ++i)
-			{
-				if (team_list[i].id === state.current_team.id)
-				{
+			for (let i = 0; i < team_list.length; ++i) {
+				if (team_list[i].id === state.current_team.id) {
 					team_list.splice(i, 1);
 					break;
 				}
@@ -310,8 +308,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			// Get an unused team id
 			const team_list = state.teams.slice();
 			let team_id = 0;
-			for (const team of team_list)
-			{
+			for (const team of team_list) {
 				if (team.id > team_id)
 					team_id = team.id;
 			}
@@ -341,6 +338,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				current_team: new_team,
 				updated: false
 			}
+
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game), true);
 
 			return new_state;
@@ -352,19 +350,14 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				break;
 			
 			let selected_team: Data.Team | null = null;
-			if (state.current_team && !action.data)
-			{
+			if (state.current_team && !action.data) {
 				// If the selected team is the same as the current team, skip searching for teams
 				selected_team = state.current_team;
-			}
-			else
-			{
+			} else {
 				// Searth the team list to find a team with a matching id
 				const team_list = state.teams.slice();
-				for (const team of team_list)
-				{
-					if (team.id === action.data)
-					{
+				for (const team of team_list) {
+					if (team.id === action.data) {
 						selected_team = structuredClone(team);
 						break;
 					}
@@ -375,8 +368,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 				break;
 
 			const selected_game = Data.getGame(selected_team.game);
-			if (selected_game)
-			{
+			if (selected_game) {
 				window.scrollTo(0, 0);
 				const new_state = {
 					...state,
@@ -399,8 +391,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			const team_list = state.teams.slice();
 			const team_index = team_list.findIndex((value)=>value.id === action.data);
 
-			if (team_index > -1)
-			{
+			if (team_index > -1) {
 				team_list.splice(team_index, 1);
 				return {
 					...state,
@@ -455,10 +446,8 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			const abilities = state.current_team.abilities.slice();
 
 			// Remove the pokemon from the party if it has already been added
-			for (let i=0; i < pokemon.length; ++i)
-			{
-				if (pokemon[i].id === action.data.id && pokemon[i].form === action.data.form)
-				{
+			for (let i=0; i < pokemon.length; ++i) {
+				if (pokemon[i].id === action.data.id && pokemon[i].form === action.data.form) {
 					pokemon.splice(i, 1);
 					abilities.splice(i, 1);
 					return {
@@ -474,8 +463,7 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			}
 
 			// Add the pokemon to the party
-			if (pokemon.length < 6)
-			{
+			if (pokemon.length < 6) {
 				pokemon.push({id: action.data.id, form: action.data.form});
 				abilities.push(0);
 				return {
@@ -519,15 +507,12 @@ export function teamReducer(state: AppData, action: Action): AppData {
 			const game = Data.getGame(state.current_team.game);
 			const pokemon = state.current_team.pokemon;
 			const abilities = state.current_team.abilities.slice();
-			for (let i = 0; i < pokemon.length; ++i)
-			{
-				if (pokemon[i] === action.data)
-				{
+			for (let i = 0; i < pokemon.length; ++i) {
+				if (pokemon[i] === action.data) {
 					// Cycle between ability slots, skipping slots with no ability
 					const ability_data = Data.getPokemonAbilities(game.generation, pokemon[i].id, pokemon[i].form);
 					const ability_slots = game.generation > 4 ? 2 : 1;
-					do
-					{
+					do {
 						abilities[i]++;
 						if (abilities[i] > ability_slots)
 							abilities[i] = 0;

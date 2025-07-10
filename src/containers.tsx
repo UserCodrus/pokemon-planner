@@ -77,6 +77,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 				game={props.game} pokemon={props.pokemon[dragData.order[i]]} ability={props.abilities[dragData.order[i]]} key={i}
 				onDragStart={() => dragStart(dragData.order[i])} onDragOver={(e) => dragOver(e, i)} onDrop={() => dragEnd()} onDragLeave={() => dragLeave()}
 			/>);
+
 		else
 			components.push(<Components.PartyMember game={props.game} key={i} />);
 	}
@@ -102,32 +103,26 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 
 	// Select the team when the component is left clicked
 	function handleLeftClick(event: ReactMouseEvent<HTMLDivElement>) {
-		if (props.currentParty)
-		{
+		if (props.currentParty) {
 			dispatch({
 				type: Task.select_team
 			});
-		}
-		else
-		{	
-			if (unsafe)
-			{
+		} else {	
+			if (unsafe) {
 				openModal({
-						message: "Your current party is not saved.\n\nDo you wish to load this saved team?\nUnsaved changes to the current team will be lost.",
-						buttons: [
-							{
-								label: "Confirm",
-								callback: () => dispatch({
-										type: Task.select_team,
-										data: props.party.id
-									})
-							},
-							{ label: "Cancel" }
-						]
-					});
-			}
-			else
-			{
+					message: "Your current party is not saved.\n\nDo you wish to load this saved team?\nUnsaved changes to the current team will be lost.",
+					buttons: [{
+							label: "Confirm",
+							callback: () => dispatch({
+									type: Task.select_team,
+									data: props.party.id
+								})
+						},
+						{ label: "Cancel" }
+					]
+				});
+
+			} else {
 				dispatch({
 					type: Task.select_team,
 					data: props.party.id
@@ -138,38 +133,30 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 	// Delete the team when the component is right clicked and the user confirms the modal popup
 	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
 		event.preventDefault();
-		if (props.currentParty)
-		{
-			if (unsafe)
-			{
+		if (props.currentParty) {
+			if (unsafe) {
 				openModal({
-						message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
-						buttons: [
-							{
-								label: "Confirm",
-								callback: () => dispatch({
-										type: Task.planner_view,
-										data: props.party.game
-									})
-							},
-							{ label: "Cancel" }
-						]
-					});
-			}
-			else
-			{
+					message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
+					buttons: [{
+							label: "Confirm",
+							callback: () => dispatch({
+									type: Task.planner_view,
+									data: props.party.game
+								})
+						},
+						{ label: "Cancel" }
+					]
+				});
+			} else {
 				dispatch({
 					type: Task.planner_view,
 					data: props.party.game
 				});
 			}
-		}
-		else
-		{
+		} else {
 			openModal({
 				message: "Are you sure you wish to delete this team?\nThis action cannot be undone.",
-				buttons: [
-					{
+				buttons: [{
 						label: "Confirm",
 						callback: () => dispatch({
 								type: Task.delete_team,
@@ -184,14 +171,12 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 
 	// Create a set of party components
 	const components: ReactElement[] = [];
-	for (let i = 0; i < props.party.pokemon.length; ++i)
-	{
+	for (let i = 0; i < props.party.pokemon.length; ++i) {
 		components.push(<Components.PartyMemberSmall generation={game!.generation} pokemon={props.party.pokemon[i]} key={i} />);
 	}
 
 	// Add some dummy components if the party is empty so it fills out space properly
-	if (components.length === 0)
-	{
+	if (components.length === 0) {
 		components.push(<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" key={0}></div>);
 		components.push(<Components.PartyMemberSmall generation={game!.generation} key={1} />)
 	}
@@ -219,16 +204,13 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 
 	// Create a set of selector components for each pokemon in the pokedex
 	const components: ReactElement[] = [];
-	pokemon: for (let i = 0; i < limit; ++i)
-	{
+	pokemon: for (let i = 0; i < limit; ++i) {
 		const pokemon = Data.getPokemon(props.game.generation, props.pokedex.entries[i][0], props.pokedex.entries[i][1]);
 
 		// Determine if the pokemon will be visible with the selected type filters
 		let visible = false;
-		for (const pokemon_type of pokemon.types)
-		{
-			if (props.typeFilter[pokemon_type])
-			{
+		for (const pokemon_type of pokemon.types) {
+			if (props.typeFilter[pokemon_type]) {
 				visible = true;
 				break;
 			}
@@ -238,20 +220,16 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 			continue;
 
 		// Check the pokemon against version filters
-		if (version)
-		{
-			if (version.blacklist)
-			{
-				for (const id of version.blacklist)
-				{
+		if (version) {
+			if (version.blacklist) {
+				for (const id of version.blacklist) {
 					if (id === pokemon.id)
 						continue pokemon;
 				}
 			}
-			if (version.formlist)
-			{
-				for (const form of version.formlist)
-				{
+
+			if (version.formlist) {
+				for (const form of version.formlist) {
 					if (form[0] === props.pokedex.entries[i][0] && form[1] === props.pokedex.entries[i][1])
 						continue pokemon;
 				}
@@ -269,10 +247,8 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 
 		// Determine if the pokemon has been selected
 		let selected = false;
-		for (const selection of props.pokemon)
-		{
-			if (selection.id === props.pokedex.entries[i][0] && selection.form === props.pokedex.entries[i][1])
-			{
+		for (const selection of props.pokemon) {
+			if (selection.id === props.pokedex.entries[i][0] && selection.form === props.pokedex.entries[i][1]) {
 				selected = true;
 				break;
 			}
@@ -297,21 +273,17 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 export const PokedexDisplay = memo(function PokedexDisplay(props: {game: Data.Game, typeFilter: boolean[], nameFilter: string, versionFilter: number, pokemon: Data.TeamSlot[]}): ReactElement
 {
 	const components: ReactElement[] = [];
-	for (let i = 0; i < props.game.pokedexes.length; ++i)
-	{
+	for (let i = 0; i < props.game.pokedexes.length; ++i) {
 		// Find the pokedex with the id matching the provided prop
 		let pokedex_data: typeof Pokedex[0] | undefined;
-		for (const dex_data of Pokedex)
-		{
-			if (dex_data.id === props.game.pokedexes[i])
-			{
+		for (const dex_data of Pokedex) {
+			if (dex_data.id === props.game.pokedexes[i]) {
 				pokedex_data = dex_data;
 				break;
 			}
 		}
 
-		if (pokedex_data)
-		{
+		if (pokedex_data) {
 			components.push(<PokedexGroup pokedex={pokedex_data} game={props.game} typeFilter={props.typeFilter} nameFilter={props.nameFilter.toLowerCase()} versionFilter={props.versionFilter} pokemon={props.pokemon} key={i} />)
 		}
 	}
@@ -321,7 +293,7 @@ export const PokedexDisplay = memo(function PokedexDisplay(props: {game: Data.Ga
 			{components}
 		</div>
 	);
-})
+});
 
 /**
  * A component containing filter toggles for selectable pokemon
@@ -330,10 +302,8 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
-	for (const filter of props.typeFilter)
-	{
-		if (!filter)
-		{
+	for (const filter of props.typeFilter) {
+		if (!filter) {
 			all_filter = false;
 			break;
 		}
@@ -342,8 +312,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 	// Create a full set of filter buttons
 	const type_buttons: ReactElement[] = [];
 	type_buttons.push(<Components.AllFilterButton active={all_filter} onClick={props.onClickType} key={0} />);
-	for (let i=0; i<Data.getNumTypes(); ++i)
-	{
+	for (let i=0; i<Data.getNumTypes(); ++i) {
 		if (Data.validType(props.game.generation, i))
 			type_buttons.push(<Components.TypeFilterButton type={i} active={props.typeFilter[i]} onClick={props.onClickType} key={i+1} />)
 	}
@@ -374,10 +343,8 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
-	for (const filter of props.generationFilter)
-	{
-		if (!filter)
-		{
+	for (const filter of props.generationFilter) {
+		if (!filter) {
 			all_filter = false;
 			break;
 		}
@@ -386,8 +353,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 	// Create a full set of filter buttons for selecting generations
 	const generation_buttons: ReactElement[] = [];
 	generation_buttons.push(<Components.AllFilterButton active={all_filter} onClick={props.onSelectGeneration} key={0} />);
-	for (let i = 0; i < Data.generations; ++i)
-	{
+	for (let i = 0; i < Data.generations; ++i) {
 		generation_buttons.push(<Components.GenerationFilterButton generation={i + 1} active={props.generationFilter[i]} onClick={props.onSelectGeneration} key={i + 1} />)
 	}
 
@@ -418,15 +384,13 @@ function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: numbe
 	const defense_weaknesses: Data.TeamSlot[] = [];
 
 	// Check each party pokemon against the current type
-	for (let i = 0; i < party.length; ++i)
-	{
+	for (let i = 0; i < party.length; ++i) {
 		const pokemon = Data.getPokemon(game.generation, party[i].id, party[i].form);
 		const ability = Data.getAbility(Data.getPokemonAbilities(game.generation, party[i].id, party[i].form)[abilities[i]]);
 
 		// Calculate the maximum damage multiplier for the pokemon's same type attacks against the current type
 		let stab_multiplier = 0.5;
-		for (const type of pokemon.types)
-		{
+		for (const type of pokemon.types) {
 			const multiplier = Data.getTypeAdvantage(game.generation, type, [type_id]);
 			if (multiplier > stab_multiplier)
 				stab_multiplier = multiplier;
@@ -441,10 +405,8 @@ function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: numbe
 		let defense_multiplier = Data.getTypeAdvantage(game.generation, type_id, pokemon.types);
 
 		// Apply ability bonuses
-		if (ability.defense && game.generation > 2)
-		{
-			for (const type of ability.defense.types)
-			{
+		if (ability.defense && game.generation > 2) {
+			for (const type of ability.defense.types) {
 				if (type === type_id)
 					if (!ability.defense.generation || ability.defense.generation >= game.generation)
 						defense_multiplier *= ability.defense.multiplier;
@@ -467,10 +429,8 @@ export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.
 {
 	// Create a component to display the team's comparison to each type
 	const components: ReactElement[] = [];
-	for (let type_id = 0; type_id < Data.getNumTypes(); ++type_id)
-	{
-		if (Data.validType(props.game.generation, type_id))
-		{
+	for (let type_id = 0; type_id < Data.getNumTypes(); ++type_id) {
+		if (Data.validType(props.game.generation, type_id)) {
 			// Calculate the team's advantages and disadvantages against the type
 			const [offense_advantages, offense_weaknesses, defense_advantages, defense_weaknesses] = partyCoverage(type_id, props.team, props.abilities, props.game);
 
@@ -479,8 +439,7 @@ export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.
 			let defense_highlight = Math.min(defense_advantages.length - defense_weaknesses.length, 0);
 
 			// Calculate the compared team's stats
-			if (props.compareTeam && props.compareAbilities)
-			{
+			if (props.compareTeam && props.compareAbilities) {
 				const [compare_offense_advantages, compare_offense_weaknesses, compare_defense_advantages, compare_defense_weaknesses] = partyCoverage(type_id, props.compareTeam, props.compareAbilities, props.game);
 
 				// Replace highlights with positive highlights if the team is better than the compared team
@@ -543,11 +502,9 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 
 	// Create a set of party components
 	const components: ReactElement[] = [];
-	if (props.team)
-	{
+	if (props.team) {
 		const game = Data.getGame(props.team.game);
-		for (let i = 0; i < 6; ++i)
-		{
+		for (let i = 0; i < 6; ++i) {
 			if (i < props.team.pokemon.length)
 				components.push(<div className="panel p-1 flex items-center justify-center"><Components.PartyMemberSmall generation={game!.generation} pokemon={props.team.pokemon[i]} key={i} /></div>);
 			else
@@ -555,8 +512,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 		}
 	}
 
-	if (menuOpen)
-	{
+	if (menuOpen) {
 		return (
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
 				<div className="text-center text-lg p-2">Navigation</div>
@@ -603,8 +559,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
-							if (unsafe)
-							{
+							if (unsafe) {
 								openModal({
 									message: "Your current party is not saved.\n\nDo you wish to create a new team?\nUnsaved changes to the current team will be lost.",
 									buttons: [
@@ -612,9 +567,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 										{ label: "Cancel" }
 									]
 								});
-							}
-							else
-							{
+							} else {
 								dispatch({ type: Task.new_team});
 							}
 							setMenuOpen(false);
@@ -658,8 +611,7 @@ export function PopupBox(props: {text: string, disabled?: boolean, children: Rea
 	useEffect(() => {
 		const handleClick = () => { setOpen(false); }
 
-		if (open)
-		{
+		if (open) {
 			document.addEventListener("click", handleClick);
 			document.addEventListener("contextmenu", handleClick);
 		}
@@ -692,22 +644,24 @@ export function ResetPanel(): ReactElement
 	const openModal = useContext(ModalContext);
 	const router = useRouter();
 
-	return (<div className="panel flex flex-col items-center gap-4 p-4">
-		<div>Click the button below to reset your app data.</div>
-		<Components.SidebarButton label="Reset" icon="solar--restart-square-bold"
-				onClick={() => {
-					openModal({
-						message: "Are you sure you wish to reset your app data?\n\nAll of your saved teams will be permanently deleted.",
-						buttons: [
-							{ label: "Confirm", callback: () => {
-								// Set local storage and redirect to the home page
-								localStorage.setItem("teams", JSON.stringify([]));
-								router.push("/");
-							}},
-							{ label: "Cancel" }
-						]
-					});
-				}}
-			/>
-	</div>);
+	return (
+		<div className="panel flex flex-col items-center gap-4 p-4">
+			<div>Click the button below to reset your app data.</div>
+			<Components.SidebarButton label="Reset" icon="solar--restart-square-bold"
+					onClick={() => {
+						openModal({
+							message: "Are you sure you wish to reset your app data?\n\nAll of your saved teams will be permanently deleted.",
+							buttons: [
+								{ label: "Confirm", callback: () => {
+									// Set local storage and redirect to the home page
+									localStorage.setItem("teams", JSON.stringify([]));
+									router.push("/");
+								}},
+								{ label: "Cancel" }
+							]
+						});
+					}}
+				/>
+		</div>
+	);
 }

@@ -42,24 +42,20 @@ const enum CoverageStyle {
 	weakness
 }
 
-export const sort_options: PartySort[] = [
-	{
+export const sort_options: PartySort[] = [{
 		label: "Date Updated",
 		sort: (a, b) => {
 			return b.updated.valueOf() - a.updated.valueOf();
 		}
-	},
-	{
+	}, {
 		label: "Date Created",
 		sort: (a, b) => {
 			return b.created.valueOf() - a.created.valueOf();
 		}
-	},
-	{
+	}, {
 		label: "Alphabetical",
 		sort: (a, b) => a.name.localeCompare(b.name)
-	},
-	{
+	}, {
 		label: "Game Version",
 		sort: (a, b) => {
 			return Data.getGameOrder(a.game) - Data.getGameOrder(b.game);
@@ -87,15 +83,13 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	let art_src = Data.default_image;
 	const type_images: ReactElement[] = [];
 
-	if (props.pokemon)
-	{
+	if (props.pokemon) {
 		// Retrieve pokemon data
 		const pokemon = Data.getPokemon(props.game.generation, props.pokemon.id, props.pokemon.form);
 		name_text = pokemon.name;
 		form_text = pokemon.form;
 
-		for (let i=0; i < pokemon.types.length; ++i)
-		{
+		for (let i=0; i < pokemon.types.length; ++i) {
 			const src = Data.typeSpriteURL(pokemon.types[i]);
 			type_images.push(<Image className="inline-flex min-w-[75px] lg:min-w-[100px]" src={src} width={100} height={20} draggable={false} alt={Data.getTypeName(pokemon.types[i])} key={i}/>)
 		}
@@ -104,8 +98,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 		art_alt = pokemon.name;
 
 		// Set the text for the ability line
-		if (props.ability !== undefined && props.game.abilities)
-		{
+		if (props.ability !== undefined && props.game.abilities) {
 			const ability_set = Data.getPokemonAbilities(props.game.generation, props.pokemon.id, props.pokemon.form);
 			const ability = Data.getAbility(ability_set[props.ability]);
 	
@@ -121,16 +114,15 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 		component_style += " clickable"
 
 	// Handle mouse clicks
-	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
-	{
+	function handleLeftClick(event: MouseEvent<HTMLDivElement>) {
 		if (props.pokemon)
 			dispatch({
 				type: Task.swap_ability,
 				data: props.pokemon
 			});
 	}
-	function handleRightClick(event: MouseEvent<HTMLDivElement>)
-	{
+
+	function handleRightClick(event: MouseEvent<HTMLDivElement>) {
 		event.preventDefault();
 		if (props.pokemon)
 			dispatch({
@@ -146,14 +138,14 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 		<div tabIndex={0} className={component_style} draggable={true} key={component_key}
 			onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}
 			onDragStart={props.onDragStart} onDragOver={props.onDragOver} onDragEnd={props.onDragEnd} onDrop={props.onDrop} onDragLeave={props.onDragLeave}
-			>
-				<div className="text-center min-h-6">{name_text}</div>
-				<div className="text-center text-secondary text-sm min-h-6">{form_text}</div>
-				<Image className="anim-pulse" src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
-				<div className={"text-center text-sm lg:text-base min-h-6" + (hidden_ability ? " text-special" : "")}>{ability_text}</div>
-				<div className="flex flex-col items-center min-h-[30px] lg:min-h-[40px] justify-center">
-					{type_images}
-				</div>
+		>
+			<div className="text-center min-h-6">{name_text}</div>
+			<div className="text-center text-secondary text-sm min-h-6">{form_text}</div>
+			<Image className="anim-pulse" src={art_src} width={size} height={size} draggable={false} alt={art_alt} />
+			<div className={"text-center text-sm lg:text-base min-h-6" + (hidden_ability ? " text-special" : "")}>{ability_text}</div>
+			<div className="flex flex-col items-center min-h-[30px] lg:min-h-[40px] justify-center">
+				{type_images}
+			</div>
 		</div>
 	);
 }
@@ -189,6 +181,7 @@ export function PokemonSelectorContextMenu(props: {pokemon: Data.Pokemon, closeC
 		const handleClick = () => {
 			props.closeCallback();
 		}
+
 		document.addEventListener("click", handleClick);
 		document.addEventListener("contextmenu", handleClick);
 
@@ -200,8 +193,7 @@ export function PokemonSelectorContextMenu(props: {pokemon: Data.Pokemon, closeC
 
 	// Get images for the pokemon's types
 	const type_images: ReactElement[] = [];
-	for (let i=0; i < props.pokemon.types.length; ++i)
-	{
+	for (let i=0; i < props.pokemon.types.length; ++i) {
 		const src = Data.typeSpriteURL(props.pokemon.types[i]);
 		type_images.push(<Image className="inline-flex" src={src} width={100} height={20} alt={Data.getTypeName(props.pokemon.types[i])} key={i}/>)
 	}
@@ -233,16 +225,15 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	const pokemon = Data.getPokemon(props.generation, props.id, props.form);
 	const hidden = props.selected ? "" : " hide";
 
-	function handleLeftClick(event: MouseEvent<HTMLDivElement>)
-	{
+	function handleLeftClick(event: MouseEvent<HTMLDivElement>) {
 		setContextMenu(false);
 		dispatch({
 			type: Task.select_pokemon,
 			data: { id: props.id, form: props.form }
 		});
 	}
-	function handleRightClick(event: MouseEvent<HTMLDivElement>)
-	{
+
+	function handleRightClick(event: MouseEvent<HTMLDivElement>) {
 		event.preventDefault();
 		setContextMenu(!contextMenu);
 	}
@@ -349,23 +340,13 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: number, sou
 	// Apply different icons and colors based on the information we need to display
 	let src = icon_source;
 	let style = "";
-	if (props.type === CoverageStyle.advantage)
-	{
+	if (props.type === CoverageStyle.advantage) {
 		src += "#solar--round-alt-arrow-up-bold";
 		style += " text-advantage";
-	}
-	else if (props.type === CoverageStyle.weakness)
-	{
+	} else if (props.type === CoverageStyle.weakness) {
 		src += "#solar--round-alt-arrow-down-bold";
 		style += " text-disadvantage";
-	}
-	/*else if (props.type === CoverageStyle.coverage)
-	{
-		src += "#solar--round-alt-arrow-up-bold";
-		style += " text-advantage";
-	}*/
-	else
-	{
+	} else {
 		src += "#solar--record-bold";
 		style += " text-foreground";
 	}
@@ -388,31 +369,20 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 	// Create icons to show the team's strengths and weaknesses
 	const top_components: ReactElement[] = [];
 	const bottom_components: ReactElement[] = [];
-	for (let i=0; i<Data.party_size; ++i)
-	{
-		if (i < props.offense.advantage.length)
-		{
+	for (let i=0; i<Data.party_size; ++i) {
+		if (i < props.offense.advantage.length) {
 			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
-		}
-		else if (i < props.offense.advantage.length + props.offense.disadvantage.length)
-		{
+		} else if (i < props.offense.advantage.length + props.offense.disadvantage.length) {
 			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
-		}
-		else
-		{
+		} else {
 			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.neutral} key={i} />);
 		}
 
-		if (i < props.defense.advantage.length)
-		{
+		if (i < props.defense.advantage.length) {
 			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
-		}
-		else if (i < props.defense.advantage.length + props.defense.disadvantage.length)
-		{
+		} else if (i < props.defense.advantage.length + props.defense.disadvantage.length) {
 			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
-		}
-		else
-		{
+		} else {
 			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.neutral} key={i} />);
 		}
 	}
@@ -438,24 +408,20 @@ export function GameSelector(props: {game: Data.Game, logoCycle: number}): React
 
 	// Dispatch a action to switch to the corresponding game when the selector is clicked
 	function handleClick() {
-		if (unsafe)
-		{
+		if (unsafe) {
 			openModal({
-					message: "Your current party is not saved.\n\nDo you wish to switch to the selected game?\nUnsaved changes to the current team will be lost.",
-					buttons: [
-						{
-							label: "Confirm",
-							callback: () => dispatch({
-									type: Task.planner_view,
-									data: props.game.id
-								})
-						},
-						{ label: "Cancel" }
-					]
-				});
-		}
-		else
-		{
+				message: "Your current party is not saved.\n\nDo you wish to switch to the selected game?\nUnsaved changes to the current team will be lost.",
+				buttons: [{
+						label: "Confirm",
+						callback: () => dispatch({
+								type: Task.planner_view,
+								data: props.game.id
+							})
+					},
+					{ label: "Cancel" }
+				]
+			});
+		} else {
 			dispatch({
 				type: Task.planner_view,
 				data: props.game.id
@@ -468,7 +434,8 @@ export function GameSelector(props: {game: Data.Game, logoCycle: number}): React
 	for (let i = 0; i < props.game.versions.length; ++i)
 	{
 		const image_style = (i === (props.logoCycle % props.game.versions.length) ? "" : " hide");
-		images.push(<img
+		images.push(
+			<img
 				src={logo_source + props.game.versions[i].logo}
 				alt={props.game.versions[i].name}
 				className={"absolute w-[100px] lg:w-[150px] fade" + image_style}
@@ -545,30 +512,27 @@ export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 			// Parse the provided file for team data
 			// @ts-ignore
 			const teams = await Data.loadTeamsFromJSON(event.target.files.item(0));
-			if (teams)
-			{
+			if (teams) {
 				// Load the teams in the file
 				openModal({
-						message: "Loading saved team data will overwrite all currently saved teams.\n\nDo you wish to load team data from this file?",
-						buttons: [
-							{ label: "Yes", callback: () => {
+					message: "Loading saved team data will overwrite all currently saved teams.\n\nDo you wish to load team data from this file?",
+					buttons: [{
+							label: "Yes", callback: () => {
 								dispatch({
 									type: Task.store_team_data,
 									data: teams
 								});
-							}},
-							{ label: "Cancel" }
-						]
-					});
-			}
-			else
-			{
+						}},
+						{ label: "Cancel" }
+					]
+				});
+			} else {
 				openModal({
-						message: "Unable to load team data from the provided file.\nPlease ensure that the corrent file was loaded.",
-						buttons: [
-							{ label: "Okay" }
-						]
-					});
+					message: "Unable to load team data from the provided file.\nPlease ensure that the corrent file was loaded.",
+					buttons: [
+						{ label: "Okay" }
+					]
+				});
 			}
 		}
 	}
@@ -589,16 +553,15 @@ export function VersionSelector(props: {game: Data.Game, version: number, onSele
 {
 	// Create a set of options for the selector box
 	const options: ReactElement[] = [];
-	for (let i = 0; i < props.game.versions.length; ++i)
-	{
+	for (let i = 0; i < props.game.versions.length; ++i) {
 		options.push(<li tabIndex={0} className="clickable" key={i+1} onClick={()=>props.onSelect(i)}>{props.game.versions[i].name}</li>);
 	}
 
 	options.unshift(<li tabIndex={0} className="clickable" key={0} onClick={()=>props.onSelect(-1)}>All</li>);
 
 	return (
-			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
-		);
+		<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
+	);
 }
 
 /**
@@ -608,14 +571,13 @@ export function SortSelector(props: {onSelect: PartySortCallback}): ReactElement
 {
 	// Create a set of options for the selector box
 	const options: ReactElement[] = [];
-	for (let i = 0; i < sort_options.length; ++i)
-	{
+	for (let i = 0; i < sort_options.length; ++i) {
 		options.push(<li tabIndex={0} className="clickable" key={i+1} onClick={()=>props.onSelect(sort_options[i])}>{sort_options[i].label}</li>);
 	}
 
 	return (
-			<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
-		);
+		<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{options}</ul>
+	);
 }
 
 /**
@@ -647,12 +609,9 @@ export function ScrollButton(): ReactElement
 
 	// Hide the button when the window scrolls below the top
 	function onScroll() {
-		if (window.scrollY > 12)
-		{
+		if (window.scrollY > 12) {
 			setHidden(false);
-		}
-		else
-		{
+		} else {
 			setHidden(true);
 		}
 	}
@@ -667,7 +626,7 @@ export function ScrollButton(): ReactElement
 		<button className={"panel fixed right-2 bottom-2 pop-fast" + (hidden ? " hide" : " clickable")} onClick={() => {if (!hidden) window.scroll({top: 0, behavior: "smooth"})}}>
 			<svg className="w-[12px] h-[12px] lg:w-[24px] lg:h-[24px]"><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
 		</button>
-	)
+	);
 }
 
 /**
@@ -692,7 +651,9 @@ export function SortOrderButton(props: {sortAscending: boolean, onClick: Functio
 	if (props.sortAscending)
 		image_style += " flip";
 
-	return (<button className="panel clickable w-[32px] h-[32px] rounded-2xl p-0 flex justify-center items-center" onClick={() => {props.onClick()}}>
-		<svg className={image_style}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
-	</button>);
+	return (
+		<button className="panel clickable w-[32px] h-[32px] rounded-2xl p-0 flex justify-center items-center" onClick={() => {props.onClick()}}>
+			<svg className={image_style}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+		</button>
+	);
 }

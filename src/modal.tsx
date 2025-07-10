@@ -38,20 +38,17 @@ function ModalBox(props: {modalData: ModalData}): ReactElement
 
 	// Create the buttons for the modal box
 	const buttons: ReactElement[] = [];
-	if (props.modalData.buttons.length > 0)
-	{
-		for (let i = 0; i < props.modalData.buttons.length; ++i)
-		{
+	if (props.modalData.buttons.length > 0) {
+		for (let i = 0; i < props.modalData.buttons.length; ++i) {
 			buttons.push(<button className="p-2" key={i} onClick={() => {
 				if (props.modalData.buttons[i].callback)
 					// @ts-ignore because the linter can't understand this line for some reason? I checked for a null callback on the line above, silly linter.
-					props.modalData.buttons[i].callback(); 
+					props.modalData.buttons[i].callback();
+
 				openModal!(null);
 			}}>{props.modalData.buttons[i].label}</button>);
 		}
-	}
-	else
-	{
+	} else {
 		buttons.push(<button className="p-2" onClick={() => {
 			openModal!(null);
 		}}>Confirm</button>);

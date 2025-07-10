@@ -27,12 +27,10 @@ export function App(props: {page?: string}): ReactElement
 	useEffect(() => {
 		// Load teams from storage after the app starts
 		const storage = localStorage.getItem("teams");
-		if (storage && !debug)
-		{
+		if (storage && !debug) {
 			// Restore date objects for loaded team data
 			const team_data: Data.Team[] = JSON.parse(storage);
-			for (const team of team_data)
-			{
+			for (const team of team_data) {
 				team.created = new Date(team.created);
 				team.updated = new Date(team.updated);
 			}
@@ -41,10 +39,9 @@ export function App(props: {page?: string}): ReactElement
 				type: Task.store_team_data,
 				data: team_data
 			});
+
 			console.log("Loaded team data from storage");
-		}
-		else
-		{
+		} else {
 			dispatch({
 				type: Task.store_team_data,
 				data: []
@@ -52,16 +49,17 @@ export function App(props: {page?: string}): ReactElement
 		}
 
 		// Set the selected game if one was provided in the URL
-		if (props.page)
-		{
+		if (props.page) {
 			if (props.page === compare_page)
 				dispatch({
 					type: Task.compare_view
 				});
+
 			else if (props.page === selector_page)
 				dispatch({
 					type: Task.game_view
 				});
+
 			else
 				dispatch({
 					type: Task.planner_view,
@@ -75,14 +73,12 @@ export function App(props: {page?: string}): ReactElement
 				type: Task.restory_history_state,
 				data: event.state
 			});
-			console.log(event.state);
 		});
 	}, []);
 
 	// Push any changes to team data to storage
 	useEffect(() => {
-		if (data.teams)
-		{
+		if (data.teams) {
 			localStorage.setItem("teams", JSON.stringify(data.teams));
 			console.log("Saved team data to browser storage");
 		}
@@ -94,8 +90,7 @@ export function App(props: {page?: string}): ReactElement
 
 	// Set the current view component based on the view state
 	let view: ReactElement = <div className="panel">Error: Invalid View</div>;
-	switch (data.view)
-	{
+	switch (data.view) {
 		// Display the landing page
 		case View.home: {
 			view = <TeamView teams={data.teams} selectedTeam={data.current_team} />;
@@ -147,18 +142,15 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 	const game = Data.getGame(props.team.game);
 
 	// Activate or deactivate a type filter option
-	function toggleTypeFilter(type: number, invert?: boolean)
-	{
+	function toggleTypeFilter(type: number, invert?: boolean) {
 		// Toggle all the types on or off based on the invert flag if the type is set to -1
-		if (type === -1)
-		{
+		if (type === -1) {
 			setTypeFilter(Array(Data.getNumTypes()).fill(Boolean(invert)));
 			return;
 		}
 
 		// Enable a single type if the invert flag is enabled
-		if (invert)
-		{
+		if (invert) {
 			const filter = Array(Data.getNumTypes()).fill(false);
 			filter[type] = true;
 			setTypeFilter(filter);
@@ -172,13 +164,11 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 	}
 
 	// Set the name filter for selectable pokemon
-	function changeNameFilter(filter: string)
-	{
+	function changeNameFilter(filter: string) {
 		setNameFilter(filter);
 	}
 
-	function changeVersionFilter(version: number)
-	{
+	function changeVersionFilter(version: number) {
 		setVersionFilter(version);
 	}
 
@@ -248,16 +238,14 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 	let secondary_key = 0;
 
 	// Add the current team to the selector if the user has an unsaved current team
-	if (props.defaultTeam && unsafe)
-	{
+	if (props.defaultTeam && unsafe) {
 		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
 				setPrimaryTeam(props.defaultTeam);
 				setSecondaryTeam(undefined);
 			}}>{"[Current Team]"}</li>);
 	}
 	
-	for (const team of props.teams)
-	{
+	for (const team of props.teams) {
 		// Add each team to the primary team selector
 		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
 			setPrimaryTeam(team);
@@ -266,11 +254,9 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 		primary_key++;
 
 		// Add secondary teams if a primary team is selected
-		if (primaryTeam && primary_game)
-		{
+		if (primaryTeam && primary_game) {
 			const game = Data.getGame(team.game);
-			if (game.generation === primary_game.generation)
-			{
+			if (game.generation === primary_game.generation) {
 				secondary_selector.push(<li className="clickable" key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
 				secondary_key++;
 			}
@@ -316,18 +302,15 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 	const [sortAscending, setSortAscending] = useState(true);
 
 	// Change the generation filter when a filter button is clicked
-	function selectGeneration(generation: number, invert?: boolean)
-	{
+	function selectGeneration(generation: number, invert?: boolean) {
 		// Toggle all the types on or off based on the invert flag if the type is set to -1
-		if (generation === -1)
-		{
+		if (generation === -1) {
 			setGenerationFilter(Array(Data.getNumTypes()).fill(Boolean(invert)));
 			return;
 		}
 
 		// Enable a single type if the invert flag is enabled
-		if (invert)
-		{
+		if (invert) {
 			const filter = Array(Data.getNumTypes()).fill(false);
 			filter[generation] = true;
 			setGenerationFilter(filter);
@@ -353,8 +336,7 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
-	for (let i = 0; i < team_data.length; ++i)
-	{
+	for (let i = 0; i < team_data.length; ++i) {
 		if (generationFilter[Data.getGame(team_data[i].game).generation - 1])
 			party_components.push(<Containers.PartySelector party={team_data[i]} currentParty={false} key={i} />);
 	}
