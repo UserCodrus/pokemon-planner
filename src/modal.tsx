@@ -40,7 +40,7 @@ function ModalBox(props: {modalData: ModalData}): ReactElement
 	const buttons: ReactElement[] = [];
 	if (props.modalData.buttons.length > 0) {
 		for (let i = 0; i < props.modalData.buttons.length; ++i) {
-			buttons.push(<button className="p-2" key={i} onClick={() => {
+			buttons.push(<button className="panel clickable" key={i} onClick={() => {
 				if (props.modalData.buttons[i].callback)
 					// @ts-ignore because the linter can't understand this line for some reason? I checked for a null callback on the line above, silly linter.
 					props.modalData.buttons[i].callback();
@@ -49,15 +49,15 @@ function ModalBox(props: {modalData: ModalData}): ReactElement
 			}}>{props.modalData.buttons[i].label}</button>);
 		}
 	} else {
-		buttons.push(<button className="p-2" onClick={() => {
+		buttons.push(<button className="panel clickable" onClick={() => {
 			openModal!(null);
 		}}>Confirm</button>);
 	}
 
 	return (
 		<div className="fixed flex bg-shade z-9 top-0 left-0 min-w-screen min-h-screen backdrop-blur-sm justify-center items-center">
-			<div className="panel z-10 grow-0 text-center">
-				{messages}
+			<div className="panel flex flex-col gap-4 p-4 z-10 grow-0 text-center">
+				<div>{messages}</div>
 				<div className="flex flex-row justify-evenly">{buttons}</div>
 			</div>
 		</div>
