@@ -126,7 +126,7 @@ export function App(props: {page?: string}): ReactElement
 		<DispatchContext.Provider value={dispatch}>
 			<UnsafeDataContext.Provider value={data.team_updated && data.current_team != null && data.current_team.pokemon.length > 0}>
 				<ModalWrapper>
-					<Containers.PopupMenu team={data.current_team} savedTeams={data.teams.length > 0} />
+					<Containers.PopupMenu team={data.current_team} savedTeams={data.teams} />
 					{view}
 				</ModalWrapper>
 			</UnsafeDataContext.Provider>

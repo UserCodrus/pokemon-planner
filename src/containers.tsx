@@ -495,7 +495,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 /**
  * The sidebar menu
  */
-export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams: boolean}): ReactElement
+export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams: Data.Team[]}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
@@ -524,7 +524,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 							dispatch({type: Task.team_view});
 							setMenuOpen(false);
 						}}
-						disabled={ !props.savedTeams }
+						disabled={ props.savedTeams.length === 0 }
 					/>
 					<Components.SidebarButton label="Change Games" icon="solar--square-sort-horizontal-bold"
 						onClick={() => {
@@ -548,14 +548,30 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 					<div className="text-center text-lg p-2">Team</div>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
-							openModal({
-								child: <div>Do you wish to save this team?<br />Existing saved data for this team will be overwritten.</div>,
-								buttons: [
-									{ label: "Overwrite", callback: () => dispatch({ type: Task.save_current_team})},
-									{ label: "Save as New", callback: () => dispatch({ type: Task.save_new_team})},
-									{ label: "Cancel" }
-								]
-							});
+							// Determine if the current team has already been saved
+							let saved = false;
+							for (const team of props.savedTeams)
+							{
+								if (team.id === props.team?.id) {
+									saved = true;
+									break;
+								}
+							}
+
+							// Give the user the option to save the team to a new slot if it has already been saved
+							if (saved) {
+								openModal({
+									child: <div>Do you wish to save this team?<br />Existing saved data for this team will be overwritten.</div>,
+									buttons: [
+										{ label: "Overwrite", callback: () => dispatch({ type: Task.save_current_team})},
+										{ label: "Save as New", callback: () => dispatch({ type: Task.save_new_team})},
+										{ label: "Cancel" }
+									]
+								});
+							} else {
+								dispatch({ type: Task.save_current_team});
+							}
+
 							setMenuOpen(false);
 						}}
 						disabled={ unsafe && props.team !== undefined && props.team !== null ? false : true }
