@@ -116,7 +116,7 @@ export function App(props: {page?: string}): ReactElement
 
 		// Display the team comparison page
 		case View.compare: {
-			view = <CompareView teams={data.teams} defaultTeam={data.current_team} />;
+			view = <CompareView teams={data.teams} currentTeam={data.current_team} />;
 			break;
 		};
 	}
@@ -226,10 +226,10 @@ function GameSelectorView(): ReactElement
 /**
  * A view that compares the current team to a different team
  */
-function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null}): ReactElement
+function CompareView(props: {teams: Data.Team[], currentTeam: Data.Team | null}): ReactElement
 {
 	const unsafe = useContext(UnsafeDataContext);
-	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | null>(props.defaultTeam);
+	const [primaryTeam, setPrimaryTeam] = useState<Data.Team | null>(props.currentTeam);
 	const [secondaryTeam, setSecondaryTeam] = useState<Data.Team | undefined>();
 
 	const primary_game = primaryTeam ? Data.getGame(primaryTeam.game) : null;
@@ -243,12 +243,12 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 
 	// Add the current team to the selector if the user has an unsaved current team
 	const team_list = props.teams.slice();
-	if (props.defaultTeam && unsafe) {
-		team_list.unshift(props.defaultTeam);
+	if (props.currentTeam && unsafe) {
+		team_list.unshift(props.currentTeam);
 	}
 	
 	for (const team of team_list) {
-		const style = "clickable" + (team === props.defaultTeam ? " text-special" : "");
+		const style = "clickable" + (team === props.currentTeam ? " text-special" : "");
 
 		// Add each team to the primary team selector
 		primary_selector.push(<li className={style} key={primary_key} onClick={() => {
@@ -259,10 +259,13 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 
 		// Add secondary teams if a primary team is selected
 		if (primaryTeam && primary_game && primaryTeam !== team) {
-			const game = Data.getGame(team.game);
-			if (game.generation === primary_game.generation) {
-				secondary_selector.push(<li className={style} key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
-				secondary_key++;
+			// Ignore the current team if it has the same team id to prevent duplicates if currentTeam is a saved team with no changes
+			if (primaryTeam.id !== team.id || unsafe) {
+				const game = Data.getGame(team.game);
+				if (game.generation === primary_game.generation) {
+					secondary_selector.push(<li className={style} key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
+					secondary_key++;
+				}
 			}
 		}
 	}
@@ -276,7 +279,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 					</Containers.PopupBox>
 				</div>
 				<div className="flex items-center justify-center relative">
-					<Containers.PopupBox text={secondaryTeam ? secondaryTeam.name : "Select a team"} disabled={!primaryTeam} >
+					<Containers.PopupBox text={secondaryTeam ? secondaryTeam.name : "Select a team"} disabled={!primaryTeam || secondary_selector.length === 0} >
 						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{secondary_selector}</ul>
 					</Containers.PopupBox>
 				</div>
