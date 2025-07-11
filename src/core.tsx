@@ -247,6 +247,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 				setPrimaryTeam(props.defaultTeam);
 				setSecondaryTeam(undefined);
 			}}>{"[Current Team]"}</li>);
+		primary_key++;
 	}
 	
 	for (const team of props.teams) {

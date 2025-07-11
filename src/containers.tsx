@@ -508,7 +508,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 		const game = Data.getGame(props.team.game);
 		for (let i = 0; i < 6; ++i) {
 			if (i < props.team.pokemon.length)
-				components.push(<div className="panel p-1 flex items-center justify-center"><Components.PartyMemberSmall generation={game!.generation} pokemon={props.team.pokemon[i]} key={i} /></div>);
+				components.push(<div className="panel p-1 flex items-center justify-center" key={i}><Components.PartyMemberSmall generation={game!.generation} pokemon={props.team.pokemon[i]} /></div>);
 			else
 				components.push(<div className="panel p-1 flex items-center justify-center" key={i}></div>);
 		}
@@ -574,7 +574,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 
 							setMenuOpen(false);
 						}}
-						disabled={ unsafe && props.team !== undefined && props.team !== null ? false : true }
+						disabled={ !(unsafe && props.team !== undefined && props.team !== null && props.team.pokemon.length > 0) }
 					/>
 					<Components.SidebarButton label="New Team" icon="solar--restart-square-bold"
 						onClick={() => {
@@ -591,7 +591,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 							}
 							setMenuOpen(false);
 						}}
-						disabled={ props.team !== undefined && props.team !== null ? false : true }
+						disabled={ !(props.team !== undefined && props.team !== null && props.team.pokemon.length > 0) }
 					/>
 					<Components.SidebarButton label="Export Teams" icon="solar--cloud-download-bold"
 						onClick={() => {
