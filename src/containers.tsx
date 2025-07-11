@@ -514,6 +514,20 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 		}
 	}
 
+	// Determine if the user has enough teams to make the compare view usable by adding saved and unsaved teams together
+	let total_teams = props.savedTeams.length + 1;
+	if (props.team && props.team.pokemon.length > 0) {
+		for (const team of props.savedTeams) {
+			if (team.id === props.team.id) {
+				if (!unsafe)
+					total_teams -= 1;
+				break;
+			}
+		}
+	} else {
+		total_teams -= 1;
+	}
+
 	if (menuOpen) {
 		return (
 			<MenuBox closeCallback={()=>{setMenuOpen(false)}}>
@@ -544,14 +558,14 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 							dispatch({type: Task.compare_view});
 							setMenuOpen(false);
 						}}
+						disabled={ total_teams < 2 }
 					/>
 					<div className="text-center text-lg p-2">Team</div>
 					<Components.SidebarButton label="Save Team" icon="solar--upload-square-bold"
 						onClick={() => {
 							// Determine if the current team has already been saved
 							let saved = false;
-							for (const team of props.savedTeams)
-							{
+							for (const team of props.savedTeams) {
 								if (team.id === props.team?.id) {
 									saved = true;
 									break;
@@ -598,6 +612,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 							dispatch({type: Task.export_teams});
 							setMenuOpen(false);
 						}}
+						disabled={ props.savedTeams.length === 0 }
 					/>
 					<Components.SidebarImportButton
 						onClick={() => {

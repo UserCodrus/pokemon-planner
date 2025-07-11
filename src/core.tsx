@@ -242,27 +242,26 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 	let secondary_key = 0;
 
 	// Add the current team to the selector if the user has an unsaved current team
+	const team_list = props.teams.slice();
 	if (props.defaultTeam && unsafe) {
-		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
-				setPrimaryTeam(props.defaultTeam);
-				setSecondaryTeam(undefined);
-			}}>{"[Current Team]"}</li>);
-		primary_key++;
+		team_list.unshift(props.defaultTeam);
 	}
 	
-	for (const team of props.teams) {
+	for (const team of team_list) {
+		const style = "clickable" + (team === props.defaultTeam ? " text-special" : "");
+
 		// Add each team to the primary team selector
-		primary_selector.push(<li className="clickable" key={primary_key} onClick={() => {
+		primary_selector.push(<li className={style} key={primary_key} onClick={() => {
 			setPrimaryTeam(team);
 			setSecondaryTeam(undefined);
 		}}>{team.name}</li>);
 		primary_key++;
 
 		// Add secondary teams if a primary team is selected
-		if (primaryTeam && primary_game) {
+		if (primaryTeam && primary_game && primaryTeam !== team) {
 			const game = Data.getGame(team.game);
 			if (game.generation === primary_game.generation) {
-				secondary_selector.push(<li className="clickable" key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
+				secondary_selector.push(<li className={style} key={secondary_key} onClick={() => setSecondaryTeam(team)}>{team.name}</li>);
 				secondary_key++;
 			}
 		}
