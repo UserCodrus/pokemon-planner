@@ -94,7 +94,10 @@ export function App(props: {page?: string}): ReactElement
 	switch (data.view) {
 		// Display the landing page
 		case View.home: {
-			view = <TeamView teams={data.teams} selectedTeam={data.current_team} />;
+			if (data.teams.length > 0)
+				view = <TeamView teams={data.teams} selectedTeam={data.current_team} />;
+			else
+				view = <GameSelectorView />;
 			break;
 		};
 
@@ -123,7 +126,7 @@ export function App(props: {page?: string}): ReactElement
 		<DispatchContext.Provider value={dispatch}>
 			<UnsafeDataContext.Provider value={data.team_updated && data.current_team != null && data.current_team.pokemon.length > 0}>
 				<ModalWrapper>
-					<Containers.PopupMenu team={data.current_team} />
+					<Containers.PopupMenu team={data.current_team} savedTeams={data.teams.length > 0} />
 					{view}
 				</ModalWrapper>
 			</UnsafeDataContext.Provider>

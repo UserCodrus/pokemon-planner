@@ -495,7 +495,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 /**
  * The sidebar menu
  */
-export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactElement
+export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams: boolean}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
@@ -524,6 +524,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 							dispatch({type: Task.team_view});
 							setMenuOpen(false);
 						}}
+						disabled={ !props.savedTeams }
 					/>
 					<Components.SidebarButton label="Change Games" icon="solar--square-sort-horizontal-bold"
 						onClick={() => {
