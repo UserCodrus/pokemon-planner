@@ -614,11 +614,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined, savedTeams
 						}}
 						disabled={ props.savedTeams.length === 0 }
 					/>
-					<Components.SidebarImportButton
-						onClick={() => {
-							setMenuOpen(false);
-						}}
-					/>
+					<Components.SidebarImportButton />
 					{props.team && props.team.pokemon.length > 2 && 
 						<div className="inline-grid grid-cols-2 grid-rows-3 gap-2">{components}</div>
 					}

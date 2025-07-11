@@ -500,7 +500,7 @@ export function SidebarButton(props: {label: string, icon: string, disabled?: bo
 /**
  * A button that handles the file loading dialog for importing teams
  */
-export function SidebarImportButton(props: {onClick?: Function}): ReactElement
+export function SidebarImportButton(): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
@@ -511,7 +511,7 @@ export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 		if (event.currentTarget.files && event.currentTarget.files.item(0)) {
 			// Parse the provided file for team data
 			// @ts-ignore
-			const teams = await Data.loadTeamsFromJSON(event.target.files.item(0));
+			const teams = await Data.loadTeamsFromJSON(event.currentTarget.files.item(0));
 			if (teams) {
 				// Load the teams in the file
 				openModal({
@@ -519,7 +519,7 @@ export function SidebarImportButton(props: {onClick?: Function}): ReactElement
 					buttons: [{
 							label: "Yes", callback: () => {
 								dispatch({
-									type: Task.store_team_data,
+									type: Task.import_teams,
 									data: teams
 								});
 						}},

@@ -60,6 +60,11 @@ export const enum Task {
 	 * Export saved teams to a JSON file and allow the user to download it
 	 */
 	export_teams,
+	/**
+	 * Import team data from a JSON file
+	 * @see Action.data The File object containing JSON data
+	 */
+	import_teams,
 
 	/**
 	 * Change the name of the current team.
@@ -269,8 +274,7 @@ export function teamReducer(state: AppData, action: Action): AppData
 		case Task.store_team_data: {
 			return {
 				...state,
-				teams: action.data as Data.Team[],
-				team_updated: false
+				teams: action.data as Data.Team[]
 			}
 		};
 
@@ -421,6 +425,17 @@ export function teamReducer(state: AppData, action: Action): AppData
 			document.body.removeChild(link);
 
 			return state;
+		};
+
+		// Import team data
+		case Task.import_teams: {
+			return {
+				...state,
+				view: View.home,
+				current_team: null,
+				teams: action.data as Data.Team[],
+				team_updated: false
+			};
 		};
 
 		// Set the name of the team to the data payload
