@@ -335,6 +335,7 @@ export function teamReducer(state: AppData, action: Action): AppData
 			const new_team = newTeam(state.teams, state.current_team ? state.current_team.game : "nat");
 			const new_state = {
 				...state,
+				view: View.planner,
 				current_team: new_team,
 				updated: false
 			}
