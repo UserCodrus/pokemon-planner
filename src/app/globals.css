@@ -41,6 +41,10 @@ strong {
 	font-weight: bold;
 }
 
+a {
+	text-decoration: underline;
+}
+
 *:focus {
 	outline: 2px solid white;
 }

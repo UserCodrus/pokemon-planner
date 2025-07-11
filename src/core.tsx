@@ -177,9 +177,9 @@ function PlannerView(props: {team: Data.Team}): ReactElement
 		<div className="flex flex-col min-w-[75%] max-w-[75%] lg:max-w-[90%] py-8 gap-4 items-stretch">
 			<Components.ScrollButton />
 			<Components.TeamName name={props.team.name} />
-			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} />
-			<Containers.PartyAnalysis team={props.team.pokemon} abilities={props.team.abilities} game={game} />
-			<Containers.PokedexFilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
+			<Containers.PartyDisplay pokemon={props.team.pokemon} abilities={props.team.abilities} game={game} tutorial={true} />
+			<Containers.PartyAnalysis team={props.team.pokemon} abilities={props.team.abilities} game={game} tutorial={true} />
+			<Containers.PokedexFilterBar game={game} typeFilter={typeFilter} name={nameFilter} version={versionFilter} tutorial={true} onClickType={toggleTypeFilter} onChangeText={changeNameFilter} onSelectVersion={changeVersionFilter} />
 			<Containers.PokedexDisplay game={game} typeFilter={typeFilter} nameFilter={nameFilter} versionFilter={versionFilter} pokemon={props.team.pokemon} />
 		</div>
 	);
@@ -281,7 +281,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 
 			{primaryTeam && <div className="flex flex-col gap-4">
 				<Containers.PartyDisplay pokemon={primaryTeam.pokemon} abilities={primaryTeam.abilities} game={primary_game!} />
-				<Containers.PartyAnalysis team={primaryTeam.pokemon} compareTeam={secondaryTeam?.pokemon} abilities={primaryTeam.abilities} compareAbilities={secondaryTeam?.abilities} game={primary_game!} />
+				<Containers.PartyAnalysis team={primaryTeam.pokemon} compareTeam={secondaryTeam?.pokemon} abilities={primaryTeam.abilities} compareAbilities={secondaryTeam?.abilities} game={primary_game!} altTutorial={true} />
 			</div>}
 			
 			{secondaryTeam && <div className="flex flex-col gap-4">
@@ -348,7 +348,7 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 				{<div className="text-center panel inline-block grow-0">Current Party</div>}
 				<Containers.PartySelector party={props.selectedTeam} currentParty={true} />
 			</div>}
-			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending}
+			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending} tutorial={true}
 				onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} onSwitchSortOrder={() => setSortAscending(!sortAscending)} />
 			<div className="flex flex-row flex-wrap gap-2 justify-between items-center">
 				{party_components}

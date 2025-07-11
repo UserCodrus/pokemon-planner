@@ -1,7 +1,10 @@
-let left_click = <><strong>Left Click</strong> or <strong>Tap</strong></>;
-let right_click = <><strong>Right Click</strong> or <strong>Long Press</strong></>;
+import Link from "next/link";
 
+const left_click = <><strong>Left Click</strong> or <strong>Tap</strong></>;
+const right_click = <><strong>Right Click</strong> or <strong>Long Press</strong></>;
 
+const effective = <strong>super effective</strong>;
+const ineffective = <strong>not very effective</strong>;
 
 const tutorials = {
 	pokemon_filter: <div>
@@ -29,20 +32,34 @@ const tutorials = {
 		This panel shows the combat analysis for the current party.<br />
 		<br />
 		The first row of icons below each type shows how many Pokémon have same-type moves that are effective against that type.<br />
-		<span className="text-advantage font-bold">Red icons</span> indicate that a party member has a same type move that is <strong>super effective</strong> against that type.<br />
-		<span className="text-disadvantage font-bold">Blue icons</span> indicate that a party member's same type moves are <strong>not very effective</strong> against that type.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicate that a party member has a same type move that is {effective} against that type.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicate that a party member's same type moves are {ineffective} against that type.<br />
 		<br />
 		The second row shows the party's defenses against that type.<br />
-		<span className="text-advantage font-bold">Red icons</span> indicates that attacks of that type are <strong>not very effective</strong> against a party member.<br />
-		<span className="text-disadvantage font-bold">Blue icons</span> indicates that attacks of that type are <strong>super effective</strong> against a party member.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicates that attacks of that type are {ineffective} against a party member.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicates that attacks of that type are {effective} against a party member.<br />
 		<br />
 		<strong>Icons with an outline</strong> indicate that your party will be vulnerable to that type. Consider changing your team to remove these weaknesses.
+	</div>,
+
+	party_analysis_alt: <div>
+		This panel shows the combat analysis for the current party.<br />
+		<br />
+		The first row of icons below each type shows how many Pokémon have same-type moves that are effective against that type.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicate that a party member has a same type move that is {effective} against that type.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicate that a party member's same type moves are {ineffective} against that type.<br />
+		<br />
+		The second row shows the party's defenses against that type.<br />
+		<span className="text-advantage font-bold">Red icons</span> indicates that attacks of that type are {ineffective} against a party member.<br />
+		<span className="text-disadvantage font-bold">Blue icons</span> indicates that attacks of that type are {effective} against a party member.<br />
+		<br />
+		<strong>Icons with an outline</strong> indicate that the party is stronger than the other party against that type.
 	</div>,
 
 	party_display: <div>
 		This area displays your current party.<br />
 		<br />
-		{left_click} a party member to switch the party member's ability.<br />
+		{left_click} a party member to switch the party member's ability. <span className="text-special font-bold">Blue text</span> indicates that the selected ability is a <Link href="https://bulbapedia.bulbagarden.net/wiki/Hidden_Ability" target="_blank" rel="noopener noreferrer">hidden ability</Link>.<br />
 		{right_click} a party member to remove that party member from your party.<br />
 		<br />
 		{left_click} a Pokémon in one of the boxes below to add that Pokémon to your team or remove it if it has already been added.<br />

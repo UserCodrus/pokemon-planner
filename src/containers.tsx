@@ -16,7 +16,7 @@ const draw_order = [0, 1, 2, 3, 4, 5];
 /**
  * A component that contains the user's currently selected party
  */
-export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number[], game: Data.Game}): ReactElement
+export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number[], game: Data.Game, tutorial?: boolean}): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const [dragData, setDragData] = useState({
@@ -85,7 +85,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	return (
 		<div className="flex flex-row flex-wrap gap-2 relative justify-between">
 			{components}
-			<Components.TutorialButton message={Tutorials.party_display} />
+			{props.tutorial && <Components.TutorialButton message={Tutorials.party_display} />}
 		</div>
 	);
 }
@@ -299,7 +299,7 @@ export const PokedexDisplay = memo(function PokedexDisplay(props: {game: Data.Ga
 /**
  * A component containing filter toggles for selectable pokemon
  */
-export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[], name: string, version: number, onClickType: Components.BooleanFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback}): ReactElement
+export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[], name: string, version: number, onClickType: Components.BooleanFilterCallback, onChangeText: Components.NameFilterCallback, onSelectVersion: Components.VersionFilterCallback, tutorial?: boolean}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -332,7 +332,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 			</div>
-			<Components.TutorialButton message={Tutorials.pokemon_filter} />
+			{props.tutorial && <Components.TutorialButton message={Tutorials.pokemon_filter} />}
 		</div>
 	);
 }
@@ -340,7 +340,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 /**
  * A component containing filter toggles for selectable teams
  */
-export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback, onSwitchSortOrder: Function}): ReactElement
+export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback, onSwitchSortOrder: Function, tutorial?: boolean}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -369,7 +369,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 				</div>
 				<Components.SortOrderButton sortAscending={props.sortAscending} onClick={props.onSwitchSortOrder} />
 			</div>
-			<Components.TutorialButton message={Tutorials.team_filter} />
+			{props.tutorial && <Components.TutorialButton message={Tutorials.team_filter} />}
 		</div>
 	);
 }
@@ -426,7 +426,7 @@ function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: numbe
 /**
  * A component that displays the party's advantages and disadvantages
  */
-export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.TeamSlot[], abilities: number[], compareAbilities?: number[], game: Data.Game}): ReactElement
+export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.TeamSlot[], abilities: number[], compareAbilities?: number[], game: Data.Game, tutorial?: boolean, altTutorial?: boolean}): ReactElement
 {
 	// Create a component to display the team's comparison to each type
 	const components: ReactElement[] = [];
@@ -457,7 +457,8 @@ export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.
 	return (
 		<div className="panel flex flex-row flex-wrap justify-center gap-2">
 			{components}
-			<Components.TutorialButton message={Tutorials.party_analysis} />
+			{props.tutorial && <Components.TutorialButton message={Tutorials.party_analysis} />}
+			{props.altTutorial && <Components.TutorialButton message={Tutorials.party_analysis_alt} />}
 		</div>
 	);
 }
