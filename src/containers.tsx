@@ -85,6 +85,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	return (
 		<div className="flex flex-row flex-wrap gap-2 relative justify-between">
 			{components}
+			<Components.TutorialButton message={Tutorials.party_display} />
 		</div>
 	);
 }
@@ -331,7 +332,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 				</PopupBox>
 				<Components.NameFilterBox text={props.name} onChange={props.onChangeText} />
 			</div>
-			<div className="absolute right-[8px] bottom-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
+			<Components.TutorialButton message={Tutorials.pokemon_filter} />
 		</div>
 	);
 }
@@ -368,7 +369,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 				</div>
 				<Components.SortOrderButton sortAscending={props.sortAscending} onClick={props.onSwitchSortOrder} />
 			</div>
-			<div className="absolute right-[8px] bottom-[8px]"><Components.TutorialButton message={Tutorials.filter} /></div>
+			<Components.TutorialButton message={Tutorials.team_filter} />
 		</div>
 	);
 }
@@ -456,7 +457,7 @@ export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.
 	return (
 		<div className="panel flex flex-row flex-wrap justify-center gap-2">
 			{components}
-			<div className="absolute right-[8px] top-[8px]"><Components.TutorialButton message={Tutorials.analysis} /></div>
+			<Components.TutorialButton message={Tutorials.party_analysis} />
 		</div>
 	);
 }
@@ -508,7 +509,7 @@ export function PopupMenu(props: {team: Data.Team | null | undefined}): ReactEle
 			if (i < props.team.pokemon.length)
 				components.push(<div className="panel p-1 flex items-center justify-center"><Components.PartyMemberSmall generation={game!.generation} pokemon={props.team.pokemon[i]} key={i} /></div>);
 			else
-				components.push(<div className="panel p-1 flex items-center justify-center"></div>);
+				components.push(<div className="panel p-1 flex items-center justify-center" key={i}></div>);
 		}
 	}
 

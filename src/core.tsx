@@ -8,6 +8,7 @@ import * as Data from "./data";
 import { DispatchContext, UnsafeDataContext, teamReducer, Task, View, compare_page, selector_page } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
+import Tutorials from "./tutorials";
 
 // Start the app without team data to avoid issues with invalid team data
 const debug = false;
@@ -271,7 +272,7 @@ function CompareView(props: {teams: Data.Team[], defaultTeam: Data.Team | null})
 						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{primary_selector}</ul>
 					</Containers.PopupBox>
 				</div>
-				<div className="flex items-center justify-center">
+				<div className="flex items-center justify-center relative">
 					<Containers.PopupBox text={secondaryTeam ? secondaryTeam.name : "Select a team"} disabled={!primaryTeam} >
 						<ul className="popup top-full left-0 mt-[2px] min-w-full anim-grow">{secondary_selector}</ul>
 					</Containers.PopupBox>

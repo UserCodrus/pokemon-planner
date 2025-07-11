@@ -1,6 +1,6 @@
 'use client';
 
-import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler, useRef, ChangeEvent, FormEvent } from "react";
+import { MouseEvent, ReactElement, useContext, useState, useEffect, DragEventHandler, useRef, FormEvent } from "react";
 import Image from 'next/image'
 
 import * as Data from "./data";
@@ -589,7 +589,7 @@ export function TutorialButton(props: {message: ReactElement}): ReactElement
 	const openModal = useContext(ModalContext);
 
 	return (
-		<button className="cursor-pointer rounded-2xl" onClick={() => {
+		<button className="cursor-pointer rounded-2xl absolute top-0 right-[-24px]" onClick={() => {
 			openModal({
 				child: <div>{props.message}</div>,
 				buttons: [{ label: "Close" }]
