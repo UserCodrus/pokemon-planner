@@ -8,10 +8,6 @@ import * as Data from "./data";
 import { DispatchContext, UnsafeDataContext, teamReducer, Task, View, compare_page, selector_page } from "./reducer";
 import { ModalWrapper } from "./modal";
 import GameData from "../data/games.json";
-import Tutorials from "./tutorials";
-
-// Start the app without team data to avoid issues with invalid team data
-const debug = false;
 
 /**
  * The core component of the app, responsible for routing between different views
@@ -28,7 +24,7 @@ export function App(props: {page?: string}): ReactElement
 	useEffect(() => {
 		// Load teams from storage after the app starts
 		const storage = localStorage.getItem("teams");
-		if (storage && !debug) {
+		if (storage) {
 			// Restore date objects for loaded team data
 			const team_data: Data.Team[] = JSON.parse(storage);
 			for (const team of team_data) {
