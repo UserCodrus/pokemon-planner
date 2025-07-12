@@ -321,13 +321,23 @@ export function AllFilterButton(props: {active: boolean, onClick: BooleanFilterC
  */
 export function NameFilterBox(props: {text: string, onChange: NameFilterCallback}): ReactElement
 {
+	const ref = useRef<HTMLInputElement>(null);
+
+	// Remove focus when the form is submitted
+	function handleSubmit(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		ref.current?.blur();
+	}
+
 	return (
-		<input
-			type="text" value={props.text}
-			placeholder="Type a name to filter"
-			onChange={(event)=>props.onChange(event.target.value)}
-			className="inner-panel px-2 max-h-8 w-48"
-		/>
+		<form onSubmit={(e) => handleSubmit(e)}>
+			<input
+				type="text" value={props.text} ref={ref}
+				placeholder="Type a name to filter"
+				onChange={(event)=>props.onChange(event.target.value)}
+				className="inner-panel px-2 max-h-8 w-48"
+			/>
+		</form>
 	)
 }
 
@@ -455,18 +465,27 @@ export function GameSelector(props: {game: Data.Game, logoCycle: number}): React
  */
 export function TeamName(props: {name: string}): ReactElement
 {
+	const ref = useRef<HTMLInputElement>(null);
 	const dispatch = useContext(DispatchContext);
+
+	// Remove focus when the form is submitted
+	function handleSubmit(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		ref.current?.blur();
+	}
 
 	return (
 		<div className="panel text-lg text-center min-w-1/4 self-center">
-			<input type="text" name="textbox" value={props.name} className="text-center rounded-lg"
-				onChange={(e)=>{
-					dispatch({
-						type: Task.change_name,
-						data: e.currentTarget.value
-					})
-				}}
-			/>
+			<form onSubmit={(e) => handleSubmit(e)}>
+				<input type="text" name="textbox" value={props.name} className="text-center rounded-lg" ref={ref}
+					onChange={(e)=>{
+						dispatch({
+							type: Task.change_name,
+							data: e.currentTarget.value
+						})
+					}}
+				/>
+			</form>
 		</div>
 	);
 }
@@ -504,7 +523,6 @@ export function SidebarImportButton(): ReactElement
 {
 	const dispatch = useContext(DispatchContext);
 	const openModal = useContext(ModalContext);
-	const file_component = useRef<HTMLInputElement>(null);
 
 	// Load data from the file the user provides when a file is selected
 	async function handleFile(event: FormEvent<HTMLInputElement>) {
@@ -539,7 +557,7 @@ export function SidebarImportButton(): ReactElement
 
 	return (
 		<div className={"panel clickable flex flex-row items-center flex-grow"}>
-			<input type="file" className="absolute top-0 left-0 rounded-lg w-full h-full opacity-0 cursor-pointer" ref={file_component} onChange={(e) => handleFile(e)} />
+			<input type="file" className="absolute top-0 left-0 rounded-lg w-full h-full opacity-0 cursor-pointer" onChange={(e) => handleFile(e)} />
 			<svg width={32} height={32}><use href={icon_source + "#solar--cloud-upload-bold"} /></svg>
 			<div className="mx-4 flex-grow text-center">Import Teams</div>
 		</div>
