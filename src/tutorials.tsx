@@ -25,7 +25,8 @@ const tutorials = {
 		{left_click} a button to hide or show teams from that generation.<br />
 		{right_click} a button to show only teams from that generation.<br />
 		<br />
-		The middle box can change the order in which teams are displayed.
+		The middle box can change the order in which teams are displayed.<br />
+		The last box can be used to search teams by their name.
 	</div>,
 
 	party_analysis: <div>

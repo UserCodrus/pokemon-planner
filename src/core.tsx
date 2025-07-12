@@ -136,7 +136,7 @@ export function App(props: {page?: string}): ReactElement
 function PlannerView(props: {team: Data.Team}): ReactElement
 {
 	const [typeFilter, setTypeFilter] = useState<boolean[]>(Array(Data.getNumTypes()).fill(true));
-	const [nameFilter, setNameFilter] = useState<string>("");
+	const [nameFilter, setNameFilter] = useState("");
 	const [versionFilter, setVersionFilter] = useState<number>(-1);
 
 	const game = Data.getGame(props.team.game);
@@ -302,7 +302,7 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 {
 	const [generationFilter, setGenerationFilter] = useState(Array(9).fill(true));
 	const [sortAction, setSortAction] = useState<Components.PartySort>(Components.sort_options[0]);
-	const [sortAscending, setSortAscending] = useState(true);
+	const [nameFilter, setNameFilter] = useState("");
 
 	// Change the generation filter when a filter button is clicked
 	function selectGeneration(generation: number, invert?: boolean) {
@@ -326,22 +326,33 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 		setGenerationFilter(filter);
 	}
 
+	// Set the name filter for selectable teams
+	function changeNameFilter(filter: string) {
+		setNameFilter(filter);
+	}
+
 	// Sort team data according to the selected filter
 	let team_data = props.teams.slice();
 	if (sortAction) {
 		team_data.sort((a, b) => {
-			if (sortAscending)
-				return sortAction.sort(a, b);
-			else
-				return -sortAction.sort(a, b);
+			return sortAction.sort(a, b);
 		});
 	}
 
 	// Create a set of party selector components
 	const party_components: ReactElement[] = [];
 	for (let i = 0; i < team_data.length; ++i) {
-		if (generationFilter[Data.getGame(team_data[i].game).generation - 1])
+		if (generationFilter[Data.getGame(team_data[i].game).generation - 1]) {
+			// Apply the name filter
+			if (nameFilter) {
+				const filter_name = nameFilter.toLowerCase();
+				const team_name = team_data[i].name.toLowerCase();
+				if (!team_name.includes(filter_name))
+					continue;
+			}
+
 			party_components.push(<Containers.PartySelector party={team_data[i]} currentParty={false} key={i} />);
+		}
 	}
 
 	return (
@@ -350,8 +361,8 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 				{<div className="text-center panel inline-block grow-0">Current Party</div>}
 				<Containers.PartySelector party={props.selectedTeam} currentParty={true} />
 			</div>}
-			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} sortAscending={sortAscending} tutorial={true}
-				onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} onSwitchSortOrder={() => setSortAscending(!sortAscending)} />
+			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} nameFilter={nameFilter} tutorial={true}
+				onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} onChangeNameFilter={changeNameFilter} />
 			<div className="flex flex-row flex-wrap gap-2 justify-between items-center">
 				{party_components}
 			</div>

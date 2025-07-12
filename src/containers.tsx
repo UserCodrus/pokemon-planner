@@ -340,7 +340,7 @@ export function PokedexFilterBar(props: {game: Data.Game, typeFilter: boolean[],
 /**
  * A component containing filter toggles for selectable teams
  */
-export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Components.PartySort, sortAscending: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback, onSwitchSortOrder: Function, tutorial?: boolean}): ReactElement
+export function TeamFilterBar(props: {generationFilter: boolean[], nameFilter: string, sortType: Components.PartySort, tutorial?: boolean, onSelectPartySort: Components.PartySortCallback, onSelectGeneration: Components.BooleanFilterCallback, onChangeNameFilter: Components.NameFilterCallback}): ReactElement
 {
 	// Determine if any filters are disabled for the all filter button
 	let all_filter = true;
@@ -367,7 +367,7 @@ export function TeamFilterBar(props: {generationFilter: boolean[], sortType: Com
 						<Components.SortSelector onSelect={props.onSelectPartySort} />
 					</PopupBox>
 				</div>
-				<Components.SortOrderButton sortAscending={props.sortAscending} onClick={props.onSwitchSortOrder} />
+				<Components.NameFilterBox text={props.nameFilter} onChange={props.onChangeNameFilter} />
 			</div>
 			{props.tutorial && <Components.TutorialButton message={Tutorials.team_filter} />}
 		</div>
