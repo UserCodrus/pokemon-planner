@@ -4,12 +4,17 @@ import AbilityData from "../data/ability.json";
 import GameData from "../data/games.json";
 
 // String representations of image folders
+const base_path = "";
 const image_ext = ".png";
-const type_sprite_location = "/images/types/";
-const type_icon_location = "/images/types/icons/";
-const pokemon_art_location = "/images/pokemon/art/";
-const pokemon_sprite_location = "/images/pokemon/sprites/";
-const misc_location = "/images/";
+
+const type_sprite_location = base_path + "/images/types/";
+const type_icon_location = base_path + "/images/types/icons/";
+const pokemon_art_location = base_path + "/images/pokemon/art/";
+const pokemon_sprite_location = base_path + "/images/pokemon/sprites/";
+const game_logo_location = base_path + "/images/logos/";
+const misc_location = base_path + "/images/";
+
+const icon_location = base_path + "/icons.svg";
 
 export const party_size = 6;
 export const generations = 9;
@@ -149,6 +154,24 @@ export function typeIconURL(type: number)
 export function imageURL(filename: string)
 {
 	return misc_location + filename;
+}
+
+/**
+ * Get the URL for a game logo
+ * @param filename The name of the logo file
+ */
+export function logoURL(filename: string)
+{
+	return game_logo_location + filename;
+}
+
+/**
+ * Get the URL for an icon
+ * @param name The symbol ID of the icon
+ */
+export function iconURL(name: string)
+{
+	return icon_location + "#" + name;
 }
 
 /**

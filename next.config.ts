@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
 	output: 'export',
-	basePath: '/pokemon-planner',
+	basePath: '',
 	images: { unoptimized: true }
 };
 

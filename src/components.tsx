@@ -33,9 +33,6 @@ export type PartySort = {
 	sort: (a: Data.Team, b: Data.Team) => number
 }
 
-const icon_source = "/icons.svg";
-const logo_source = "/images/logos/";
-
 const enum CoverageStyle {
 	neutral,
 	advantage,
@@ -348,16 +345,16 @@ const icon_size = 16;
 export function CoverageIcon(props: {type: CoverageStyle, highlight: number, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
-	let src = icon_source;
+	let icon = "";
 	let style = "";
 	if (props.type === CoverageStyle.advantage) {
-		src += "#solar--round-alt-arrow-up-bold";
+		icon += "solar--round-alt-arrow-up-bold";
 		style += " text-advantage";
 	} else if (props.type === CoverageStyle.weakness) {
-		src += "#solar--round-alt-arrow-down-bold";
+		icon += "solar--round-alt-arrow-down-bold";
 		style += " text-disadvantage";
 	} else {
-		src += "#solar--record-bold";
+		icon += "solar--record-bold";
 		style += " text-foreground";
 	}
 
@@ -366,7 +363,7 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: number, sou
 
 	return (
 		<div className={style}>
-			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl" + highlight_style}><use href={src} /></svg>
+			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl" + highlight_style}><use href={Data.iconURL(icon)} /></svg>
 		</div>
 	);
 }
@@ -446,7 +443,7 @@ export function GameSelector(props: {game: Data.Game, logoCycle: number}): React
 		const image_style = (i === (props.logoCycle % props.game.versions.length) ? "" : " hide");
 		images.push(
 			<img
-				src={logo_source + props.game.versions[i].logo}
+				src={Data.logoURL(props.game.versions[i].logo)}
 				alt={props.game.versions[i].name}
 				className={"absolute w-[100px] lg:w-[150px] fade" + image_style}
 				key={i}
@@ -497,7 +494,7 @@ export function MenuButton(props: {openCallback: Function}): ReactElement
 {
 	return (
 		<div tabIndex={0} className="panel clickable p-1 fixed left-2 top-2 z-1" onClick={()=>props.openCallback()}>
-			<svg className="w-[20px] h-[20px] lg:w-[32px] lg:h-[32px]"><use href={icon_source + "#solar--hamburger-menu-linear"} /></svg>
+			<svg className="w-[20px] h-[20px] lg:w-[32px] lg:h-[32px]"><use href={Data.iconURL("solar--hamburger-menu-linear")} /></svg>
 		</div>
 	);
 }
@@ -510,7 +507,7 @@ export function SidebarButton(props: {label: string, icon: string, disabled?: bo
 	const style = props.disabled ? " text-disabled" : " clickable";
 	return (
 		<button className={"panel flex flex-row items-center" + style} onClick={()=>{ if (!props.disabled) props.onClick() }}>
-			<svg width={32} height={32}><use href={icon_source + "#" + props.icon} /></svg>
+			<svg width={32} height={32}><use href={Data.iconURL(props.icon)} /></svg>
 			<div className="mx-4 flex-grow">{props.label}</div>
 		</button>
 	);
@@ -558,7 +555,7 @@ export function SidebarImportButton(): ReactElement
 	return (
 		<div className={"panel clickable flex flex-row items-center flex-grow"}>
 			<input type="file" className="absolute top-0 left-0 rounded-lg w-full h-full opacity-0 cursor-pointer" onChange={(e) => handleFile(e)} />
-			<svg width={32} height={32}><use href={icon_source + "#solar--cloud-upload-bold"} /></svg>
+			<svg width={32} height={32}><use href={Data.iconURL("solar--cloud-upload-bold")} /></svg>
 			<div className="mx-4 flex-grow text-center">Import Teams</div>
 		</div>
 	);
@@ -613,7 +610,7 @@ export function TutorialButton(props: {message: ReactElement}): ReactElement
 				buttons: [{ label: "Close" }]
 			});
 		}}>
-			<svg width={tutorial_button_size} height={tutorial_button_size}><use href={icon_source + "#solar--question-circle-bold"} /></svg>
+			<svg width={tutorial_button_size} height={tutorial_button_size}><use href={Data.iconURL("solar--question-circle-bold")} /></svg>
 		</button>
 	);
 }
@@ -642,7 +639,7 @@ export function ScrollButton(): ReactElement
 
 	return (
 		<button className={"panel fixed right-2 bottom-2 pop-fast" + (hidden ? " hide" : " clickable")} onClick={() => {if (!hidden) window.scroll({top: 0, behavior: "smooth"})}}>
-			<svg className="w-[12px] h-[12px] lg:w-[24px] lg:h-[24px]"><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+			<svg className="w-[12px] h-[12px] lg:w-[24px] lg:h-[24px]"><use href={Data.iconURL("solar--arrow-up-linear")} /></svg>
 		</button>
 	);
 }
@@ -671,7 +668,7 @@ export function SortOrderButton(props: {sortAscending: boolean, onClick: Functio
 
 	return (
 		<button className="panel clickable w-[32px] h-[32px] rounded-2xl p-0 flex justify-center items-center" onClick={() => {props.onClick()}}>
-			<svg className={image_style}><use href={icon_source + "#solar--arrow-up-linear"} /></svg>
+			<svg className={image_style}><use href={Data.iconURL("solar--arrow-up-linear")} /></svg>
 		</button>
 	);
 }
