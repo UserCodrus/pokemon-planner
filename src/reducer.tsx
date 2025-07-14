@@ -166,7 +166,7 @@ function getURLSegment(view: View, game?: string): string {
  * @param page The url segment of the current page
  * @param force If set to true, the app will push to history even if the url hasn't changed
  */
-function saveHistory(current_state: AppData, new_state: AppData, page?: string, force?: boolean)
+function saveHistory(current_state: AppData, new_state: AppData, page: string, force?: boolean)
 {
 	// Update the current state of the app before pushing a new state
 	const update_state = {
@@ -176,7 +176,7 @@ function saveHistory(current_state: AppData, new_state: AppData, page?: string, 
 	history.replaceState(update_state, "");
 
 	// Add the new state to browser history if the URL has changed
-	const url = window.location.origin + (page ? "/" + page : "");
+	const url = window.location.origin + Data.base_path + "/" + page;
 	if (url != window.location.href || force) {
 		const app_state = {
 			view: new_state.view,

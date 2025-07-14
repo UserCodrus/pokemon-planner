@@ -4,7 +4,7 @@ import AbilityData from "../data/ability.json";
 import GameData from "../data/games.json";
 
 // String representations of image folders
-const base_path = "/pokemon-planner";
+export const base_path = "/pokemon-planner";
 const image_ext = ".png";
 
 const type_sprite_location = base_path + "/images/types/";
