@@ -112,12 +112,14 @@ a {
 
 	.sidemenu {
 		position: fixed;
+		overflow: auto;
 		z-index: 2;
 
 		left: 10px;
 		top: 10px;
 
 		min-width: 10%;
+		max-height: 95vh;
 
 		background-color: var(--color-panel);
 		backdrop-filter: blur(10px);
