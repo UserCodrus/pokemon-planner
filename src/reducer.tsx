@@ -159,6 +159,21 @@ function getURLSegment(view: View, game?: string): string {
 	}
 }
 
+// Load teams from storage
+function loadTeams() {
+	const storage = localStorage.getItem("teams");
+	if (storage) {
+		const team_data: Data.Team[] = JSON.parse(storage);
+		for (const team of team_data) {
+			team.created = new Date(team.created);
+			team.updated = new Date(team.updated);
+		}
+		return team_data;
+	}
+
+	return null;
+}
+
 /**
  * A function that saves the state of the app when the view is switched and the url changes
  * @param current_state The current state of the app
@@ -194,10 +209,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 	switch (action.type) {
 		// Switch to the home view
 		case Task.team_view: {
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams)
+				user_teams = state.teams;
+
 			window.scrollTo(0, 0);
 			const new_state = {
 				...state,
-				view: View.home
+				view: View.home,
+				teams: user_teams,
 			};
 
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
@@ -206,10 +227,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Switch to the game selector view
 		case Task.game_view: {
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams)
+				user_teams = state.teams;
+
 			window.scrollTo(0, 0);
 			const new_state = {
 				...state,
-				view: View.games
+				view: View.games,
+				teams: user_teams,
 			};
 
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
@@ -218,10 +245,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Switch to the compare view
 		case Task.compare_view: {
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams)
+				user_teams = state.teams;
+
 			window.scrollTo(0, 0);
 			const new_state = {
 				...state,
-				view: View.compare
+				view: View.compare,
+				teams: user_teams,
 			};
 
 			saveHistory(state, new_state, getURLSegment(new_state.view, state.current_team?.game));
@@ -236,12 +269,22 @@ export function teamReducer(state: AppData, action: Action): AppData
 					view: View.home
 				}
 
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams) {
+				if (!state.teams)
+					break;
+
+				user_teams = state.teams;
+			}
+
 			const selected_game = Data.getGame(action.data);
 			if (selected_game) {
 				window.scrollTo(0, 0);
 				const new_state = {
 					...state,
-					current_team: newTeam(state.teams!, selected_game.id),
+					teams: user_teams,
+					current_team: newTeam(user_teams, selected_game.id),
 					view: View.planner,
 					updated: false
 				};
@@ -280,11 +323,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Store changes made to the current team
 		case Task.save_current_team: {
-			if (!state.teams || !state.current_team)
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams)
+				user_teams = state.teams;
+
+			if (!user_teams || !state.current_team)
 				break;
 
 			// Remove the team from its current spot in the team list if it has already been saved
-			const team_list = state.teams.slice();
+			const team_list = user_teams.slice();
 			for (let i = 0; i < team_list.length; ++i) {
 				if (team_list[i].id === state.current_team.id) {
 					team_list.splice(i, 1);
@@ -306,11 +354,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Store the current team to the team list as a new team
 		case Task.save_new_team: {
-			if (!state.teams || !state.current_team)
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams)
+				user_teams = state.teams;
+
+			if (!user_teams || !state.current_team)
 				break;
 
 			// Get an unused team id
-			const team_list = state.teams.slice();
+			const team_list = user_teams.slice();
 			let team_id = 0;
 			for (const team of team_list) {
 				if (team.id > team_id)
@@ -333,10 +386,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Reset the active team
 		case Task.new_team: {
-			if (!state.teams)
-				break;
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams) {
+				if (!state.teams)
+					break;
 
-			const new_team = newTeam(state.teams, state.current_team ? state.current_team.game : "nat");
+				user_teams = state.teams;
+			}
+			
+			const new_team = newTeam(user_teams, state.current_team ? state.current_team.game : "nat");
 			const new_state = {
 				...state,
 				view: View.planner,
@@ -351,8 +410,14 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Set the team with the given id as the active team and load the planner
 		case Task.select_team: {
-			if (!state.teams)
-				break;
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams) {
+				if (!state.teams)
+					break;
+
+				user_teams = state.teams;
+			}
 			
 			let selected_team: Data.Team | null = null;
 			if (state.current_team && !action.data) {
@@ -360,7 +425,7 @@ export function teamReducer(state: AppData, action: Action): AppData
 				selected_team = state.current_team;
 			} else {
 				// Searth the team list to find a team with a matching id
-				const team_list = state.teams.slice();
+				const team_list = user_teams.slice();
 				for (const team of team_list) {
 					if (team.id === action.data) {
 						selected_team = structuredClone(team);
@@ -390,10 +455,16 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Find a team in the team list and remove it
 		case Task.delete_team: {
-			if (!state.teams)
-				break;
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams) {
+				if (!state.teams)
+					break;
 
-			const team_list = state.teams.slice();
+				user_teams = state.teams;
+			}
+
+			const team_list = user_teams.slice();
 			const team_index = team_list.findIndex((value)=>value.id === action.data);
 
 			if (team_index > -1) {
@@ -407,8 +478,14 @@ export function teamReducer(state: AppData, action: Action): AppData
 
 		// Export team data
 		case Task.export_teams: {
-			if (!state.teams)
-				break;
+			// Pull team data from storage to keep data synced
+			let user_teams = loadTeams();
+			if (!user_teams) {
+				if (!state.teams)
+					break;
+
+				user_teams = state.teams;
+			}
 			
 			const filename = "Pokémon Teams.json";
 			const type = "application/json;charset=utf-8;";
@@ -416,7 +493,7 @@ export function teamReducer(state: AppData, action: Action): AppData
 			// Create a link element and insert team data as a link payload
 			const link = document.createElement('a');
 			link.download = filename;
-			link.href = "data:" + type + "," + encodeURIComponent(Data.getTeamJSON(state.teams));
+			link.href = "data:" + type + "," + encodeURIComponent(Data.getTeamJSON(user_teams));
 			link.target = "_blank";
 
 			// Attach the payload and click it
