@@ -361,12 +361,10 @@ export function TeamFilterBar(props: {generationFilter: boolean[], nameFilter: s
 	return (
 		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
-			<div className="flex flex-row gap-2">
-				<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-					<PopupBox text={props.sortType.label}>
-						<Components.SortSelector onSelect={props.onSelectPartySort} />
-					</PopupBox>
-				</div>
+			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
+				<PopupBox text={props.sortType.label}>
+					<Components.SortSelector onSelect={props.onSelectPartySort} />
+				</PopupBox>
 				<Components.NameFilterBox text={props.nameFilter} onChange={props.onChangeNameFilter} />
 			</div>
 			{props.tutorial && <Components.TutorialButton message={Tutorials.team_filter} />}
