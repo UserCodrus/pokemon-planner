@@ -236,8 +236,8 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	}
 
 	return (
-		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div tabIndex={0} className={"flex items-center justify-center panel clickable p-0 w-[72px] h-[72px] lg:w-[102px] lg:h-[102px]" + (props.selected ? " slow-wiggle" : " wiggle")} onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+		<div className="relative">
+			<div tabIndex={0} className={"flex items-center justify-center panel clickable p-0 w-full aspect-square" + (props.selected ? " slow-wiggle" : " wiggle")} onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute pop" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} className="wiggle-target" />
 			</div>

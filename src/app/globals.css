@@ -159,6 +159,11 @@ a {
 		scale: 1 -1;
 	}
 
+	.auto-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+	}
+
 	.wiggle:hover > .wiggle-target {
 		animation: animation-shake 0.25s linear infinite;
 	}

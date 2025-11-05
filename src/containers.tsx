@@ -261,7 +261,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 	return (
 		<div className="text-center">
 			<div className="panel text-lg mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
-			<div className="flex flex-row flex-wrap justify-between gap-2">
+			<div className="grid grid-cols-[repeat(auto-fit,minmax(72px,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(102px,1fr))] w-full gap-2">
 				{components}
 			</div>
 		</div>
