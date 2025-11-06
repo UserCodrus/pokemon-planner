@@ -363,7 +363,7 @@ function TeamView(props: {teams: Data.Team[], selectedTeam: Data.Team | null}): 
 			</div>}
 			<Containers.TeamFilterBar generationFilter={generationFilter} sortType={sortAction} nameFilter={nameFilter} tutorial={true}
 				onSelectPartySort={setSortAction} onSelectGeneration={selectGeneration} onChangeNameFilter={changeNameFilter} />
-			<div className="flex flex-row flex-wrap gap-2 justify-between items-center">
+			<div className="grid grid-cols-[repeat(auto-fit,minmax(80%,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-2 justify-between items-center">
 				{party_components}
 			</div>
 		</div>

@@ -152,7 +152,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
  */
 export function PartyMemberSmall(props: {generation: number, pokemon?: Data.TeamSlot}): ReactElement
 {
-	const component_style = "w-[72px] h-[72px] lg:w-[96px] lg:h-[96px] max-w-full";
+	const component_style = "w-[96px] h-[96px] max-w-full";
 
 	// Return a placeholder div if no pokemon is provided
 	if (!props.pokemon)
