@@ -106,7 +106,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel max-w-[48%] flex flex-col items-center";
+	let component_style = "panel flex flex-col items-center";
 	if (props.pokemon)
 		component_style += " clickable"
 

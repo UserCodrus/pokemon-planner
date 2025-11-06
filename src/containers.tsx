@@ -83,7 +83,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	}
 
 	return (
-		<div className="flex flex-row flex-wrap gap-2 relative justify-between">
+		<div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 gap-2 relative justify-between">
 			{components}
 			{props.tutorial && <Components.TutorialButton message={Tutorials.party_display} />}
 		</div>
