@@ -17,8 +17,8 @@
 	--color-advantage: #fb406a;
 	--color-disadvantage: #007efe;
 
-	--color-glow-bad: #222222;
-	--color-glow-good: #F2F2F2;
+	--color-glow-bad: #000000aa;
+	--color-glow-good: #F2F2F2aa;
 
 	--color-secondary: #C2C2C2;
 	--color-special: #1bceff;

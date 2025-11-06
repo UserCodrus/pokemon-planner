@@ -342,7 +342,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
 const icon_size = 16;
-export function CoverageIcon(props: {type: CoverageStyle, highlight: number, source?: Data.TeamSlot}): ReactElement
+export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
 	let icon = "";
@@ -358,12 +358,9 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: number, sou
 		style += " text-foreground";
 	}
 
-	// Add a glow effect if needed
-	const highlight_style = props.highlight > 0 ? " glow-pos" : (props.highlight < 0 ? " glow-neg" : "");
-
 	return (
 		<div className={style}>
-			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl" + highlight_style}><use href={Data.iconURL(icon)} /></svg>
+			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl"}><use href={Data.iconURL(icon)} /></svg>
 		</div>
 	);
 }
@@ -378,27 +375,30 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 	const bottom_components: ReactElement[] = [];
 	for (let i=0; i<Data.party_size; ++i) {
 		if (i < props.offense.advantage.length) {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
 		} else if (i < props.offense.advantage.length + props.offense.disadvantage.length) {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
 		} else {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.neutral} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 
 		if (i < props.defense.advantage.length) {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
 		} else if (i < props.defense.advantage.length + props.defense.disadvantage.length) {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
 		} else {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.neutral} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 	}
+
+	const offense_highlight = props.offense.highlight > 0 ? " glow-pos" : (props.offense.highlight < 0 ? " glow-neg" : "");
+	const defense_highlight = props.defense.highlight > 0 ? " glow-pos" : (props.defense.highlight < 0 ? " glow-neg" : "");
 
 	return (
 		<div className="flex flex-col items-center gap-0.5 basis-[10%]">
 			<Image className="w-[75px] lg:w-[100px]" src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
-			<div className={"flex flex-row"}>{top_components}</div>
-			<div className={"flex flex-row"}>{bottom_components}</div>
+			<div className={"flex flex-row rounded-2xl" + offense_highlight}>{top_components}</div>
+			<div className={"flex flex-row rounded-2xl" + defense_highlight}>{bottom_components}</div>
 		</div>
 	);
 }
