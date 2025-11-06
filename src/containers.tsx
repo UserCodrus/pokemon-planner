@@ -131,6 +131,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 			}
 		}
 	}
+
 	// Delete the team when the component is right clicked and the user confirms the modal popup
 	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
 		event.preventDefault();
@@ -176,8 +177,13 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		components.push(<Components.PartyMemberSmall generation={game!.generation} pokemon={props.party.pokemon[i]} key={i} />);
 	}
 
+	// Add empty components to fill space
+	while (components.length < 6) {
+		components.push(<Components.PartyMemberSmall generation={game!.generation} key={components.length} />);
+	}
+
 	return (
-		<div tabIndex={0} className="panel clickable text-center" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
+		<div tabIndex={0} className="panel clickable text-center max-w-full" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
 			<div className="text-nowrap overflow-hidden overflow-ellipsis sm:font-bold">{props.party.name}</div>
 			<div className="text-sm sm:text-base">{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
 			<div className="text-sm sm:text-base">{game!.name}</div>

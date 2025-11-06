@@ -156,7 +156,7 @@ export function PartyMemberSmall(props: {generation: number, pokemon?: Data.Team
 
 	// Return a placeholder div if no pokemon is provided
 	if (!props.pokemon)
-		return <div className={component_style + " flex flex-col justify-center align-middle text-secondary"}>Empty</div>
+		return <div className={component_style + " flex flex-col justify-center align-middle text-secondary"}></div>
 
 	const size = 96;
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
@@ -474,7 +474,7 @@ export function TeamName(props: {name: string}): ReactElement
 	return (
 		<div className="panel text-lg text-center min-w-1/4 self-center">
 			<form onSubmit={(e) => handleSubmit(e)}>
-				<input type="text" name="textbox" value={props.name} className="text-center rounded-lg" ref={ref}
+				<input type="text" name="textbox" maxLength={30} value={props.name} className="text-center rounded-lg w-full" ref={ref}
 					onChange={(e)=>{
 						dispatch({
 							type: Task.change_name,
