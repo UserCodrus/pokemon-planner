@@ -106,7 +106,7 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
 	}
 
 	// Set styling for the outer div
-	let component_style = "panel max-w-[48%] flex flex-col items-center";
+	let component_style = "panel flex flex-col items-center";
 	if (props.pokemon)
 		component_style += " clickable"
 
@@ -152,11 +152,11 @@ export function PartyMember(props: {game: Data.Game, pokemon?: Data.TeamSlot, ab
  */
 export function PartyMemberSmall(props: {generation: number, pokemon?: Data.TeamSlot}): ReactElement
 {
-	const component_style = "w-[72px] h-[72px] lg:w-[96px] lg:h-[96px] max-w-full";
+	const component_style = "w-[96px] h-[96px] max-w-full";
 
 	// Return a placeholder div if no pokemon is provided
 	if (!props.pokemon)
-		return <div className={component_style + " flex flex-col justify-center align-middle text-secondary"}>Empty</div>
+		return <div className={component_style + " flex flex-col justify-center align-middle text-secondary"}></div>
 
 	const size = 96;
 	const pokemon = Data.getPokemon(props.generation, props.pokemon.id, props.pokemon.form);
@@ -236,8 +236,8 @@ export function PokemonSelector(props: {generation: number, id: number, form?: n
 	}
 
 	return (
-		<div className="relative" /*onMouseLeave={(e)=>setContextMenu(false)}*/>
-			<div tabIndex={0} className={"flex items-center justify-center panel clickable p-0 w-[72px] h-[72px] lg:w-[102px] lg:h-[102px]" + (props.selected ? " slow-wiggle" : " wiggle")} onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
+		<div className="relative">
+			<div tabIndex={0} className={"flex items-center justify-center panel clickable p-0 w-full aspect-square" + (props.selected ? " slow-wiggle" : " wiggle")} onClick={(e)=>handleLeftClick(e)} onContextMenu={(e)=>handleRightClick(e)}>
 				<Image src={Data.imageURL("poke-ball.png")} width={24} height={24} alt="selected" className={"left-1 top-1 absolute pop" + hidden} />
 				<Image src={pokemon.sprite} width={size} height={size} alt={pokemon.name} className="wiggle-target" />
 			</div>
@@ -342,7 +342,7 @@ export function NameFilterBox(props: {text: string, onChange: NameFilterCallback
  * A component that shows a defensive advantage or disadvantage for the user's team
  */
 const icon_size = 16;
-export function CoverageIcon(props: {type: CoverageStyle, highlight: number, source?: Data.TeamSlot}): ReactElement
+export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot}): ReactElement
 {
 	// Apply different icons and colors based on the information we need to display
 	let icon = "";
@@ -358,12 +358,9 @@ export function CoverageIcon(props: {type: CoverageStyle, highlight: number, sou
 		style += " text-foreground";
 	}
 
-	// Add a glow effect if needed
-	const highlight_style = props.highlight > 0 ? " glow-pos" : (props.highlight < 0 ? " glow-neg" : "");
-
 	return (
 		<div className={style}>
-			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl" + highlight_style}><use href={Data.iconURL(icon)} /></svg>
+			<svg width={icon_size} height={icon_size} className={"w-[12px] lg:w-[16px] h-[12px] lg:h-[16px] rounded-xl"}><use href={Data.iconURL(icon)} /></svg>
 		</div>
 	);
 }
@@ -378,27 +375,30 @@ export function Coverage(props: {type: number, offense: TypeCoverage, defense: T
 	const bottom_components: ReactElement[] = [];
 	for (let i=0; i<Data.party_size; ++i) {
 		if (i < props.offense.advantage.length) {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
 		} else if (i < props.offense.advantage.length + props.offense.disadvantage.length) {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
 		} else {
-			top_components.push(<CoverageIcon highlight={props.offense.highlight} type={CoverageStyle.neutral} key={i} />);
+			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 
 		if (i < props.defense.advantage.length) {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
 		} else if (i < props.defense.advantage.length + props.defense.disadvantage.length) {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
 		} else {
-			bottom_components.push(<CoverageIcon highlight={props.defense.highlight} type={CoverageStyle.neutral} key={i} />);
+			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
 	}
+
+	const offense_highlight = props.offense.highlight > 0 ? " glow-pos" : (props.offense.highlight < 0 ? " glow-neg" : "");
+	const defense_highlight = props.defense.highlight > 0 ? " glow-pos" : (props.defense.highlight < 0 ? " glow-neg" : "");
 
 	return (
 		<div className="flex flex-col items-center gap-0.5 basis-[10%]">
 			<Image className="w-[75px] lg:w-[100px]" src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
-			<div className={"flex flex-row"}>{top_components}</div>
-			<div className={"flex flex-row"}>{bottom_components}</div>
+			<div className={"flex flex-row rounded-2xl" + offense_highlight}>{top_components}</div>
+			<div className={"flex flex-row rounded-2xl" + defense_highlight}>{bottom_components}</div>
 		</div>
 	);
 }
@@ -474,7 +474,7 @@ export function TeamName(props: {name: string}): ReactElement
 	return (
 		<div className="panel text-lg text-center min-w-1/4 self-center">
 			<form onSubmit={(e) => handleSubmit(e)}>
-				<input type="text" name="textbox" value={props.name} className="text-center rounded-lg" ref={ref}
+				<input type="text" name="textbox" maxLength={30} value={props.name} className="text-center rounded-lg w-full" ref={ref}
 					onChange={(e)=>{
 						dispatch({
 							type: Task.change_name,

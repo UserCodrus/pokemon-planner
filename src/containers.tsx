@@ -83,7 +83,7 @@ export function PartyDisplay(props: {pokemon: Data.TeamSlot[], abilities: number
 	}
 
 	return (
-		<div className="flex flex-row flex-wrap gap-2 relative justify-between">
+		<div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 gap-2 relative justify-between">
 			{components}
 			{props.tutorial && <Components.TutorialButton message={Tutorials.party_display} />}
 		</div>
@@ -131,6 +131,7 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 			}
 		}
 	}
+
 	// Delete the team when the component is right clicked and the user confirms the modal popup
 	function handleRightClick(event: ReactMouseEvent<HTMLDivElement>) {
 		event.preventDefault();
@@ -176,18 +177,17 @@ export function PartySelector(props: {party: Data.Team, currentParty: boolean}):
 		components.push(<Components.PartyMemberSmall generation={game!.generation} pokemon={props.party.pokemon[i]} key={i} />);
 	}
 
-	// Add some dummy components if the party is empty so it fills out space properly
-	if (components.length === 0) {
-		components.push(<div className="w-[72px] h-[72px] lg:w-[96px] lg:h-[96px]" key={0}></div>);
-		components.push(<Components.PartyMemberSmall generation={game!.generation} key={1} />)
+	// Add empty components to fill space
+	while (components.length < 6) {
+		components.push(<Components.PartyMemberSmall generation={game!.generation} key={components.length} />);
 	}
 
 	return (
-		<div tabIndex={0} className="panel clickable text-center w-[48%] lg:w-[320px]" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
-			<div>{props.party.name}</div>
-			<div className="text-sm lg:text-base">{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
-			<div className="text-sm lg:text-base min-h-12 lg:min-h-6">{game!.name}</div>
-			<div className="inline-grid grid-cols-2 lg:grid-cols-3 grid-rows-3 lg:grid-rows-2 gap-0 lg:gap-2">{components}</div>
+		<div tabIndex={0} className="panel clickable text-center max-w-full" onClick={(e) => handleLeftClick(e)} onContextMenu={(e) => handleRightClick(e)}>
+			<div className="text-nowrap overflow-hidden overflow-ellipsis sm:font-bold">{props.party.name}</div>
+			<div className="text-sm sm:text-base">{"Generation " + Data.getRomanNumeral(game!.generation)}</div>
+			<div className="text-sm sm:text-base">{game!.name}</div>
+			<div className="inline-grid grid-cols-3 grid-rows-2 gap-1">{components}</div>
 			{!props.currentParty && <div>
 				<div className="text-sm">{props.party.updated.toLocaleString()}</div>
 			</div>}
@@ -261,7 +261,7 @@ function PokedexGroup(props: {pokedex: typeof Pokedex[0], game: Data.Game, typeF
 	return (
 		<div className="text-center">
 			<div className="panel text-lg mb-2 min-w-1/4 inline-block">{props.pokedex.name}</div>
-			<div className="flex flex-row flex-wrap justify-between gap-2">
+			<div className="grid grid-cols-[repeat(auto-fit,minmax(72px,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(102px,1fr))] w-full gap-2">
 				{components}
 			</div>
 		</div>
@@ -361,12 +361,10 @@ export function TeamFilterBar(props: {generationFilter: boolean[], nameFilter: s
 	return (
 		<div className="panel float flex flex-col lg:flex-row flex-grow gap-3 justify-evenly items-center">
 			<div className="flex flex-row gap-1 flex-wrap justify-center">{generation_buttons}</div>
-			<div className="flex flex-row gap-2">
-				<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
-					<PopupBox text={props.sortType.label}>
-						<Components.SortSelector onSelect={props.onSelectPartySort} />
-					</PopupBox>
-				</div>
+			<div className="flex flex-row gap-3 flex-wrap items-center justify-center">
+				<PopupBox text={props.sortType.label}>
+					<Components.SortSelector onSelect={props.onSelectPartySort} />
+				</PopupBox>
 				<Components.NameFilterBox text={props.nameFilter} onChange={props.onChangeNameFilter} />
 			</div>
 			{props.tutorial && <Components.TutorialButton message={Tutorials.team_filter} />}
@@ -485,8 +483,7 @@ export function MenuBox(props: {closeCallback: Function, children: ReactNode}): 
 	}, [ref]);
 	
 	return (
-		<div className="sidemenu" ref={ref}>
-			
+		<div className="sidemenu" ref={ref}>	
 			{props.children}
 		</div>
 	);
