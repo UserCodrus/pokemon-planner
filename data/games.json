@@ -464,5 +464,19 @@
 					[128, 2], [646, 1], [800, 1]
 				]
 			}]
+	},
+	{
+		"id": "lza",
+		"pokedexes": ["lumiose-city", "hyperspace"],
+		"generation": 9,
+		"abilities": false,
+		"name": "Legends Z-A",
+		"versions": [
+			{
+				"name": "Legends Z-A",
+				"logo": "LegendsArceus.png",
+				"blacklist": []
+			}
+		]
 	}
 ]
