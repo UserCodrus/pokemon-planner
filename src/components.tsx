@@ -17,12 +17,14 @@ export type VersionFilterCallback = (version: number) => void;
 export type PartySortCallback = (sort_option: PartySort) => void;
 
 /**
- * Specify which party members in a team are strong or weak against a type
+ * A structure that holds the analysis of a party member's strength against a particular type
+ * @member slot The slot the analysis was performed on
+ * @member value The calculated coverage rating
  */
-export type TypeCoverage = {
-	advantage: Data.TeamSlot[],
-	disadvantage: Data.TeamSlot[],
-	highlight: number
+export type CoverAnalysis = {
+	slot: Data.TeamSlot,
+	offense: number,
+	defense: number,
 }
 
 /**
@@ -368,37 +370,30 @@ export function CoverageIcon(props: {type: CoverageStyle, source?: Data.TeamSlot
 /**
  * A component that displays the type advantages and disadvantages the user's team has against a particular type
  */
-export function Coverage(props: {type: number, offense: TypeCoverage, defense: TypeCoverage}): ReactElement
+export function Coverage(props: {type: number, coverage: CoverAnalysis[], highlight: number}): ReactElement
 {
 	// Create icons to show the team's strengths and weaknesses
 	const top_components: ReactElement[] = [];
-	const bottom_components: ReactElement[] = [];
-	for (let i=0; i<Data.party_size; ++i) {
-		if (i < props.offense.advantage.length) {
-			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.offense.advantage[i]} key={i} />);
-		} else if (i < props.offense.advantage.length + props.offense.disadvantage.length) {
-			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.offense.disadvantage[i-props.offense.advantage.length]} key={i} />);
+	for (let i = 0; i < Data.party_size; ++i) {
+		let score = 0;
+		if (i < props.coverage.length)
+			score = props.coverage[i].offense + props.coverage[i].defense;
+
+		if (score > 0) {
+			top_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.coverage[i].slot} key={i} />);
+		} else if (score < 0) {
+			top_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.coverage[i].slot} key={i} />);
 		} else {
 			top_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
 		}
-
-		if (i < props.defense.advantage.length) {
-			bottom_components.push(<CoverageIcon type={CoverageStyle.advantage} source={props.defense.advantage[i]} key={i} />);
-		} else if (i < props.defense.advantage.length + props.defense.disadvantage.length) {
-			bottom_components.push(<CoverageIcon type={CoverageStyle.weakness} source={props.defense.disadvantage[i-props.defense.advantage.length]} key={i} />);
-		} else {
-			bottom_components.push(<CoverageIcon type={CoverageStyle.neutral} key={i} />);
-		}
 	}
 
-	const offense_highlight = props.offense.highlight > 0 ? " glow-pos" : (props.offense.highlight < 0 ? " glow-neg" : "");
-	const defense_highlight = props.defense.highlight > 0 ? " glow-pos" : (props.defense.highlight < 0 ? " glow-neg" : "");
+	const offense_highlight = props.highlight > 0 ? " glow-pos" : (props.highlight < 0 ? " glow-neg" : "");
 
 	return (
 		<div className="flex flex-col items-center gap-0.5 basis-[10%]">
 			<Image className="w-[75px] lg:w-[100px]" src={Data.typeSpriteURL(props.type)} width={100} height={20} alt={Data.getTypeName(props.type)} />
 			<div className={"flex flex-row rounded-2xl" + offense_highlight}>{top_components}</div>
-			<div className={"flex flex-row rounded-2xl" + defense_highlight}>{bottom_components}</div>
 		</div>
 	);
 }
