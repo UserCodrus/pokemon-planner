@@ -9,6 +9,7 @@ import { DispatchContext, Task, UnsafeDataContext } from "./reducer";
 import { ModalContext } from "./modal";
 import Tutorials from "./tutorials";
 import { useRouter } from "next/navigation";
+import { CoverAnalysis } from "./components";
 
 const party_size = 6;
 const draw_order = [0, 1, 2, 3, 4, 5];
@@ -373,32 +374,31 @@ export function TeamFilterBar(props: {generationFilter: boolean[], nameFilter: s
 }
 
 /**
- * Helper function to calculate type advantages and disadvantages for a team
+ * Calculate the party's coverage against a given type, assigning offensive and defensive scores based on how they match up against the type
  */
-function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: number[], game: Data.Game): Data.TeamSlot[][]
+function analyzeCoverage(type_id: number, party: Data.TeamSlot[], abilities: number[], game: Data.Game): CoverAnalysis[]
 {
-	const offense_advantages: Data.TeamSlot[] = [];
-	const offense_weaknesses: Data.TeamSlot[] = [];
-	const defense_advantages: Data.TeamSlot[] = [];
-	const defense_weaknesses: Data.TeamSlot[] = [];
+	const coverage_analysis: CoverAnalysis[] = [];
 
-	// Check each party pokemon against the current type
 	for (let i = 0; i < party.length; ++i) {
 		const pokemon = Data.getPokemon(game.generation, party[i].id, party[i].form);
 		const ability = Data.getAbility(Data.getPokemonAbilities(game.generation, party[i].id, party[i].form)[abilities[i]]);
 
 		// Calculate the maximum damage multiplier for the pokemon's same type attacks against the current type
-		let stab_multiplier = 0.5;
+		let stab_multiplier = 0;
 		for (const type of pokemon.types) {
 			const multiplier = Data.getTypeAdvantage(game.generation, type, [type_id]);
 			if (multiplier > stab_multiplier)
 				stab_multiplier = multiplier;
 		}
 
-		if (stab_multiplier > 1)
-			offense_advantages.push(party[i]);
-		else if (stab_multiplier < 1)
-			offense_weaknesses.push(party[i]);
+		// Assign a coverage bonus based on stab damage
+		let offense_coverage = 0;
+		if (stab_multiplier > 1) {
+			offense_coverage += 1;		// At least one supereffective stab move
+		} else if (stab_multiplier < 1) {
+			offense_coverage -= 0.5;	// No neutral damage stab moves
+		}
 
 		// Calculate the pokemon's defensive multiplier against the current type
 		let defense_multiplier = Data.getTypeAdvantage(game.generation, type_id, pokemon.types);
@@ -412,14 +412,45 @@ function partyCoverage(type_id: number, party: Data.TeamSlot[], abilities: numbe
 			}
 		}
 
-		if (defense_multiplier > 1)
-			defense_weaknesses.push(party[i]);
-		else if (defense_multiplier < 1)
-			defense_advantages.push(party[i]);
+		// Change coverage bonuses based on defenses
+		let defense_coverage = 0;
+		if (defense_multiplier > 2) {
+			defense_coverage -= 2;		// Quad weakness
+		} else if (defense_multiplier > 1) {
+			defense_coverage -= 1;		// Weakness
+		} else if (defense_multiplier < 0.5) {
+			defense_coverage += 1;		// Quad resist or immunity
+		} else if (defense_multiplier < 1) {
+			defense_coverage += 0.5;	// Single resist
+		}
+
+		coverage_analysis.push({
+			slot: party[i],
+			offense: offense_coverage,
+			defense: defense_coverage,
+		});
 	}
 
-	return [offense_advantages, offense_weaknesses, defense_advantages, defense_weaknesses];
+	coverage_analysis.sort((a, b) => (a.offense + a.defense) - (b.offense + b.defense));
+	return coverage_analysis;
 }
+
+// Determine if a coverage data indicates an advantage or disadvantage
+function checkCover(coverage: CoverAnalysis[]): number
+{
+	let score = 0;
+	for (const cover of coverage) {
+		const weight = cover.offense + cover.defense;
+		if (weight > 0) {
+			score += 1;
+		} else if (weight < 0) {
+			score -= 1;
+		}
+	}
+
+	return score;
+}
+
 
 /**
  * A component that displays the party's advantages and disadvantages
@@ -431,24 +462,32 @@ export function PartyAnalysis(props: {team: Data.TeamSlot[], compareTeam?: Data.
 	for (let type_id = 0; type_id < Data.getNumTypes(); ++type_id) {
 		if (Data.validType(props.game.generation, type_id)) {
 			// Calculate the team's advantages and disadvantages against the type
-			const [offense_advantages, offense_weaknesses, defense_advantages, defense_weaknesses] = partyCoverage(type_id, props.team, props.abilities, props.game);
+			const coverage = analyzeCoverage(type_id, props.team, props.abilities, props.game);
 
 			// Apply negative highlights if the team is weak against the type
-			let offense_highlight = Math.min(offense_advantages.length - offense_weaknesses.length, 0);
-			let defense_highlight = Math.min(defense_advantages.length - defense_weaknesses.length, 0);
+			let highlight = checkCover(coverage);
 
 			// Calculate the compared team's stats
 			if (props.compareTeam && props.compareAbilities) {
-				const [compare_offense_advantages, compare_offense_weaknesses, compare_defense_advantages, compare_defense_weaknesses] = partyCoverage(type_id, props.compareTeam, props.compareAbilities, props.game);
+				const other_coverage = analyzeCoverage(type_id, props.compareTeam, props.compareAbilities, props.game);
 
 				// Replace highlights with positive highlights if the team is better than the compared team
-				offense_highlight = (compare_offense_advantages.length - compare_offense_weaknesses.length) > (offense_advantages.length - offense_weaknesses.length) ? 0 : 1;
-				defense_highlight = (compare_defense_advantages.length - compare_defense_weaknesses.length) > (defense_advantages.length - defense_weaknesses.length) ? 0 : 1;
+				highlight = checkCover(other_coverage) > checkCover(coverage) ? 0 : 1;
 			}
 			
+			// Sort the scores so the icons appear in order based on coverage scores
+			coverage.sort((a, b) => {
+				let a_score = a.offense + a.defense;
+				let b_score = b.offense + b.defense;
+
+				// Normalize the scores so that the array is sorted into positive scores > negative scores > neutral scores
+				if (a_score != 0) a_score = (a_score / Math.abs(a_score)) + 2;
+				if (b_score != 0) b_score = (b_score / Math.abs(b_score)) + 2;
+
+				return b_score - a_score;
+			});
 			components.push(<Components.Coverage type={type_id} key={type_id}
-				offense={{advantage: offense_advantages, disadvantage: offense_weaknesses, highlight: offense_highlight}}
-				defense={{advantage: defense_advantages, disadvantage: defense_weaknesses, highlight: defense_highlight}} />);
+				coverage={coverage} highlight={highlight} />);
 		}
 	}
 

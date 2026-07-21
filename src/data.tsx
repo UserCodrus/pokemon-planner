@@ -277,6 +277,7 @@ export function getTypeName(type: number): string
  */
 export function getTypeAdvantage(generation: number, offensive_type: number, defensive_types: number[]): number
 {
+	// Get the damage multipliers for the current generation
 	let damage_multipliers: number[] = [];
 	for (const damage_set of TypeData[offensive_type].damage) {
 		if (damage_set.generation >= generation) {
@@ -285,6 +286,7 @@ export function getTypeAdvantage(generation: number, offensive_type: number, def
 		}
 	}
 
+	// Multiply the damage multiplier for all provided defensive types together
 	let final_multiplier = 1;
 	for (const type of defensive_types) {
 		final_multiplier *= damage_multipliers[type];
